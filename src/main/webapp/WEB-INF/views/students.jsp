@@ -5,7 +5,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     <title>Students</title>
   </head>
   <body>
-    <h1>Students</h1>
+    <h1>Students List 1</h1>
     <a href="${pageContext.request.contextPath}/students/add">Add Student</a>
     <table border="1" cellpadding="5" cellspacing="0">
       <tr>

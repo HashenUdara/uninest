@@ -12,7 +12,10 @@ import java.io.IOException;
 public class StudentListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    req.setAttribute("students", new StudentDAO().findAll());
+        if ("1".equals(req.getParameter("added"))) {
+            req.setAttribute("flash_success", "Student added successfully");
+        }
+        req.setAttribute("students", new StudentDAO().findAll());
         req.getRequestDispatcher("/WEB-INF/views/students.jsp").forward(req, resp);
     }
 }

@@ -26,6 +26,6 @@ public class AddStudentServlet extends HttpServlet {
             return;
         }
     new StudentDAO().save(new Student(0, name, email));
-        resp.sendRedirect(req.getContextPath() + "/students");
+    resp.sendRedirect(req.getContextPath() + "/students?added=1");
     }
 }

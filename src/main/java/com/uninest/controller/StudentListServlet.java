@@ -1,6 +1,6 @@
 package com.uninest.controller;
 
-import com.uninest.repository.StudentRepository;
+import com.uninest.model.dao.StudentDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,7 +12,7 @@ import java.io.IOException;
 public class StudentListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("students", StudentRepository.findAll());
+    req.setAttribute("students", new StudentDAO().findAll());
         req.getRequestDispatcher("/WEB-INF/views/students.jsp").forward(req, resp);
     }
 }

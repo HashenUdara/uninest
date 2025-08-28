@@ -1,7 +1,7 @@
 package com.uninest.controller;
 
 import com.uninest.model.Student;
-import com.uninest.repository.StudentRepository;
+import com.uninest.model.dao.StudentDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -25,7 +25,7 @@ public class AddStudentServlet extends HttpServlet {
             req.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(req, resp);
             return;
         }
-        StudentRepository.save(new Student(0, name, email));
+    new StudentDAO().save(new Student(0, name, email));
         resp.sendRedirect(req.getContextPath() + "/students");
     }
 }

@@ -1,6 +1,6 @@
 package com.uninest.controller;
 
-import com.uninest.repository.StudentRepository;
+import com.uninest.model.dao.StudentDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,7 +19,7 @@ public class StudentDetailServlet extends HttpServlet {
         }
         try {
             int id = Integer.parseInt(idStr);
-            com.uninest.model.Student student = StudentRepository.findById(id);
+            com.uninest.model.Student student = new StudentDAO().findById(id);
             if (student == null) {
                 req.setAttribute("message", "Student not found");
                 req.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(req, resp);

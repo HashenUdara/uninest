@@ -1,0 +1,17 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page isELIgnored="false" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title><c:out value="${pageTitle}" /></title>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/style.css" />
+</head>
+<body>
+<header style="margin-bottom:1rem;">
+  <nav>
+    <a href="${pageContext.request.contextPath}/students">Students</a> |
+    <a href="${pageContext.request.contextPath}/students/add">Add</a>
+  </nav>
+  <hr/>
+</header>

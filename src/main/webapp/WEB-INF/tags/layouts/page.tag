@@ -2,9 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ attribute name="title" required="false" %>
 <%@ attribute name="active" required="false" %>
-<%@ attribute name="sidebar" fragment="true" required="false" %>
-<%@ attribute name="bodyClass" required="false" %>
-<%@ attribute name="headExtra" fragment="true" required="false" %>
+<%-- Removed unused attributes: sidebar, bodyClass, headExtra --%>
 <%@ attribute name="alerts" fragment="true" required="false" %>
 <%@ attribute name="scripts" fragment="true" required="false" %>
 <!DOCTYPE html>
@@ -14,33 +12,38 @@
   <title>${title}</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/static/style.css" />
-  <c:if test="${not empty headExtra}"><jsp:invoke fragment="headExtra" /></c:if>
 </head>
-<body class="${bodyClass}">
+<body>
 <header class="topbar">
   <div class="brand"><a href="${pageContext.request.contextPath}/students">Uninest</a></div>
   <nav class="topnav">
-    <a class="${active == 'students' ? 'active' : ''}" href="${pageContext.request.contextPath}/students">Students</a>
-    <a class="${active == 'add' ? 'active' : ''}" href="${pageContext.request.contextPath}/students/add">Add</a>
+    <c:choose>
+      <c:when test="${not empty sessionScope.authUser}">
+        <a class="${active == 'students' ? 'active' : ''}" href="${pageContext.request.contextPath}/students">Students</a>
+        <c:if test="${sessionScope.authUser.role == 'ADMIN'}">
+          <a class="${active == 'add' ? 'active' : ''}" href="${pageContext.request.contextPath}/students/add">Add</a>
+          <a class="${active == 'admin' ? 'active' : ''}" href="${pageContext.request.contextPath}/admin/dashboard">Admin</a>
+          <a class="${active == 'manager' ? 'active' : ''}" href="${pageContext.request.contextPath}/manager/dashboard">Manager</a>
+        </c:if>
+        <c:if test="${sessionScope.authUser.role == 'MANAGER'}">
+          <a class="${active == 'manager' ? 'active' : ''}" href="${pageContext.request.contextPath}/manager/dashboard">Manager</a>
+        </c:if>
+        <c:if test="${sessionScope.authUser.role == 'STAFF'}">
+          <a class="${active == 'staff' ? 'active' : ''}" href="${pageContext.request.contextPath}/staff/dashboard">Staff</a>
+        </c:if>
+        <form style="display:inline;" method="post" action="${pageContext.request.contextPath}/logout">
+          <button class="btn danger" type="submit" style="margin-left:0.5rem;">Logout</button>
+        </form>
+      </c:when>
+      <c:otherwise>
+        <a class="${active == 'login' ? 'active' : ''}" href="${pageContext.request.contextPath}/login">Login</a>
+      </c:otherwise>
+    </c:choose>
   </nav>
 </header>
-<div class="layout-shell">
-  <c:choose>
-    <c:when test="${not empty sidebar}">
-      <aside class="sidebar">
-        <jsp:invoke fragment="sidebar" />
-      </aside>
-      <main class="content with-sidebar">
-        <jsp:doBody />
-      </main>
-    </c:when>
-    <c:otherwise>
-      <main class="content">
-        <jsp:doBody />
-      </main>
-    </c:otherwise>
-  </c:choose>
-</div>
+<main class="content">
+  <jsp:doBody />
+</main>
 <c:if test="${not empty alerts}">
   <section class="alerts">
     <jsp:invoke fragment="alerts" />

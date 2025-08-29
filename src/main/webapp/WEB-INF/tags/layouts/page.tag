@@ -21,7 +21,19 @@
   <div class="brand"><a href="${pageContext.request.contextPath}/students">Uninest</a></div>
   <nav class="topnav">
     <a class="${active == 'students' ? 'active' : ''}" href="${pageContext.request.contextPath}/students">Students</a>
-    <a class="${active == 'add' ? 'active' : ''}" href="${pageContext.request.contextPath}/students/add">Add</a>
+  <c:if test="${sessionScope.isAdmin}">
+      <a class="${active == 'add' ? 'active' : ''}" href="${pageContext.request.contextPath}/students/add">Add</a>
+    </c:if>
+    <c:choose>
+      <c:when test="${empty sessionScope.authUser}">
+        <a href="${pageContext.request.contextPath}/login">Login</a>
+      </c:when>
+      <c:otherwise>
+        <form style="display:inline;" method="post" action="${pageContext.request.contextPath}/logout">
+          <button class="btn" type="submit" style="background:#334155;">Logout</button>
+        </form>
+      </c:otherwise>
+    </c:choose>
   </nav>
 </header>
 <div class="layout-shell">

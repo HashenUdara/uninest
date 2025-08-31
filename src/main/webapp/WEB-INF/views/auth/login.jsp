@@ -11,6 +11,7 @@
       <p><label>Email<br/><input name="email" type="email" autofocus /></label></p>
       <p><label>Password<br/><input name="password" type="password" /></label></p>
       <p><button class="btn" type="submit">Login</button></p>
+  <p><a href="${pageContext.request.contextPath}/forgot-password">Forgot password?</a></p>
     </form>
   </jsp:body>
 </layout:page>

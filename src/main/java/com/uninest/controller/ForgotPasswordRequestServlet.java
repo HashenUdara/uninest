@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
+import com.uninest.util.MailUtil;
+import jakarta.mail.MessagingException;
 
 @WebServlet(name = "forgotPasswordRequest", urlPatterns = "/forgot-password")
 public class ForgotPasswordRequestServlet extends HttpServlet {
@@ -37,8 +39,14 @@ public class ForgotPasswordRequestServlet extends HttpServlet {
         }
 
         String token = userDAO.createResetToken(userOpt.get().getId(), 30); // 30 min
-        // For simplicity, display token on confirmation page instead of email send.
-        req.setAttribute("resetToken", token);
+        String resetLink = req.getRequestURL().toString().replace("forgot-password", "reset-password") + "?token=" + token;
+        try {
+            MailUtil.send(email, "Password Reset", "<p>Click the link to reset your password:</p><p><a href='" + resetLink + "'>" + resetLink + "</a></p><p>If you did not request this, ignore this email.</p>");
+            req.setAttribute("emailSent", true);
+        } catch (MessagingException e) {
+            req.setAttribute("emailSent", false);
+            req.setAttribute("mailError", e.getMessage());
+        }
         req.getRequestDispatcher("/WEB-INF/views/auth/forgot-password-requested.jsp").forward(req, resp);
     }
 }

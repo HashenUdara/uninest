@@ -13,10 +13,10 @@ import java.util.Properties;
 public class MailUtil {
 
     private static Session buildSession() {
-    final String username = Env.get("GMAIL_USERNAME");
-    final String password = Env.get("GMAIL_APP_PASSWORD");
+        final String username = Env.get("GMAIL_USERNAME");
+        final String password = Env.get("GMAIL_APP_PASSWORD");
         if (username == null || password == null) {
-            throw new IllegalStateException("Missing GMAIL_USERNAME or GMAIL_APP_PASSWORD environment variables");
+            throw new IllegalStateException("Missing GMAIL_USERNAME or GMAIL_APP_PASSWORD in configuration");
         }
 
         Properties props = new Properties();
@@ -38,11 +38,11 @@ public class MailUtil {
     public static void send(String to, String subject, String htmlBody) throws MessagingException {
         Session session = buildSession();
         Message message = new MimeMessage(session);
-    String from = Env.get("GMAIL_USERNAME");
+        String from = Env.get("GMAIL_USERNAME");
         message.setFrom(new InternetAddress(from));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
         message.setSubject(subject);
         message.setContent(htmlBody, "text/html; charset=utf-8");
         Transport.send(message);
-    }
+    }   
 }

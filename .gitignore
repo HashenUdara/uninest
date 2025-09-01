@@ -16,6 +16,4 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
-# Local config (secrets not committed)
-config/
-config/secrets.properties
+application.properties

@@ -1,0 +1,7 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:if test="${not empty flash_success}">
+  <div class="alert success">${flash_success}</div>
+</c:if>
+<c:if test="${not empty flash_error}">
+  <div class="alert error">${flash_error}</div>
+</c:if>

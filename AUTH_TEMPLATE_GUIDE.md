@@ -4,8 +4,6 @@
 
 This document explains the reusable authentication template system integrated into the UniNest JSP application.
 
-## Architecture
-
 ### 1. Layout Structure
 
 The authentication pages use a dedicated `auth.tag` layout that provides:

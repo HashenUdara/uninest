@@ -38,9 +38,9 @@
     <span aria-hidden="true">·</span>
     <auth:link href="#" text="Privacy Policy" muted="true" />
   </footer>
-  <jsp:attribute name="scripts">
+  
     <script>
       document.querySelector(".js-auth-form").classList.add("js-validate");
     </script>
-  </jsp:attribute>
+
 </layout:auth>

@@ -23,12 +23,12 @@ import java.util.Properties;
  */
 public class DBConnection {
     // Hardcoded DigitalOcean Managed MySQL credentials (requested). WARNING: Don't commit real secrets in production.
-    private static final String HOST = "uninest-mysql-cluster-do-user-25057272-0.j.db.ondigitalocean.com";
-    private static final String PORT = "25060";
-    private static final String DB = "defaultdb";
-    private static final String SSL_MODE = "REQUIRED"; // DigitalOcean requires SSL
-    private static final String USER = "doadmin";
-    private static final String PASS = "AVNS_tJZntEIxNCAKuDSNwvM"; // Provided password
+    private static final String HOST = Env.get("DB_HOST");
+    private static final String PORT = Env.get("DB_PORT");
+    private static final String DB = Env.get("DB_NAME");
+    private static final String SSL_MODE = Env.get("DB_SSL_MODE");
+    private static final String USER = Env.get("DB_USER");
+    private static final String PASS = Env.get("DB_PASS");
     private static final String URL = String.format(
             "jdbc:mysql://%s:%s/%s?sslMode=%s&serverTimezone=UTC", HOST, PORT, DB, SSL_MODE);
 

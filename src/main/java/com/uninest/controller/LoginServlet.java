@@ -41,10 +41,12 @@ public class LoginServlet extends HttpServlet {
         // Redirect by role
         if (user.isAdmin()) {
             resp.sendRedirect(req.getContextPath() + "/admin/dashboard");
-        } else if (user.isManager()) {
-            resp.sendRedirect(req.getContextPath() + "/manager/dashboard");
+        } else if (user.isSubjectCoordinator()) {
+            resp.sendRedirect(req.getContextPath() + "/coordinator/dashboard");
+        } else if (user.isModerator()) {
+            resp.sendRedirect(req.getContextPath() + "/moderator/dashboard");
         } else {
-            resp.sendRedirect(req.getContextPath() + "/staff/dashboard");
+            resp.sendRedirect(req.getContextPath() + "/student/dashboard");
         }
     }
 }

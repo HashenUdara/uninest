@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
-<%@ taglib prefix="auth" tagdir="/WEB-INF/tags/auth" %>
 <layout:auth title="Reset Requested">
   <div class="c-state">
     <div class="c-state__icon">
@@ -18,11 +17,11 @@
     </div>
   </div>
   <div class="c-auth__switch" style="margin-top: var(--space-8);">
-    <auth:link href="${pageContext.request.contextPath}/login" text="Back to Login" />
+    <a href="${pageContext.request.contextPath}/login" class="c-link">Back to Login</a>
   </div>
   <footer class="c-auth__legal">
-    <auth:link href="#" text="Terms of Service" muted="true" />
+    <a href="#" class="c-link c-link--muted">Terms of Service</a>
     <span aria-hidden="true">·</span>
-    <auth:link href="#" text="Privacy Policy" muted="true" />
+    <a href="#" class="c-link c-link--muted">Privacy Policy</a>
   </footer>
 </layout:auth>

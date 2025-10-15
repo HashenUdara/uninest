@@ -350,15 +350,89 @@ a:hover {
 }
 .c-password-meter[data-strength="1"] .c-password-meter__bar::before {
   background: #6d4aff;
+  --meter-pct: 25%;
 }
 .c-password-meter[data-strength="2"] .c-password-meter__bar::before {
   background: #542cf5;
+  --meter-pct: 50%;
 }
 .c-password-meter[data-strength="3"] .c-password-meter__bar::before {
   background: #2f9d5b;
+  --meter-pct: 75%;
 }
 .c-password-meter[data-strength="4"] .c-password-meter__bar::before {
   background: #14804a;
+  --meter-pct: 100%;
+}
+
+/* Role selection */
+.c-role-select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.c-role-select__label {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+.c-role-select__options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+.c-role-option {
+  position: relative;
+}
+.c-role-option__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.c-role-option__label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-align: center;
+}
+.c-role-option__label:hover {
+  border-color: var(--color-brand);
+  background: var(--color-surface);
+}
+.c-role-option__input:checked + .c-role-option__label {
+  border-color: var(--color-brand);
+  background: rgba(84, 44, 245, 0.05);
+  box-shadow: 0 0 0 1px var(--color-brand);
+}
+.c-role-option__input:focus-visible + .c-role-option__label {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+.c-role-option__icon {
+  width: 2rem;
+  height: 2rem;
+  color: var(--color-brand);
+}
+.c-role-option__icon svg {
+  width: 100%;
+  height: 100%;
+}
+.c-role-option__name {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  margin: 0;
+}
+.c-role-option__desc {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  margin: 0;
 }
 
 .c-state {

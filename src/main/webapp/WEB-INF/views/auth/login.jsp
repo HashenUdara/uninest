@@ -33,6 +33,11 @@
     </div>
     <auth:button text="Login" />
   </form>
+  
+  <div class="c-auth__switch">
+    Don't have an account? <auth:link href="${pageContext.request.contextPath}/signup" text="Sign Up" />
+  </div>
+  
   <footer class="c-auth__legal">
     <auth:link href="#" text="Terms of Service" muted="true" />
     <span aria-hidden="true">·</span>

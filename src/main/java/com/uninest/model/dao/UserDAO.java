@@ -31,7 +31,7 @@ public class UserDAO {
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPasswordHash());
-            ps.setString(3, user.getRole().name());
+            ps.setString(3, user.getRole());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) user.setId(keys.getInt(1));

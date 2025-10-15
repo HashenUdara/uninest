@@ -7,10 +7,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "staffDashboard", urlPatterns = "/staff/dashboard")
-public class StaffDashboardServlet extends HttpServlet {
+@WebServlet(name = "studentDashboard", urlPatterns = "/student/dashboard")
+public class StudentDashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/views/staff/dashboard.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/student/dashboard.jsp").forward(req, resp);
     }
 }

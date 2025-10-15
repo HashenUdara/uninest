@@ -409,7 +409,7 @@ a:hover {
 .c-role-option__input:checked + .c-role-option__label {
   border-color: var(--color-brand);
   background: rgba(84, 44, 245, 0.05);
-  box-shadow: 0 0 0 1px var(--color-brand);
+  /* box-shadow: 0 0 0 1px var(--color-brand); */
 }
 .c-role-option__input:focus-visible + .c-role-option__label {
   outline: none;

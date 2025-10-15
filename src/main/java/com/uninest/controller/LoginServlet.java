@@ -31,25 +31,12 @@ public class LoginServlet extends HttpServlet {
             return;
         }
         Optional<User> userOpt = userDAO.findByEmail(email);
-        if (userOpt.isEmpty()) {
+        if (userOpt.isEmpty() || !BCrypt.checkpw(password, userOpt.get().getPasswordHash())) {
             req.setAttribute("error", "Invalid credentials");
             req.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(req, resp);
             return;
         }
         User user = userOpt.get();
-        String hash = user.getPasswordHash();
-        // Defensive: ensure hash is valid BCrypt format before checking
-        if (hash == null || !hash.startsWith("$2")) {
-            req.setAttribute("error", "Account configuration error. Please contact support.");
-            req.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(req, resp);
-            return;
-        }
-        if (!BCrypt.checkpw(password, hash)) {
-            req.setAttribute("error", "Invalid credentials");
-            req.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(req, resp);
-            return;
-        }
-        // user is already assigned above
         req.getSession(true).setAttribute("authUser", user);
         // Redirect by role
         if (user.isAdmin()) {

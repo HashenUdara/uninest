@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
-<%@ taglib prefix="auth" tagdir="/WEB-INF/tags/auth" %>
 <layout:auth title="Sign Up">
   <jsp:attribute name="scripts">
     <script>
@@ -51,27 +50,36 @@
       <div class="c-field__error" style="text-align: center; font-size: var(--fs-sm); margin-bottom: var(--space-4);">${error}</div>
     </c:if>
     <form class="c-auth__form js-auth-form" method="post" action="${pageContext.request.contextPath}/signup" novalidate>
-    <auth:field 
-      id="fullName" 
-      name="fullName" 
-      label="Full Name" 
-      type="text" 
-      placeholder="Enter your full name" 
-      required="true" 
-      autocomplete="name"
-      autofocus="true"
-      value="${param.fullName}"
-    />
-    <auth:field 
-      id="email" 
-      name="email" 
-      label="Email" 
-      type="email" 
-      placeholder="Enter your email" 
-      required="true" 
-      autocomplete="email"
-      value="${param.email}"
-    />
+    <div class="c-field">
+      <label for="fullName" class="c-field__label">Full Name</label>
+      <input
+        type="text"
+        id="fullName"
+        name="fullName"
+        class="c-field__input"
+        placeholder="Enter your full name"
+        required
+        autocomplete="name"
+        autofocus
+        value="${param.fullName}"
+      />
+      <p class="c-field__error" data-error-for="fullName" aria-live="polite"></p>
+    </div>
+    
+    <div class="c-field">
+      <label for="email" class="c-field__label">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        class="c-field__input"
+        placeholder="Enter your email"
+        required
+        autocomplete="email"
+        value="${param.email}"
+      />
+      <p class="c-field__error" data-error-for="email" aria-live="polite"></p>
+    </div>
     <div class="c-field">
       <label for="password" class="c-field__label">Password</label>
       <input
@@ -92,16 +100,20 @@
       <p class="c-password-meter__label">Weak</p>
     </div>
     
-    <auth:field 
-      id="confirmPassword" 
-      name="confirmPassword" 
-      label="Confirm Password" 
-      type="password" 
-      placeholder="Confirm your password" 
-      required="true" 
-      autocomplete="new-password"
-      minlength="6"
-    />
+    <div class="c-field">
+      <label for="confirmPassword" class="c-field__label">Confirm Password</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        name="confirmPassword"
+        class="c-field__input"
+        placeholder="Confirm your password"
+        required
+        autocomplete="new-password"
+        minlength="6"
+      />
+      <p class="c-field__error" data-error-for="confirmPassword" aria-live="polite"></p>
+    </div>
     
     <div class="c-role-select">
       <label class="c-role-select__label">Select Your Role</label>
@@ -144,17 +156,17 @@
       </div>
     </div>
     
-    <auth:button text="Sign Up" />
+    <button type="submit" class="c-btn c-btn--primary c-auth__submit">Sign Up</button>
   </form>
   
   <div class="c-auth__switch">
-    Already have an account? <auth:link href="${pageContext.request.contextPath}/login" text="Login" />
+    Already have an account? <a href="${pageContext.request.contextPath}/login" class="c-link">Login</a>
   </div>
   
   <footer class="c-auth__legal">
-    <auth:link href="#" text="Terms of Service" muted="true" />
+    <a href="#" class="c-link c-link--muted">Terms of Service</a>
     <span aria-hidden="true">·</span>
-    <auth:link href="#" text="Privacy Policy" muted="true" />
+    <a href="#" class="c-link c-link--muted">Privacy Policy</a>
   </footer>
   </jsp:body>
 </layout:auth>

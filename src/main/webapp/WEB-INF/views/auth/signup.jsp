@@ -45,11 +45,39 @@
     </script>
   </jsp:attribute>
   <jsp:body>
+  <style>
+  .c-auth{
+    max-width: 600px;
+    margin: 0 auto;
+  }
+/* Form is now a 2-column grid */
+.c-auth__form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  column-gap: var(--space-4);
+}
+
+/* Password meter spans both columns */
+.c-password-meter {
+  grid-column: 1 / -1;
+}
+
+/* Role section spans both columns, with subgrid for options */
+.c-role-select {
+  grid-column: 1 / -1;
+}
+
+/* Submit button spans both columns */
+.c-auth__submit {
+  grid-column: 1 / -1;
+}
+  </style>
     <h1 class="c-auth__title" id="auth-title">Create your account</h1>
     <c:if test="${not empty error}">
       <div class="c-field__error" style="text-align: center; font-size: var(--fs-sm); margin-bottom: var(--space-4);">${error}</div>
     </c:if>
-    <form class="c-auth__form js-auth-form" method="post" action="${pageContext.request.contextPath}/signup" novalidate>
+    <form class="c-auth__form js-auth-form"  method="post" action="${pageContext.request.contextPath}/signup" novalidate>
     <div class="c-field">
       <label for="fullName" class="c-field__label">Full Name</label>
       <input
@@ -95,11 +123,6 @@
       <p class="c-field__error" data-error-for="password" aria-live="polite"></p>
     </div>
     
-    <div class="c-password-meter" data-strength="0">
-      <div class="c-password-meter__bar"></div>
-      <p class="c-password-meter__label">Weak</p>
-    </div>
-    
     <div class="c-field">
       <label for="confirmPassword" class="c-field__label">Confirm Password</label>
       <input
@@ -113,6 +136,11 @@
         minlength="6"
       />
       <p class="c-field__error" data-error-for="confirmPassword" aria-live="polite"></p>
+    </div>
+    
+    <div class="c-password-meter" data-strength="0">
+      <div class="c-password-meter__bar"></div>
+      <p class="c-password-meter__label">Weak</p>
     </div>
     
     <div class="c-role-select">

@@ -3,14 +3,7 @@
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 <layout:modern-dashboard title="Subject Coordinator Dashboard" pageTitle="Coordinator Dashboard">
-  <jsp:attribute name="name">
-    <dash:nav-item href="${pageContext.request.contextPath}/coordinator/dashboard" icon="home" label="Dashboard" active="${true}" />
-    <dash:nav-item href="#" icon="book-open" label="My Subjects" active="${false}" />
-    <dash:nav-item href="#" icon="folder" label="Topics" active="${false}" />
-    <dash:nav-item href="#" icon="upload" label="Upload Resources" active="${false}" />
-    <dash:nav-item href="#" icon="bar-chart" label="Analytics" active="${false}" />
-    <dash:nav-item href="#" icon="settings" label="Settings" active="${false}" />
-  </jsp:attribute>
+  
   <jsp:attribute name="content">
     <dash:section title="Welcome, ${sessionScope.authUser.email}">
       <p>As a subject coordinator, you can manage subjects, topics, and upload resources.</p>
@@ -25,4 +18,12 @@
       </dash:grid>
     </dash:section>
   </jsp:attribute>
+  <jsp:body>
+    <dash:nav-item href="${pageContext.request.contextPath}/coordinator/dashboard" icon="home" label="Dashboard" active="${true}" />
+    <dash:nav-item href="#" icon="book-open" label="My Subjects" active="${false}" />
+    <dash:nav-item href="#" icon="folder" label="Topics" active="${false}" />
+    <dash:nav-item href="#" icon="upload" label="Upload Resources" active="${false}" />
+    <dash:nav-item href="#" icon="bar-chart" label="Analytics" active="${false}" />
+    <dash:nav-item href="#" icon="settings" label="Settings" active="${false}" />
+  </jsp:body>
 </layout:modern-dashboard>

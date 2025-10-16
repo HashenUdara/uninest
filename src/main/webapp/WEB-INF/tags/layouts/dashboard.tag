@@ -10,7 +10,7 @@
   <meta charset="UTF-8" />
   <title>${title}</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/dashboard.css" />
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/style.css" />
 </head>
 <body class="dash-body">
 <aside class="dash-sidebar">
@@ -60,7 +60,7 @@
   <meta charset="UTF-8" />
   <title>${title}</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/dashboard.css" />
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/style.css" />
 </head>
 <body class="dash-body">
   <aside class="dash-sidebar">

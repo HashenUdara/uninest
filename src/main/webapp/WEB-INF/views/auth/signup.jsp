@@ -126,7 +126,7 @@
       <p class="c-field__error" data-error-for="academicYear" aria-live="polite"></p>
     </div>
     
-    <div class="c-field" style="grid-column: 1 / -1;">
+    <div class="c-field">
       <label for="university" class="c-field__label">University</label>
       <select
         id="university"

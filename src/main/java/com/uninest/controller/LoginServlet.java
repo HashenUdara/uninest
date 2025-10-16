@@ -37,14 +37,6 @@ public class LoginServlet extends HttpServlet {
             return;
         }
         User user = userOpt.get();
-        
-        // Check if moderator is approved
-        if (user.isModerator() && !user.isApproved()) {
-            req.setAttribute("error", "Your moderator account is pending approval by an administrator");
-            req.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(req, resp);
-            return;
-        }
-        
         req.getSession(true).setAttribute("authUser", user);
         // Redirect by role
         if (user.isAdmin()) {

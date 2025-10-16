@@ -24,6 +24,8 @@ Successfully integrated the new modern dashboard UI from `dashboard-html-templat
 #### Helper Components
 - **`nav-item.tag`** - Navigation link component with icon support
 - **`card.tag`** - Card component for dashboard content
+- **`section.tag`** - Section with title for organizing content
+- **`grid.tag`** - Responsive grid container for cards
 
 ### 3. Dashboards Migrated
 All role-specific dashboards updated to use the new layout:

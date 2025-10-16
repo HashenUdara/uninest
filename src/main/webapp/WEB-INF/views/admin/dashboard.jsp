@@ -10,14 +10,17 @@
     <dash:nav-item href="#" icon="settings" label="Settings" active="${false}" />
   </jsp:attribute>
   <jsp:attribute name="content">
-    <h2 class="c-section-title">Welcome, ${sessionScope.authUser.email}</h2>
-    <p>As an admin, you have full system privileges including user and content management.</p>
+    <dash:section title="Welcome, ${sessionScope.authUser.email}">
+      <p>As an admin, you have full system privileges including user and content management.</p>
+    </dash:section>
     
-    <div class="o-grid o-grid--cards">
-      <dash:card title="Total Students" meta="Manage all students in the system" />
-      <dash:card title="Organizations" meta="View and manage organizations" />
-      <dash:card title="System Settings" meta="Configure system parameters" />
-      <dash:card title="Reports" meta="View system reports and analytics" />
-    </div>
+    <dash:section title="Quick Actions">
+      <dash:grid>
+        <dash:card title="Total Students" meta="Manage all students in the system" />
+        <dash:card title="Organizations" meta="View and manage organizations" />
+        <dash:card title="System Settings" meta="Configure system parameters" />
+        <dash:card title="Reports" meta="View system reports and analytics" />
+      </dash:grid>
+    </dash:section>
   </jsp:attribute>
 </layout:modern-dashboard>

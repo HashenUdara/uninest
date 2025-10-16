@@ -12,15 +12,17 @@
     <dash:nav-item href="#" icon="settings" label="Settings" active="${false}" />
   </jsp:attribute>
   <jsp:attribute name="content">
-    <h2 class="c-section-title">Welcome, ${sessionScope.authUser.email}</h2>
-    <p>As a moderator, you can review, edit, or remove inappropriate resources.</p>
+    <dash:section title="Welcome, ${sessionScope.authUser.email}">
+      <p>As a moderator, you can review, edit, or remove inappropriate resources.</p>
+    </dash:section>
     
-    <h2 class="c-section-title">Moderation Overview</h2>
-    <div class="o-grid o-grid--cards">
-      <dash:card title="Pending Reviews" meta="15 items awaiting review" />
-      <dash:card title="Reported Content" meta="3 new reports" />
-      <dash:card title="Approved Today" meta="28 resources approved" />
-      <dash:card title="Rejected Items" meta="5 items rejected" />
-    </div>
+    <dash:section title="Moderation Overview">
+      <dash:grid>
+        <dash:card title="Pending Reviews" meta="15 items awaiting review" />
+        <dash:card title="Reported Content" meta="3 new reports" />
+        <dash:card title="Approved Today" meta="28 resources approved" />
+        <dash:card title="Rejected Items" meta="5 items rejected" />
+      </dash:grid>
+    </dash:section>
   </jsp:attribute>
 </layout:modern-dashboard>

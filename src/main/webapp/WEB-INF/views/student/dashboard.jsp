@@ -13,15 +13,17 @@
     <dash:nav-item href="#" icon="user" label="Profile Settings" active="${false}" />
   </jsp:attribute>
   <jsp:attribute name="content">
-    <h2 class="c-section-title">Welcome, ${sessionScope.authUser.email}</h2>
-    <p>Access your subjects, resources, and track your learning progress.</p>
+    <dash:section title="Welcome, ${sessionScope.authUser.email}">
+      <p>Access your subjects, resources, and track your learning progress.</p>
+    </dash:section>
     
-    <h2 class="c-section-title">My Subjects</h2>
-    <div class="o-grid o-grid--cards">
-      <dash:card title="Data Structures" meta="CS204 - Dr. Evelyn Reed" />
-      <dash:card title="Algorithms" meta="CS205 - Prof. Michael Chen" />
-      <dash:card title="Database Systems" meta="CS301 - Dr. Sarah Wilson" />
-      <dash:card title="Web Development" meta="CS320 - Prof. James Anderson" />
-    </div>
+    <dash:section title="My Subjects">
+      <dash:grid>
+        <dash:card title="Data Structures" meta="CS204 - Dr. Evelyn Reed" />
+        <dash:card title="Algorithms" meta="CS205 - Prof. Michael Chen" />
+        <dash:card title="Database Systems" meta="CS301 - Dr. Sarah Wilson" />
+        <dash:card title="Web Development" meta="CS320 - Prof. James Anderson" />
+      </dash:grid>
+    </dash:section>
   </jsp:attribute>
 </layout:modern-dashboard>

@@ -54,10 +54,11 @@ src/main/webapp/
   </jsp:attribute>
   <jsp:attribute name="content">
     <!-- Page content goes here -->
-    <h2 class="c-section-title">Section Title</h2>
-    <div class="o-grid o-grid--cards">
-      <dash:card title="Card Title" meta="Card description" />
-    </div>
+    <dash:section title="Section Title">
+      <dash:grid>
+        <dash:card title="Card Title" meta="Card description" />
+      </dash:grid>
+    </dash:section>
   </jsp:attribute>
 </layout:modern-dashboard>
 ```
@@ -106,6 +107,40 @@ Creates a content card with optional media area.
 <dash:card 
   title="Data Structures" 
   meta="CS204 - Dr. Evelyn Reed" />
+```
+
+### Section Component (`dash:section`)
+
+Creates a section with a title for organizing dashboard content.
+
+**Attributes:**
+- `title` (required) - Section title
+
+**Example:**
+```jsp
+<dash:section title="My Subjects">
+  <p>Content goes here</p>
+</dash:section>
+```
+
+### Grid Component (`dash:grid`)
+
+Creates a grid container for cards with responsive layout.
+
+**Attributes:**
+- `columns` (optional) - "auto" for auto-fit responsive grid, default is 4-column
+
+**Example:**
+```jsp
+<dash:grid>
+  <dash:card title="Card 1" meta="Description" />
+  <dash:card title="Card 2" meta="Description" />
+</dash:grid>
+
+<!-- Auto-fit responsive grid -->
+<dash:grid columns="auto">
+  <dash:card title="Card 1" meta="Description" />
+</dash:grid>
 ```
 
 ## CSS Classes
@@ -212,12 +247,84 @@ To migrate an existing dashboard page:
 2. Replace navigation links with `<dash:nav-item>` components
 3. Wrap content in `<jsp:attribute name="content">` tags
 4. Move navigation to `<jsp:attribute name="name">` section
-5. Use `.o-grid--cards` for card layouts
-6. Replace old card HTML with `<dash:card>` components
+5. Replace section headings with `<dash:section>` components
+6. Replace grid divs with `<dash:grid>` components
+7. Replace old card HTML with `<dash:card>` components
+
+**Before:**
+```jsp
+<layout:page title="Dashboard">
+  <h2 class="c-section-title">My Items</h2>
+  <div class="o-grid o-grid--cards">
+    <article class="c-card">...</article>
+  </div>
+</layout:page>
+```
+
+**After:**
+```jsp
+<layout:modern-dashboard title="Dashboard">
+  <jsp:attribute name="name">
+    <dash:nav-item href="..." icon="home" label="Dashboard" active="${true}" />
+  </jsp:attribute>
+  <jsp:attribute name="content">
+    <dash:section title="My Items">
+      <dash:grid>
+        <dash:card title="..." meta="..." />
+      </dash:grid>
+    </dash:section>
+  </jsp:attribute>
+</layout:modern-dashboard>
+```
 
 ## Examples
 
-See the following files for complete examples:
+### Complete Dashboard Example
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
+<%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
+
+<layout:modern-dashboard title="Student Dashboard" pageTitle="My Dashboard">
+  <jsp:attribute name="name">
+    <dash:nav-item 
+      href="${pageContext.request.contextPath}/student/dashboard" 
+      icon="home" 
+      label="Dashboard" 
+      active="${true}" />
+    <dash:nav-item 
+      href="#" 
+      icon="book" 
+      label="My Subjects" 
+      active="${false}" />
+    <dash:nav-item 
+      href="#" 
+      icon="user" 
+      label="Profile" 
+      active="${false}" />
+  </jsp:attribute>
+  <jsp:attribute name="content">
+    <dash:section title="Welcome, ${sessionScope.authUser.email}">
+      <p>Access your subjects, resources, and track your learning progress.</p>
+    </dash:section>
+    
+    <dash:section title="My Subjects">
+      <dash:grid>
+        <dash:card title="Data Structures" meta="CS204 - Dr. Evelyn Reed" />
+        <dash:card title="Algorithms" meta="CS205 - Prof. Michael Chen" />
+        <dash:card title="Database Systems" meta="CS301 - Dr. Sarah Wilson" />
+        <dash:card title="Web Development" meta="CS320 - Prof. James Anderson" />
+      </dash:grid>
+    </dash:section>
+  </jsp:attribute>
+</layout:modern-dashboard>
+```
+
+### Real Examples
+
+See the following files for complete, production-ready examples:
 - `/WEB-INF/views/admin/dashboard.jsp` - Admin dashboard
 - `/WEB-INF/views/student/dashboard.jsp` - Student dashboard
 - `/WEB-INF/views/moderator/dashboard.jsp` - Moderator dashboard

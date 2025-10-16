@@ -12,15 +12,17 @@
     <dash:nav-item href="#" icon="settings" label="Settings" active="${false}" />
   </jsp:attribute>
   <jsp:attribute name="content">
-    <h2 class="c-section-title">Welcome, ${sessionScope.authUser.email}</h2>
-    <p>As a subject coordinator, you can manage subjects, topics, and upload resources.</p>
+    <dash:section title="Welcome, ${sessionScope.authUser.email}">
+      <p>As a subject coordinator, you can manage subjects, topics, and upload resources.</p>
+    </dash:section>
     
-    <h2 class="c-section-title">My Subjects</h2>
-    <div class="o-grid o-grid--cards">
-      <dash:card title="Data Structures" meta="CS204 - 45 students enrolled" />
-      <dash:card title="Algorithms" meta="CS205 - 38 students enrolled" />
-      <dash:card title="Database Systems" meta="CS301 - 52 students enrolled" />
-      <dash:card title="Software Engineering" meta="CS401 - 41 students enrolled" />
-    </div>
+    <dash:section title="My Subjects">
+      <dash:grid>
+        <dash:card title="Data Structures" meta="CS204 - 45 students enrolled" />
+        <dash:card title="Algorithms" meta="CS205 - 38 students enrolled" />
+        <dash:card title="Database Systems" meta="CS301 - 52 students enrolled" />
+        <dash:card title="Software Engineering" meta="CS401 - 41 students enrolled" />
+      </dash:grid>
+    </dash:section>
   </jsp:attribute>
 </layout:modern-dashboard>

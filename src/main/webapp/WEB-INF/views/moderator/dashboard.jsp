@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
-<layout:modern-dashboard title="Moderator Dashboard" pageTitle="Moderator Dashboard">
+<layout:dashboard title="Moderator Dashboard" pageTitle="Moderator Dashboard">
  
   <jsp:attribute name="content">
     <dash:section title="Welcome, ${sessionScope.authUser.email}">
@@ -26,4 +26,4 @@
     <dash:nav-item href="#" icon="activity" label="Activity Logs" active="${false}" />
     <dash:nav-item href="#" icon="settings" label="Settings" active="${false}" />
   </jsp:body>
-</layout:modern-dashboard>
+</layout:dashboard>

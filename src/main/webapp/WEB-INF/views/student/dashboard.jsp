@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
-<layout:modern-dashboard title="Student Dashboard" pageTitle="My Dashboard">
+<layout:dashboard title="Student Dashboard" pageTitle="My Dashboard">
   <jsp:attribute name="content">
     <dash:section title="Welcome, ${sessionScope.authUser.email}">
       <p>Access your subjects, resources, and track your learning progress.</p>
@@ -25,4 +25,4 @@
     <dash:nav-item href="#" icon="message-square" label="Community" />
     <dash:nav-item href="#" icon="user" label="Profile Settings" />
   </jsp:body>
-</layout:modern-dashboard>
+</layout:dashboard>

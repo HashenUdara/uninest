@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
-<layout:modern-dashboard title="Admin Dashboard" pageTitle="Admin Dashboard">
+<layout:dashboard title="Admin Dashboard" pageTitle="Admin Dashboard">
   <jsp:attribute name="content">
     <dash:section title="Welcome, ${sessionScope.authUser.email}">
       <p>As an admin, you have full system privileges including user and content management.</p>
@@ -22,4 +22,4 @@
     <dash:nav-item href="${pageContext.request.contextPath}/admin/organizations" icon="building" label="Organizations" />
     <dash:nav-item href="#" icon="settings" label="Settings" />
   </jsp:body>
-</layout:modern-dashboard>
+</layout:dashboard>

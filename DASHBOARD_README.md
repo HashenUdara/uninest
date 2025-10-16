@@ -12,7 +12,7 @@
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-<layout:modern-dashboard title="My Dashboard" pageTitle="Dashboard">
+<layout:dashboard title="My Dashboard" pageTitle="Dashboard">
   <jsp:attribute name="name">
     <dash:nav-item href="/dashboard" icon="home" label="Home" active="${true}" />
     <dash:nav-item href="/profile" icon="user" label="Profile" active="${false}" />
@@ -25,22 +25,23 @@
       </dash:grid>
     </dash:section>
   </jsp:attribute>
-</layout:modern-dashboard>
+</layout:dashboard>
 ```
 
 ### 2. Component Reference
 
-| Component | Purpose | Required Attributes |
-|-----------|---------|-------------------|
-| `modern-dashboard` | Main layout | - |
-| `nav-item` | Navigation link | `href`, `icon`, `label` |
-| `card` | Content card | `title` |
-| `section` | Content section | `title` |
-| `grid` | Card grid container | - |
+| Component   | Purpose             | Required Attributes     |
+| ----------- | ------------------- | ----------------------- |
+| `dashboard` | Main layout         | -                       |
+| `nav-item`  | Navigation link     | `href`, `icon`, `label` |
+| `card`      | Content card        | `title`                 |
+| `section`   | Content section     | `title`                 |
+| `grid`      | Card grid container | -                       |
 
 ### 3. Icon Names
 
 Common icons from [Lucide](https://lucide.dev/icons):
+
 - `home` - Home/Dashboard
 - `user` - User/Profile
 - `users` - Multiple users
@@ -60,7 +61,7 @@ See [DASHBOARD_GUIDE.md](DASHBOARD_GUIDE.md) for complete documentation.
 📱 **Responsive** - Works on all devices  
 ♿ **Accessible** - ARIA labels, keyboard navigation  
 🔧 **Reusable** - Component-based architecture  
-📚 **Documented** - Comprehensive guides  
+📚 **Documented** - Comprehensive guides
 
 ## File Structure
 
@@ -74,7 +75,7 @@ src/main/webapp/
 └── WEB-INF/
     └── tags/
         ├── layouts/
-        │   └── modern-dashboard.tag    # Main layout
+        │   └── dashboard.tag    # Main layout
         └── dashboard/
             ├── nav-item.tag            # Navigation
             ├── card.tag                # Content card
@@ -90,6 +91,7 @@ src/main/webapp/
 ## Examples
 
 See working implementations:
+
 - `views/admin/dashboard.jsp`
 - `views/student/dashboard.jsp`
 - `views/moderator/dashboard.jsp`
@@ -97,15 +99,17 @@ See working implementations:
 
 ## Component API
 
-### `<layout:modern-dashboard>`
+### `<layout:dashboard>`
 
 Main dashboard layout with sidebar and theme toggle.
 
 **Attributes:**
+
 - `title` - Browser tab title
 - `pageTitle` - Main page heading
 
 **Fragments:**
+
 - `name` - Navigation items (required)
 - `content` - Page content (required)
 - `alerts` - Alert messages
@@ -116,6 +120,7 @@ Main dashboard layout with sidebar and theme toggle.
 Navigation link with icon.
 
 **Attributes:**
+
 - `href` (required) - Link URL
 - `icon` (required) - Lucide icon name
 - `label` (required) - Link text
@@ -126,6 +131,7 @@ Navigation link with icon.
 Content card with title and metadata.
 
 **Attributes:**
+
 - `title` (required) - Card title
 - `meta` - Subtitle/metadata
 - `mediaClass` - CSS class for media area
@@ -135,6 +141,7 @@ Content card with title and metadata.
 Section with title for content organization.
 
 **Attributes:**
+
 - `title` (required) - Section heading
 
 ### `<dash:grid>`
@@ -142,27 +149,32 @@ Section with title for content organization.
 Responsive grid for cards.
 
 **Attributes:**
+
 - `columns` - "auto" for auto-fit, default is 4-column
 
 ## CSS Classes
 
 ### Layout
+
 - `.l-app` - App container
 - `.c-sidebar` - Sidebar
 - `.c-page` - Main content
 - `.c-page__header` - Page header
 
 ### Components
+
 - `.c-nav__item` - Navigation link
 - `.c-card` - Card
 - `.c-section-title` - Section heading
 
 ### Grid
+
 - `.o-grid` - Grid container
 - `.o-grid--cards` - 4-column grid
 - `.o-grid--auto` - Auto-fit grid
 
 ### Utilities
+
 - `.u-bg-surface` - Surface background
 - `.u-text-muted` - Muted text
 - `.u-sr-only` - Screen reader only
@@ -192,12 +204,12 @@ The dashboard includes automatic dark/light theme support:
 Add page-specific styles:
 
 ```jsp
-<layout:modern-dashboard title="My Page">
+<layout:dashboard title="My Page">
   <jsp:attribute name="scripts">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/custom.css" />
   </jsp:attribute>
   ...
-</layout:modern-dashboard>
+</layout:dashboard>
 ```
 
 ### Custom JavaScript
@@ -205,35 +217,39 @@ Add page-specific styles:
 Add page-specific scripts:
 
 ```jsp
-<layout:modern-dashboard title="My Page">
+<layout:dashboard title="My Page">
   <jsp:attribute name="scripts">
     <script>
       // Your JavaScript here
     </script>
   </jsp:attribute>
   ...
-</layout:modern-dashboard>
+</layout:dashboard>
 ```
 
 ## Troubleshooting
 
 ### Icons not showing
+
 - Ensure `lucide.js` is loaded
 - Check icon name spelling
 - Wait for `DOMContentLoaded`
 
 ### Theme toggle not working
+
 - Check `dashboard.js` is loaded
 - Clear localStorage if needed
 - Check browser console for errors
 
 ### Cards not in grid
+
 - Ensure cards are inside `<dash:grid>`
 - Check CSS is loaded properly
 
 ## Support
 
 For issues or questions:
+
 1. Check documentation: [DASHBOARD_GUIDE.md](DASHBOARD_GUIDE.md)
 2. Review examples in `views/*/dashboard.jsp`
 3. Check CSS comments in `dashboard.css`

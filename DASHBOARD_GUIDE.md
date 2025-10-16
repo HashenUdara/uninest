@@ -5,6 +5,7 @@ This guide explains how to use the new modern dashboard layout and components in
 ## Overview
 
 The new dashboard UI provides a clean, modern interface with:
+
 - Sidebar navigation with icons
 - Dark/light theme toggle
 - Reusable component tags
@@ -14,6 +15,7 @@ The new dashboard UI provides a clean, modern interface with:
 ## Architecture
 
 ### Files Structure
+
 ```
 src/main/webapp/
 ├── static/
@@ -26,7 +28,7 @@ src/main/webapp/
 └── WEB-INF/
     ├── tags/
     │   ├── layouts/
-    │   │   └── modern-dashboard.tag  # Main dashboard layout
+    │   │   └── dashboard.tag  # Main dashboard layout
     │   └── dashboard/
     │       ├── nav-item.tag         # Navigation item component
     │       └── card.tag             # Card component
@@ -47,7 +49,7 @@ src/main/webapp/
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-<layout:modern-dashboard title="My Dashboard" pageTitle="Dashboard Title">
+<layout:dashboard title="My Dashboard" pageTitle="Dashboard Title">
   <jsp:attribute name="name">
     <!-- Navigation items go here -->
     <dash:nav-item href="/path" icon="home" label="Dashboard" active="${true}" />
@@ -60,7 +62,7 @@ src/main/webapp/
       </dash:grid>
     </dash:section>
   </jsp:attribute>
-</layout:modern-dashboard>
+</layout:dashboard>
 ```
 
 ### Layout Attributes
@@ -79,17 +81,19 @@ src/main/webapp/
 Creates a navigation link in the sidebar.
 
 **Attributes:**
+
 - `href` (required) - Link URL
 - `icon` (required) - Lucide icon name (e.g., "home", "book", "user")
 - `label` (required) - Link text
 - `active` (optional) - Boolean, true if this is the active page
 
 **Example:**
+
 ```jsp
-<dash:nav-item 
-  href="${pageContext.request.contextPath}/student/dashboard" 
-  icon="home" 
-  label="Dashboard" 
+<dash:nav-item
+  href="${pageContext.request.contextPath}/student/dashboard"
+  icon="home"
+  label="Dashboard"
   active="${true}" />
 ```
 
@@ -98,14 +102,16 @@ Creates a navigation link in the sidebar.
 Creates a content card with optional media area.
 
 **Attributes:**
+
 - `title` (required) - Card title
 - `meta` (optional) - Subtitle or metadata text
 - `mediaClass` (optional) - Additional CSS class for media area
 
 **Example:**
+
 ```jsp
-<dash:card 
-  title="Data Structures" 
+<dash:card
+  title="Data Structures"
   meta="CS204 - Dr. Evelyn Reed" />
 ```
 
@@ -114,9 +120,11 @@ Creates a content card with optional media area.
 Creates a section with a title for organizing dashboard content.
 
 **Attributes:**
+
 - `title` (required) - Section title
 
 **Example:**
+
 ```jsp
 <dash:section title="My Subjects">
   <p>Content goes here</p>
@@ -128,9 +136,11 @@ Creates a section with a title for organizing dashboard content.
 Creates a grid container for cards with responsive layout.
 
 **Attributes:**
+
 - `columns` (optional) - "auto" for auto-fit responsive grid, default is 4-column
 
 **Example:**
+
 ```jsp
 <dash:grid>
   <dash:card title="Card 1" meta="Description" />
@@ -146,12 +156,14 @@ Creates a grid container for cards with responsive layout.
 ## CSS Classes
 
 ### Layout Classes
+
 - `.l-app` - Main app container
 - `.c-sidebar` - Sidebar navigation
 - `.c-page` - Main content area
 - `.c-page__header` - Page header area
 
 ### Component Classes
+
 - `.c-nav__item` - Navigation link
 - `.c-nav__icon` - Icon container
 - `.c-card` - Card container
@@ -160,15 +172,18 @@ Creates a grid container for cards with responsive layout.
 - `.c-card__meta` - Card metadata
 
 ### Grid Classes
+
 - `.o-grid` - Grid container
 - `.o-grid--cards` - 4-column card grid
 - `.o-grid--auto` - Auto-fit responsive grid
 
 ### Typography
+
 - `.c-section-title` - Section heading
 - `.c-page__title` - Page title
 
 ### Utilities
+
 - `.u-bg-surface` - Surface background color
 - `.u-text-muted` - Muted text color
 - `.u-sr-only` - Screen reader only
@@ -176,6 +191,7 @@ Creates a grid container for cards with responsive layout.
 ## Theme Toggle
 
 The dashboard includes automatic dark/light theme support:
+
 - System preference detection
 - Manual toggle button (top right)
 - Persistent preference (localStorage)
@@ -187,6 +203,7 @@ No additional code needed - it's automatic!
 Icons are provided by Lucide (https://lucide.dev/icons)
 
 **Common icons:**
+
 - `home` - Home/Dashboard
 - `book` - Books/Subjects
 - `user` - User/Profile
@@ -218,32 +235,32 @@ Icons are provided by Lucide (https://lucide.dev/icons)
 Create a separate CSS file for page-specific styles:
 
 ```jsp
-<layout:modern-dashboard title="My Page">
+<layout:dashboard title="My Page">
   <jsp:attribute name="scripts">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/my-custom.css" />
   </jsp:attribute>
   ...
-</layout:modern-dashboard>
+</layout:dashboard>
 ```
 
 ### Adding Page Scripts
 
 ```jsp
-<layout:modern-dashboard title="My Page">
+<layout:dashboard title="My Page">
   <jsp:attribute name="scripts">
     <script>
       // Your custom JavaScript
     </script>
   </jsp:attribute>
   ...
-</layout:modern-dashboard>
+</layout:dashboard>
 ```
 
 ## Migration from Old Dashboard
 
 To migrate an existing dashboard page:
 
-1. Replace `<layout:page>` or `<layout:dashboard>` with `<layout:modern-dashboard>`
+1. Replace `<layout:page>` or `<layout:dashboard>` with `<layout:dashboard>`
 2. Replace navigation links with `<dash:nav-item>` components
 3. Wrap content in `<jsp:attribute name="content">` tags
 4. Move navigation to `<jsp:attribute name="name">` section
@@ -252,6 +269,7 @@ To migrate an existing dashboard page:
 7. Replace old card HTML with `<dash:card>` components
 
 **Before:**
+
 ```jsp
 <layout:page title="Dashboard">
   <h2 class="c-section-title">My Items</h2>
@@ -262,8 +280,9 @@ To migrate an existing dashboard page:
 ```
 
 **After:**
+
 ```jsp
-<layout:modern-dashboard title="Dashboard">
+<layout:dashboard title="Dashboard">
   <jsp:attribute name="name">
     <dash:nav-item href="..." icon="home" label="Dashboard" active="${true}" />
   </jsp:attribute>
@@ -274,7 +293,7 @@ To migrate an existing dashboard page:
       </dash:grid>
     </dash:section>
   </jsp:attribute>
-</layout:modern-dashboard>
+</layout:dashboard>
 ```
 
 ## Examples
@@ -287,29 +306,29 @@ To migrate an existing dashboard page:
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-<layout:modern-dashboard title="Student Dashboard" pageTitle="My Dashboard">
+<layout:dashboard title="Student Dashboard" pageTitle="My Dashboard">
   <jsp:attribute name="name">
-    <dash:nav-item 
-      href="${pageContext.request.contextPath}/student/dashboard" 
-      icon="home" 
-      label="Dashboard" 
+    <dash:nav-item
+      href="${pageContext.request.contextPath}/student/dashboard"
+      icon="home"
+      label="Dashboard"
       active="${true}" />
-    <dash:nav-item 
-      href="#" 
-      icon="book" 
-      label="My Subjects" 
+    <dash:nav-item
+      href="#"
+      icon="book"
+      label="My Subjects"
       active="${false}" />
-    <dash:nav-item 
-      href="#" 
-      icon="user" 
-      label="Profile" 
+    <dash:nav-item
+      href="#"
+      icon="user"
+      label="Profile"
       active="${false}" />
   </jsp:attribute>
   <jsp:attribute name="content">
     <dash:section title="Welcome, ${sessionScope.authUser.email}">
       <p>Access your subjects, resources, and track your learning progress.</p>
     </dash:section>
-    
+
     <dash:section title="My Subjects">
       <dash:grid>
         <dash:card title="Data Structures" meta="CS204 - Dr. Evelyn Reed" />
@@ -319,12 +338,13 @@ To migrate an existing dashboard page:
       </dash:grid>
     </dash:section>
   </jsp:attribute>
-</layout:modern-dashboard>
+</layout:dashboard>
 ```
 
 ### Real Examples
 
 See the following files for complete, production-ready examples:
+
 - `/WEB-INF/views/admin/dashboard.jsp` - Admin dashboard
 - `/WEB-INF/views/student/dashboard.jsp` - Student dashboard
 - `/WEB-INF/views/moderator/dashboard.jsp` - Moderator dashboard
@@ -333,6 +353,7 @@ See the following files for complete, production-ready examples:
 ## Support
 
 For issues or questions about the dashboard UI, refer to:
+
 - CSS architecture: `dashboard.css` (ITCSS + BEM methodology)
 - JavaScript functionality: `dashboard.js`
 - Component definitions: `/WEB-INF/tags/dashboard/`

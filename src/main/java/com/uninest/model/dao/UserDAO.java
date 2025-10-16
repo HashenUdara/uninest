@@ -9,7 +9,7 @@ import java.util.Optional;
 public class UserDAO {
 
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT u.id, u.email, u.password_hash, r.name AS role_name " +
+        String sql = "SELECT u.id, u.email, u.password_hash, r.name AS role_name, u.organization_id, u.academic_year, u.university " +
                 "FROM users u JOIN roles r ON u.role_id = r.id WHERE u.email = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -26,12 +26,23 @@ public class UserDAO {
     }
 
     public void create(User user) {
-        String sql = "INSERT INTO users(email, password_hash, role_id) VALUES(?,?,(SELECT id FROM roles WHERE name = ?))";
+        String sql = "INSERT INTO users(email, password_hash, role_id, organization_id, academic_year, university) VALUES(?,?,(SELECT id FROM roles WHERE name = ?),?,?,?)";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPasswordHash());
             ps.setString(3, user.getRole());
+            if (user.getOrganizationId() != null) {
+                ps.setInt(4, user.getOrganizationId());
+            } else {
+                ps.setNull(4, Types.INTEGER);
+            }
+            if (user.getAcademicYear() != null) {
+                ps.setInt(5, user.getAcademicYear());
+            } else {
+                ps.setNull(5, Types.INTEGER);
+            }
+            ps.setString(6, user.getUniversity());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) user.setId(keys.getInt(1));
@@ -93,12 +104,49 @@ public class UserDAO {
         }
     }
 
+    public boolean updateOrganization(int userId, int organizationId) {
+        String sql = "UPDATE users SET organization_id = ? WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, organizationId);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating user organization", e);
+        }
+    }
+
+    public Optional<User> findById(int userId) {
+        String sql = "SELECT u.id, u.email, u.password_hash, r.name AS role_name, u.organization_id, u.academic_year, u.university " +
+                "FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching user by id", e);
+        }
+        return Optional.empty();
+    }
+
     private User map(ResultSet rs) throws SQLException {
+        Integer orgId = rs.getInt("organization_id");
+        if (rs.wasNull()) orgId = null;
+        Integer academicYear = rs.getInt("academic_year");
+        if (rs.wasNull()) academicYear = null;
+        
         return new User(
                 rs.getInt("id"),
                 rs.getString("email"),
                 rs.getString("password_hash"),
-                rs.getString("role_name")
+                rs.getString("role_name"),
+                orgId,
+                academicYear,
+                rs.getString("university")
         );
     }
 }

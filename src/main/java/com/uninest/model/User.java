@@ -5,6 +5,9 @@ public class User {
     private String email;
     private String passwordHash;
     private String roleName; // Role name as string (student, subject_coordinator, moderator, admin)
+    private Integer organizationId;
+    private Integer academicYear;
+    private String university;
 
     public User() {}
     
@@ -13,6 +16,16 @@ public class User {
         this.email = email;
         this.passwordHash = passwordHash;
         this.roleName = roleName;
+    }
+    
+    public User(int id, String email, String passwordHash, String roleName, Integer organizationId, Integer academicYear, String university) {
+        this.id = id;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.roleName = roleName;
+        this.organizationId = organizationId;
+        this.academicYear = academicYear;
+        this.university = university;
     }
     
     public int getId() { return id; }
@@ -36,4 +49,13 @@ public class User {
     public boolean hasRole(String r) { 
         return r != null && roleName != null && roleName.equalsIgnoreCase(r); 
     }
+    
+    public Integer getOrganizationId() { return organizationId; }
+    public void setOrganizationId(Integer organizationId) { this.organizationId = organizationId; }
+    
+    public Integer getAcademicYear() { return academicYear; }
+    public void setAcademicYear(Integer academicYear) { this.academicYear = academicYear; }
+    
+    public String getUniversity() { return university; }
+    public void setUniversity(String university) { this.university = university; }
 }

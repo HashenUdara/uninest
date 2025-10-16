@@ -28,6 +28,8 @@ public class SignUpServlet extends HttpServlet {
         String password = req.getParameter("password");
         String confirmPassword = req.getParameter("confirmPassword");
         String roleStr = req.getParameter("role");
+        String academicYearStr = req.getParameter("academicYear");
+        String university = req.getParameter("university");
 
         // Validation
         if (fullName == null || fullName.trim().isEmpty() ||
@@ -60,6 +62,16 @@ public class SignUpServlet extends HttpServlet {
             req.getRequestDispatcher("/WEB-INF/views/auth/signup.jsp").forward(req, resp);
             return;
         }
+        
+        // Validate student-specific fields
+        if (role.equals("student")) {
+            if (academicYearStr == null || academicYearStr.trim().isEmpty() ||
+                university == null || university.trim().isEmpty()) {
+                req.setAttribute("error", "Academic year and university are required for students");
+                req.getRequestDispatcher("/WEB-INF/views/auth/signup.jsp").forward(req, resp);
+                return;
+            }
+        }
 
         // Check if email already exists
         Optional<User> existing = userDAO.findByEmail(email);
@@ -78,6 +90,18 @@ public class SignUpServlet extends HttpServlet {
         user.setPasswordHash(passwordHash);
         user.setRole(role);
         
+        if (role.equals("student")) {
+            try {
+                int academicYear = Integer.parseInt(academicYearStr.trim());
+                user.setAcademicYear(academicYear);
+                user.setUniversity(university.trim());
+            } catch (NumberFormatException e) {
+                req.setAttribute("error", "Invalid academic year");
+                req.getRequestDispatcher("/WEB-INF/views/auth/signup.jsp").forward(req, resp);
+                return;
+            }
+        }
+        
         try {
             userDAO.create(user);
             // Auto-login after signup
@@ -85,9 +109,11 @@ public class SignUpServlet extends HttpServlet {
             
             // Redirect based on role
             if (role.equals("student")) {
-                resp.sendRedirect(req.getContextPath() + "/student/dashboard");
+                // Student needs to enter organization ID
+                resp.sendRedirect(req.getContextPath() + "/student/join-organization");
             } else {
-                resp.sendRedirect(req.getContextPath() + "/moderator/dashboard");
+                // Moderator needs to create organization
+                resp.sendRedirect(req.getContextPath() + "/moderator/create-organization");
             }
         } catch (RuntimeException e) {
             req.setAttribute("error", "Registration failed. Please try again.");

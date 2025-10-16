@@ -13,10 +13,10 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet(name = "moderatorDashboard", urlPatterns = "/moderator/dashboard")
-public class ModeratorDashboardServlet extends HttpServlet {
+@WebServlet(name = "organizationPending", urlPatterns = "/moderator/organization-pending")
+public class OrganizationPendingServlet extends HttpServlet {
     private final OrganizationDAO organizationDAO = new OrganizationDAO();
-    
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
@@ -31,21 +31,23 @@ public class ModeratorDashboardServlet extends HttpServlet {
             return;
         }
 
-        // Check if moderator has organization
+        // Check organization status
         Optional<Organization> orgOpt = organizationDAO.findByModeratorId(user.getId());
         if (orgOpt.isEmpty()) {
+            // No organization, redirect to create
             resp.sendRedirect(req.getContextPath() + "/moderator/create-organization");
             return;
         }
 
         Organization org = orgOpt.get();
-        if (!org.isApproved()) {
-            resp.sendRedirect(req.getContextPath() + "/moderator/organization-pending");
+        if (org.isApproved()) {
+            // Organization is approved, redirect to dashboard
+            resp.sendRedirect(req.getContextPath() + "/moderator/dashboard");
             return;
         }
 
-        // Organization is approved, show dashboard
+        // Set organization in request for JSP
         req.setAttribute("organization", org);
-        req.getRequestDispatcher("/WEB-INF/views/moderator/dashboard.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/moderator/organization-pending.jsp").forward(req, resp);
     }
 }

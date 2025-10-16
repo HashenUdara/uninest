@@ -42,6 +42,34 @@
           this.closest(".c-field").classList.remove("is-invalid");
         }
       });
+      
+      // Show/hide academic year and university fields based on role
+      const studentRadio = document.getElementById("role-student");
+      const moderatorRadio = document.getElementById("role-moderator");
+      const academicYearField = document.getElementById("academicYearField");
+      const universityField = document.getElementById("universityField");
+      const academicYearSelect = document.getElementById("academicYear");
+      const universitySelect = document.getElementById("university");
+      
+      function toggleStudentFields() {
+        if (studentRadio.checked) {
+          academicYearField.style.display = "block";
+          universityField.style.display = "block";
+          academicYearSelect.required = true;
+          universitySelect.required = true;
+        } else {
+          academicYearField.style.display = "none";
+          universityField.style.display = "none";
+          academicYearSelect.required = false;
+          universitySelect.required = false;
+        }
+      }
+      
+      studentRadio.addEventListener("change", toggleStudentFields);
+      moderatorRadio.addEventListener("change", toggleStudentFields);
+      
+      // Initialize visibility on page load
+      toggleStudentFields();
     </script>
   </jsp:attribute>
   <jsp:body>
@@ -141,6 +169,49 @@
     <div class="c-password-meter" data-strength="0">
       <div class="c-password-meter__bar"></div>
       <p class="c-password-meter__label">Weak</p>
+    </div>
+    
+    <div class="c-field" id="academicYearField" style="display: none;">
+      <label for="academicYear" class="c-field__label">Academic Year</label>
+      <select
+        id="academicYear"
+        name="academicYear"
+        class="c-field__input"
+      >
+        <option value="">Select Year</option>
+        <option value="1" ${param.academicYear == '1' ? 'selected' : ''}>Year 1</option>
+        <option value="2" ${param.academicYear == '2' ? 'selected' : ''}>Year 2</option>
+        <option value="3" ${param.academicYear == '3' ? 'selected' : ''}>Year 3</option>
+        <option value="4" ${param.academicYear == '4' ? 'selected' : ''}>Year 4</option>
+      </select>
+      <p class="c-field__error" data-error-for="academicYear" aria-live="polite"></p>
+    </div>
+    
+    <div class="c-field" id="universityField" style="display: none;">
+      <label for="university" class="c-field__label">University</label>
+      <select
+        id="university"
+        name="university"
+        class="c-field__input"
+      >
+        <option value="">Select University</option>
+        <option value="University of Colombo" ${param.university == 'University of Colombo' ? 'selected' : ''}>University of Colombo</option>
+        <option value="University of Peradeniya" ${param.university == 'University of Peradeniya' ? 'selected' : ''}>University of Peradeniya</option>
+        <option value="University of Sri Jayewardenepura" ${param.university == 'University of Sri Jayewardenepura' ? 'selected' : ''}>University of Sri Jayewardenepura</option>
+        <option value="University of Kelaniya" ${param.university == 'University of Kelaniya' ? 'selected' : ''}>University of Kelaniya</option>
+        <option value="University of Moratuwa" ${param.university == 'University of Moratuwa' ? 'selected' : ''}>University of Moratuwa</option>
+        <option value="University of Jaffna" ${param.university == 'University of Jaffna' ? 'selected' : ''}>University of Jaffna</option>
+        <option value="University of Ruhuna" ${param.university == 'University of Ruhuna' ? 'selected' : ''}>University of Ruhuna</option>
+        <option value="Eastern University, Sri Lanka" ${param.university == 'Eastern University, Sri Lanka' ? 'selected' : ''}>Eastern University, Sri Lanka</option>
+        <option value="South Eastern University of Sri Lanka" ${param.university == 'South Eastern University of Sri Lanka' ? 'selected' : ''}>South Eastern University of Sri Lanka</option>
+        <option value="Rajarata University of Sri Lanka" ${param.university == 'Rajarata University of Sri Lanka' ? 'selected' : ''}>Rajarata University of Sri Lanka</option>
+        <option value="Sabaragamuwa University of Sri Lanka" ${param.university == 'Sabaragamuwa University of Sri Lanka' ? 'selected' : ''}>Sabaragamuwa University of Sri Lanka</option>
+        <option value="Wayamba University of Sri Lanka" ${param.university == 'Wayamba University of Sri Lanka' ? 'selected' : ''}>Wayamba University of Sri Lanka</option>
+        <option value="Uva Wellassa University" ${param.university == 'Uva Wellassa University' ? 'selected' : ''}>Uva Wellassa University</option>
+        <option value="Open University of Sri Lanka" ${param.university == 'Open University of Sri Lanka' ? 'selected' : ''}>Open University of Sri Lanka</option>
+        <option value="Buddhist and Pali University of Sri Lanka" ${param.university == 'Buddhist and Pali University of Sri Lanka' ? 'selected' : ''}>Buddhist and Pali University of Sri Lanka</option>
+      </select>
+      <p class="c-field__error" data-error-for="university" aria-live="polite"></p>
     </div>
     
     <div class="c-role-select">

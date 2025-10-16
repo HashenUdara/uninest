@@ -27,7 +27,7 @@ public class JoinOrganizationServlet extends HttpServlet {
         String orgIdStr = req.getParameter("organizationId");
         try {
             int orgId = Integer.parseInt(orgIdStr);
-            var orgOpt = organizationDAO.findById(orgId);
+            Optional<com.uninest.model.Organization> orgOpt = organizationDAO.findById(orgId);
             if (orgOpt.isEmpty() || !orgOpt.get().isApproved()) {
                 req.setAttribute("error", "Invalid or not yet approved organization ID");
                 req.getRequestDispatcher("/WEB-INF/views/student/join-organization.jsp").forward(req, resp);

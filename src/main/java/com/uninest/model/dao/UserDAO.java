@@ -9,12 +9,8 @@ import java.util.Optional;
 public class UserDAO {
 
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT u.id, u.email, u.password_hash, r.name AS role_name, " +
-                "u.is_approved, u.academic_year, u.university_id, un.name AS university_name " +
-                "FROM users u " +
-                "JOIN roles r ON u.role_id = r.id " +
-                "LEFT JOIN universities un ON u.university_id = un.id " +
-                "WHERE u.email = ?";
+        String sql = "SELECT u.id, u.email, u.password_hash, r.name AS role_name " +
+                "FROM users u JOIN roles r ON u.role_id = r.id WHERE u.email = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -30,24 +26,12 @@ public class UserDAO {
     }
 
     public void create(User user) {
-        String sql = "INSERT INTO users(email, password_hash, role_id, is_approved, academic_year, university_id) " +
-                "VALUES(?,?,(SELECT id FROM roles WHERE name = ?),?,?,?)";
+        String sql = "INSERT INTO users(email, password_hash, role_id) VALUES(?,?,(SELECT id FROM roles WHERE name = ?))";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPasswordHash());
             ps.setString(3, user.getRole());
-            ps.setBoolean(4, user.isApproved());
-            if (user.getAcademicYear() != null) {
-                ps.setInt(5, user.getAcademicYear());
-            } else {
-                ps.setNull(5, Types.INTEGER);
-            }
-            if (user.getUniversityId() != null) {
-                ps.setInt(6, user.getUniversityId());
-            } else {
-                ps.setNull(6, Types.INTEGER);
-            }
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) user.setId(keys.getInt(1));
@@ -114,11 +98,7 @@ public class UserDAO {
                 rs.getInt("id"),
                 rs.getString("email"),
                 rs.getString("password_hash"),
-                rs.getString("role_name"),
-                rs.getBoolean("is_approved"),
-                (Integer) rs.getObject("academic_year"),
-                (Integer) rs.getObject("university_id"),
-                rs.getString("university_name")
+                rs.getString("role_name")
         );
     }
 }

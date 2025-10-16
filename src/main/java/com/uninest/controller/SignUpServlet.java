@@ -28,6 +28,8 @@ public class SignUpServlet extends HttpServlet {
         String password = req.getParameter("password");
         String confirmPassword = req.getParameter("confirmPassword");
         String roleStr = req.getParameter("role");
+        String academicYearStr = req.getParameter("academicYear");
+        String university = req.getParameter("university");
 
         // Validation
         if (fullName == null || fullName.trim().isEmpty() ||
@@ -77,6 +79,18 @@ public class SignUpServlet extends HttpServlet {
         user.setEmail(email.trim());
         user.setPasswordHash(passwordHash);
         user.setRole(role);
+        // Only students capture academic year + university on signup
+        if (role.equals("student")) {
+            try {
+                if (academicYearStr != null && !academicYearStr.isBlank()) {
+                    int ay = Integer.parseInt(academicYearStr);
+                    if (ay >= 1 && ay <= 4) user.setAcademicYear(ay);
+                }
+            } catch (NumberFormatException ignored) {}
+            if (university != null && !university.isBlank()) {
+                user.setUniversity(university.trim());
+            }
+        }
         
         try {
             userDAO.create(user);
@@ -85,9 +99,13 @@ public class SignUpServlet extends HttpServlet {
             
             // Redirect based on role
             if (role.equals("student")) {
-                resp.sendRedirect(req.getContextPath() + "/student/dashboard");
+                if (user.getOrganizationId() == null) {
+                    resp.sendRedirect(req.getContextPath() + "/student/join-organization");
+                } else {
+                    resp.sendRedirect(req.getContextPath() + "/student/dashboard");
+                }
             } else {
-                resp.sendRedirect(req.getContextPath() + "/moderator/dashboard");
+                resp.sendRedirect(req.getContextPath() + "/moderator/organization/create");
             }
         } catch (RuntimeException e) {
             req.setAttribute("error", "Registration failed. Please try again.");

@@ -2,6 +2,8 @@ package com.uninest.controller;
 
 import com.uninest.model.User;
 import com.uninest.model.dao.UserDAO;
+import com.uninest.model.dao.OrganizationDAO;
+import com.uninest.model.Organization;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,6 +17,7 @@ import java.util.Optional;
 @WebServlet(name = "login", urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
     private final UserDAO userDAO = new UserDAO();
+    private final OrganizationDAO organizationDAO = new OrganizationDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -38,15 +41,26 @@ public class LoginServlet extends HttpServlet {
         }
         User user = userOpt.get();
         req.getSession(true).setAttribute("authUser", user);
-        // Redirect by role
+        // Redirect by role with gating
         if (user.isAdmin()) {
             resp.sendRedirect(req.getContextPath() + "/admin/dashboard");
         } else if (user.isSubjectCoordinator()) {
             resp.sendRedirect(req.getContextPath() + "/coordinator/dashboard");
         } else if (user.isModerator()) {
-            resp.sendRedirect(req.getContextPath() + "/moderator/dashboard");
+            java.util.Optional<Organization> orgOpt = organizationDAO.findByCreatorUserId(user.getId());
+            if (orgOpt.isEmpty()) {
+                resp.sendRedirect(req.getContextPath() + "/moderator/organization/create");
+            } else if (!orgOpt.get().isApproved()) {
+                resp.sendRedirect(req.getContextPath() + "/moderator/organization/waiting");
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/moderator/dashboard");
+            }
         } else {
-            resp.sendRedirect(req.getContextPath() + "/student/dashboard");
+            if (user.getOrganizationId() == null) {
+                resp.sendRedirect(req.getContextPath() + "/student/join-organization");
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/student/dashboard");
+            }
         }
     }
 }

@@ -21,10 +21,22 @@
   </filter-mapping>
   <filter-mapping>
     <filter-name>AuthFilter</filter-name>
+    <url-pattern>/student/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>AuthFilter</filter-name>
+    <url-pattern>/moderator/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>AuthFilter</filter-name>
     <url-pattern>/manager/*</url-pattern>
   </filter-mapping>
   <filter-mapping>
     <filter-name>AuthFilter</filter-name>
     <url-pattern>/staff/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>AuthFilter</filter-name>
+    <url-pattern>/coordinator/*</url-pattern>
   </filter-mapping>
 </web-app>

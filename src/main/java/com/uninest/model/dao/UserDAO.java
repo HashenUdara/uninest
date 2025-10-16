@@ -9,7 +9,7 @@ import java.util.Optional;
 public class UserDAO {
 
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT u.id, u.email, u.password_hash, r.name AS role_name " +
+        String sql = "SELECT u.id, u.email, u.password_hash, u.organization_id, u.academic_year, u.university, r.name AS role_name " +
                 "FROM users u JOIN roles r ON u.role_id = r.id WHERE u.email = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -26,12 +26,16 @@ public class UserDAO {
     }
 
     public void create(User user) {
-        String sql = "INSERT INTO users(email, password_hash, role_id) VALUES(?,?,(SELECT id FROM roles WHERE name = ?))";
+        String sql = "INSERT INTO users(email, password_hash, role_id, organization_id, academic_year, university) " +
+                "VALUES(?,?,(SELECT id FROM roles WHERE name = ?),?,?,?)";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPasswordHash());
             ps.setString(3, user.getRole());
+            if (user.getOrganizationId() == null) ps.setNull(4, Types.INTEGER); else ps.setInt(4, user.getOrganizationId());
+            if (user.getAcademicYear() == null) ps.setNull(5, Types.TINYINT); else ps.setInt(5, user.getAcademicYear());
+            if (user.getUniversity() == null) ps.setNull(6, Types.VARCHAR); else ps.setString(6, user.getUniversity());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) user.setId(keys.getInt(1));
@@ -94,11 +98,29 @@ public class UserDAO {
     }
 
     private User map(ResultSet rs) throws SQLException {
-        return new User(
+        User u = new User(
                 rs.getInt("id"),
                 rs.getString("email"),
                 rs.getString("password_hash"),
                 rs.getString("role_name")
         );
+        int orgId = rs.getInt("organization_id");
+        u.setOrganizationId(rs.wasNull() ? null : orgId);
+        int ay = rs.getInt("academic_year");
+        u.setAcademicYear(rs.wasNull() ? null : ay);
+        u.setUniversity(rs.getString("university"));
+        return u;
+    }
+
+    public boolean assignOrganization(int userId, int organizationId) {
+        String sql = "UPDATE users SET organization_id = ? WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, organizationId);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error assigning organization", e);
+        }
     }
 }

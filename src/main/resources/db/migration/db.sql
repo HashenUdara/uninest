@@ -45,6 +45,36 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
+-- Table: organizations
+-- --------------------------------------------------------
+CREATE TABLE `organizations` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(150) NOT NULL,
+  `description` VARCHAR(500) DEFAULT NULL,
+  `created_by_user_id` INT NOT NULL,
+  `approved` TINYINT(1) NOT NULL DEFAULT 0,
+  `approved_at` TIMESTAMP NULL DEFAULT NULL,
+  `approved_by_user_id` INT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_org_approved` (`approved`),
+  FOREIGN KEY (`created_by_user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`approved_by_user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+-- Alter users: organization membership + profile fields
+-- --------------------------------------------------------
+ALTER TABLE `users`
+  ADD COLUMN `organization_id` INT NULL AFTER `role_id`,
+  ADD COLUMN `academic_year` TINYINT NULL AFTER `organization_id`,
+  ADD COLUMN `university` VARCHAR(150) NULL AFTER `academic_year`;
+
+ALTER TABLE `users`
+  ADD CONSTRAINT `fk_users_organization`
+    FOREIGN KEY (`organization_id`) REFERENCES `organizations`(`id`) ON DELETE SET NULL;
+
+-- --------------------------------------------------------
 -- Optional: password_reset_tokens (for auth system)
 -- --------------------------------------------------------
 CREATE TABLE `password_reset_tokens` (

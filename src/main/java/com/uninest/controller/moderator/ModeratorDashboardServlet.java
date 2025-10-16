@@ -1,15 +1,15 @@
-package com.uninest.controller;
+package com.uninest.controller.moderator;
 
 import com.uninest.model.User;
 import com.uninest.model.dao.OrganizationDAO;
 import jakarta.servlet.ServletException;
-// import jakarta.servlet.annotation.WebServlet; // MOVED
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-// MOVED: use com.uninest.controller.moderator.ModeratorDashboardServlet
+@WebServlet(name = "moderatorDashboard", urlPatterns = "/moderator/dashboard")
 public class ModeratorDashboardServlet extends HttpServlet {
     private final OrganizationDAO organizationDAO = new OrganizationDAO();
     @Override

@@ -1,16 +1,16 @@
-package com.uninest.controller;
+package com.uninest.controller.admin;
 
 import jakarta.servlet.ServletException;
-// import jakarta.servlet.annotation.WebServlet; // MOVED
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-// MOVED: use com.uninest.controller.coordinator.CoordinatorDashboardServlet
-public class CoordinatorDashboardServlet extends HttpServlet {
+@WebServlet(name = "adminDashboard", urlPatterns = "/admin/dashboard")
+public class AdminDashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/views/coordinator/dashboard.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/admin/dashboard.jsp").forward(req, resp);
     }
 }

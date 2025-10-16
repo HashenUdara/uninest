@@ -3,15 +3,6 @@
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 <layout:modern-dashboard title="Student Dashboard" pageTitle="My Dashboard">
-  <jsp:attribute name="name">
-    <dash:nav-item href="${pageContext.request.contextPath}/student/dashboard" icon="home" label="Dashboard" active="${true}" />
-    <dash:nav-item href="#" icon="book" label="My Subjects" active="${false}" />
-    <dash:nav-item href="#" icon="graduation-cap" label="Kuppi Sessions" active="${false}" />
-    <dash:nav-item href="#" icon="file-text" label="My Resources" active="${false}" />
-    <dash:nav-item href="#" icon="bar-chart-3" label="Progress Analysis" active="${false}" />
-    <dash:nav-item href="#" icon="message-square" label="Community" active="${false}" />
-    <dash:nav-item href="#" icon="user" label="Profile Settings" active="${false}" />
-  </jsp:attribute>
   <jsp:attribute name="content">
     <dash:section title="Welcome, ${sessionScope.authUser.email}">
       <p>Access your subjects, resources, and track your learning progress.</p>
@@ -25,5 +16,13 @@
         <dash:card title="Web Development" meta="CS320 - Prof. James Anderson" />
       </dash:grid>
     </dash:section>
-  </jsp:attribute>
+  </jsp:attribute><jsp:body>
+    <dash:nav-item href="${pageContext.request.contextPath}/student/dashboard" icon="home" label="Dashboard" active="${true}" />
+    <dash:nav-item href="#" icon="book" label="My Subjects" />
+    <dash:nav-item href="#" icon="graduation-cap" label="Kuppi Sessions" />
+    <dash:nav-item href="#" icon="file-text" label="My Resources" />
+    <dash:nav-item href="#" icon="bar-chart-3" label="Progress Analysis" />
+    <dash:nav-item href="#" icon="message-square" label="Community" />
+    <dash:nav-item href="#" icon="user" label="Profile Settings" />
+  </jsp:body>
 </layout:modern-dashboard>

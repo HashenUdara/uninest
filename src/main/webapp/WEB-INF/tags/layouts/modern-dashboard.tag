@@ -6,6 +6,7 @@
 <%@ attribute name="active" required="false" %>
 <%@ attribute name="alerts" fragment="true" required="false" %>
 <%@ attribute name="scripts" fragment="true" required="false" %>
+<%@ attribute name="content" fragment="true" required="false" %>
 <%@ attribute name="searchPlaceholder" required="false" %>
 <!DOCTYPE html>
 <html lang="en">

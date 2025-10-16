@@ -14,8 +14,8 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/dashboard.css" />
-  <script src="${pageContext.request.contextPath}/static/scripts/vendor/lucide.js"></script>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/auth.css" />
+  <script src="${pageContext.request.contextPath}/static/vendor/lucide.js"></script>
 </head>
 <body class="u-bg-surface">
   <button

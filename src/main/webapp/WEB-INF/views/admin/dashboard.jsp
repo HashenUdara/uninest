@@ -7,6 +7,7 @@
     <p>Welcome, <strong>${sessionScope.authUser.email}</strong> (role: ${sessionScope.authUser.role})</p>
     <p>As an admin, you have full system privileges including user and content management.</p>
     <ul>
+      <li><a class="btn" href="${pageContext.request.contextPath}/admin/organizations">Manage Organizations</a></li>
       <li><a class="btn" href="${pageContext.request.contextPath}/students">Manage Students</a></li>
       <li><form style="display:inline;" method="post" action="${pageContext.request.contextPath}/logout"><button class="btn danger" type="submit">Logout</button></form></li>
     </ul>

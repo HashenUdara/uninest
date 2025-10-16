@@ -1,0 +1,32 @@
+<%-- Reusable Card Component --%>
+<%-- Usage: <jsp:include page="components/card.jspf">
+     <jsp:param name="title" value="Card Title" />
+     <jsp:param name="meta" value="Card Meta" />
+     <jsp:param name="content" value="Card Content" />
+   </jsp:include> --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<article class="c-card">
+  <c:if test="${not empty param.media}">
+    <div class="c-card__media" style="background: ${param.mediaBg};">
+      <c:if test="${not empty param.mediaIcon}">
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 2rem; color: var(--color-text-muted);">
+          <i data-lucide="${param.mediaIcon}"></i>
+        </div>
+      </c:if>
+    </div>
+  </c:if>
+  <div class="c-card__body">
+    <h3 class="c-card__title">${param.title}</h3>
+    <c:if test="${not empty param.meta}">
+      <p class="c-card__meta">${param.meta}</p>
+    </c:if>
+    <c:if test="${not empty param.content}">
+      <p style="margin: var(--space-2) 0;">${param.content}</p>
+    </c:if>
+    <c:if test="${not empty param.actionUrl}">
+      <div style="margin-top: var(--space-3);">
+        <a href="${param.actionUrl}" class="c-btn c-btn--secondary c-btn--sm">${param.actionText}</a>
+      </div>
+    </c:if>
+  </div>
+</article>

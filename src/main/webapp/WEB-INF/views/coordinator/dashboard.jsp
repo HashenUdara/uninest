@@ -1,14 +1,26 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
-<layout:page title="Subject Coordinator Dashboard" active="coordinator">
-  <jsp:body>
-    <h1>Subject Coordinator Dashboard</h1>
-    <p>Welcome, <strong>${sessionScope.authUser.email}</strong> (role: ${sessionScope.authUser.role})</p>
+<%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
+<layout:modern-dashboard title="Subject Coordinator Dashboard" pageTitle="Coordinator Dashboard">
+  <jsp:attribute name="name">
+    <dash:nav-item href="${pageContext.request.contextPath}/coordinator/dashboard" icon="home" label="Dashboard" active="${true}" />
+    <dash:nav-item href="#" icon="book-open" label="My Subjects" active="${false}" />
+    <dash:nav-item href="#" icon="folder" label="Topics" active="${false}" />
+    <dash:nav-item href="#" icon="upload" label="Upload Resources" active="${false}" />
+    <dash:nav-item href="#" icon="bar-chart" label="Analytics" active="${false}" />
+    <dash:nav-item href="#" icon="settings" label="Settings" active="${false}" />
+  </jsp:attribute>
+  <jsp:attribute name="content">
+    <h2 class="c-section-title">Welcome, ${sessionScope.authUser.email}</h2>
     <p>As a subject coordinator, you can manage subjects, topics, and upload resources.</p>
-    <ul>
-      <li><a class="btn" href="${pageContext.request.contextPath}/students">Manage Students</a></li>
-      <li><form style="display:inline;" method="post" action="${pageContext.request.contextPath}/logout"><button class="btn danger" type="submit">Logout</button></form></li>
-    </ul>
-  </jsp:body>
-</layout:page>
+    
+    <h2 class="c-section-title">My Subjects</h2>
+    <div class="o-grid o-grid--cards">
+      <dash:card title="Data Structures" meta="CS204 - 45 students enrolled" />
+      <dash:card title="Algorithms" meta="CS205 - 38 students enrolled" />
+      <dash:card title="Database Systems" meta="CS301 - 52 students enrolled" />
+      <dash:card title="Software Engineering" meta="CS401 - 41 students enrolled" />
+    </div>
+  </jsp:attribute>
+</layout:modern-dashboard>

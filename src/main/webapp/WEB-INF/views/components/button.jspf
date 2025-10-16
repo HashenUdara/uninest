@@ -1,0 +1,28 @@
+<%-- Reusable Button Component --%>
+<%-- Usage: <jsp:include page="components/button.jspf">
+     <jsp:param name="type" value="button|submit" />
+     <jsp:param name="variant" value="primary|secondary|ghost" />
+     <jsp:param name="size" value="sm|md|lg" />
+     <jsp:param name="text" value="Button Text" />
+     <jsp:param name="url" value="/action" />
+     <jsp:param name="icon" value="plus" />
+   </jsp:include> --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:choose>
+  <c:when test="${not empty param.url}">
+    <a href="${param.url}" class="c-btn c-btn--${param.variant} c-btn--${param.size}">
+      <c:if test="${not empty param.icon}">
+        <i data-lucide="${param.icon}" style="width: 16px; height: 16px;"></i>
+      </c:if>
+      ${param.text}
+    </a>
+  </c:when>
+  <c:otherwise>
+    <button type="${param.type}" class="c-btn c-btn--${param.variant} c-btn--${param.size}">
+      <c:if test="${not empty param.icon}">
+        <i data-lucide="${param.icon}" style="width: 16px; height: 16px;"></i>
+      </c:if>
+      ${param.text}
+    </button>
+  </c:otherwise>
+</c:choose>

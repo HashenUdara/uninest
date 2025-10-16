@@ -1,0 +1,36 @@
+<%-- Reusable Dashboard Grid Component --%>
+<%-- Usage: <jsp:include page="components/dashboard-grid.jspf">
+     <jsp:param name="title" value="Dashboard Title" />
+     <jsp:param name="subtitle" value="Dashboard Subtitle" />
+     <jsp:param name="icon" value="home" />
+     <jsp:param name="cards" value="card1,card2,card3" />
+   </jsp:include> --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<div class="c-section">
+  <div class="c-state">
+    <div class="c-state__icon">
+      <i data-lucide="${param.icon}"></i>
+    </div>
+    <div class="c-state__body">
+      <h2 class="c-state__title">${param.title}</h2>
+      <c:if test="${not empty param.subtitle}">
+        <p class="c-state__text">${param.subtitle}</p>
+      </c:if>
+    </div>
+  </div>
+  
+  <div class="o-grid o-grid--cards">
+    <c:forEach items="${param.cards}" var="card" varStatus="status">
+      <c:set var="cardData" value="${requestScope[card]}" />
+      <jsp:include page="components/card.jspf">
+        <jsp:param name="title" value="${cardData.title}" />
+        <jsp:param name="meta" value="${cardData.meta}" />
+        <jsp:param name="content" value="${cardData.content}" />
+        <jsp:param name="actionUrl" value="${cardData.actionUrl}" />
+        <jsp:param name="actionText" value="${cardData.actionText}" />
+        <jsp:param name="mediaIcon" value="${cardData.mediaIcon}" />
+        <jsp:param name="mediaBg" value="${cardData.mediaBg}" />
+      </jsp:include>
+    </c:forEach>
+  </div>
+</div>

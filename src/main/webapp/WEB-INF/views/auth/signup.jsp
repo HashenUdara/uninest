@@ -108,6 +108,40 @@
       />
       <p class="c-field__error" data-error-for="email" aria-live="polite"></p>
     </div>
+    
+    <div class="c-field">
+      <label for="academicYear" class="c-field__label">Academic Year</label>
+      <select
+        id="academicYear"
+        name="academicYear"
+        class="c-field__input"
+        required
+      >
+        <option value="">Select your year</option>
+        <option value="1" ${param.academicYear == '1' ? 'selected' : ''}>1st Year</option>
+        <option value="2" ${param.academicYear == '2' ? 'selected' : ''}>2nd Year</option>
+        <option value="3" ${param.academicYear == '3' ? 'selected' : ''}>3rd Year</option>
+        <option value="4" ${param.academicYear == '4' ? 'selected' : ''}>4th Year</option>
+      </select>
+      <p class="c-field__error" data-error-for="academicYear" aria-live="polite"></p>
+    </div>
+    
+    <div class="c-field">
+      <label for="university" class="c-field__label">University</label>
+      <select
+        id="university"
+        name="university"
+        class="c-field__input"
+        required
+      >
+        <option value="">Select your university</option>
+        <c:forEach items="${universities}" var="uni">
+          <option value="${uni.id}" ${param.university == uni.id ? 'selected' : ''}>${uni.name}</option>
+        </c:forEach>
+      </select>
+      <p class="c-field__error" data-error-for="university" aria-live="polite"></p>
+    </div>
+    
     <div class="c-field">
       <label for="password" class="c-field__label">Password</label>
       <input

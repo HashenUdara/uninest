@@ -1,17 +1,19 @@
-package com.uninest.controller;
+package com.uninest.controller.auth;
 
 import com.uninest.model.dao.UserDAO;
 import com.uninest.model.User;
+import com.uninest.util.MailUtil;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.Optional;
-import com.uninest.util.MailUtil;
-import jakarta.mail.MessagingException;
 
-// MOVED: use com.uninest.controller.auth.ForgotPasswordRequestServlet
+@WebServlet(name = "forgotPasswordRequest", urlPatterns = "/forgot-password")
 public class ForgotPasswordRequestServlet extends HttpServlet {
     private final UserDAO userDAO = new UserDAO();
 

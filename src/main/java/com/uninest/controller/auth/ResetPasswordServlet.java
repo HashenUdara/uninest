@@ -1,15 +1,17 @@
-package com.uninest.controller;
+package com.uninest.controller.auth;
 
 import com.uninest.model.dao.UserDAO;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.mindrot.jbcrypt.BCrypt;
+
 import java.io.IOException;
 import java.util.Optional;
 
-// MOVED: use com.uninest.controller.auth.ResetPasswordServlet
+@WebServlet(name = "resetPassword", urlPatterns = "/reset-password")
 public class ResetPasswordServlet extends HttpServlet {
     private final UserDAO userDAO = new UserDAO();
 

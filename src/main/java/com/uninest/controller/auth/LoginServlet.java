@@ -1,10 +1,11 @@
-package com.uninest.controller;
+package com.uninest.controller.auth;
 
 import com.uninest.model.User;
 import com.uninest.model.dao.UserDAO;
 import com.uninest.model.dao.OrganizationDAO;
 import com.uninest.model.Organization;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,7 +14,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.io.IOException;
 import java.util.Optional;
 
-// MOVED: use com.uninest.controller.auth.LoginServlet
+@WebServlet(name = "login", urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
     private final UserDAO userDAO = new UserDAO();
     private final OrganizationDAO organizationDAO = new OrganizationDAO();

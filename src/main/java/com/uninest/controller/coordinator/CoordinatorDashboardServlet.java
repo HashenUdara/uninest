@@ -1,13 +1,13 @@
-package com.uninest.controller;
+package com.uninest.controller.coordinator;
 
 import jakarta.servlet.ServletException;
-// import jakarta.servlet.annotation.WebServlet; // MOVED
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-// MOVED: use com.uninest.controller.coordinator.CoordinatorDashboardServlet
+@WebServlet(name = "coordinatorDashboard", urlPatterns = "/coordinator/dashboard")
 public class CoordinatorDashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

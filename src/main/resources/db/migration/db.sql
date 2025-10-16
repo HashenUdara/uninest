@@ -1,9 +1,3 @@
--- ================================================
--- Clean SQL Schema for Auth & Roles
--- ================================================
--- Database: uninest_auth
--- Date: Oct 15, 2025
--- ================================================
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;

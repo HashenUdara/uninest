@@ -44,7 +44,7 @@ CREATE TABLE `users` (
 CREATE TABLE `organizations` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(150) NOT NULL,
-  `description` VARCHAR(500) DEFAULT NULL,
+  `description` VARCHAR(1024) DEFAULT NULL,
   `created_by_user_id` INT NOT NULL,
   `status` VARCHAR(20) NOT NULL DEFAULT 'pending',
   `approved` TINYINT(1) NOT NULL DEFAULT 0,

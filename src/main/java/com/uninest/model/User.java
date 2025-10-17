@@ -5,7 +5,7 @@ public class User {
     private String email;
     private String passwordHash;
     private String roleName; // Role name as string (student, subject_coordinator, moderator, admin)
-    private Integer organizationId; // null until student joins or moderator's org approved
+    private Integer communityId; // null until student joins or moderator's community approved
     private Integer academicYear; // 1..4
     private String university; // Sri Lankan university name
 
@@ -40,8 +40,8 @@ public class User {
         return r != null && roleName != null && roleName.equalsIgnoreCase(r); 
     }
 
-    public Integer getOrganizationId() { return organizationId; }
-    public void setOrganizationId(Integer organizationId) { this.organizationId = organizationId; }
+    public Integer getCommunityId() { return communityId; }
+    public void setCommunityId(Integer communityId) { this.communityId = communityId; }
 
     public Integer getAcademicYear() { return academicYear; }
     public void setAcademicYear(Integer academicYear) { this.academicYear = academicYear; }

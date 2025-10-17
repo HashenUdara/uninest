@@ -99,13 +99,13 @@ public class SignUpServlet extends HttpServlet {
             
             // Redirect based on role
             if (role.equals("student")) {
-                if (user.getOrganizationId() == null) {
-                    resp.sendRedirect(req.getContextPath() + "/student/join-organization");
+                if (user.getCommunityId() == null) {
+                    resp.sendRedirect(req.getContextPath() + "/student/join-community");
                 } else {
                     resp.sendRedirect(req.getContextPath() + "/student/dashboard");
                 }
             } else {
-                resp.sendRedirect(req.getContextPath() + "/moderator/organization/create");
+                resp.sendRedirect(req.getContextPath() + "/moderator/community/create");
             }
         } catch (RuntimeException e) {
             req.setAttribute("error", "Registration failed. Please try again.");

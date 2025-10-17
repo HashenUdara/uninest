@@ -3,7 +3,7 @@
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-<layout:dashboard title="Create Organization">
+<layout:admin-dashboard title="Create Organization" active="organizations">
   <jsp:attribute name="content">
     <header class="c-page__header">
       <nav class="c-breadcrumbs" aria-label="Breadcrumb">
@@ -49,10 +49,4 @@
       </form>
     </section>
   </jsp:attribute>
-  <jsp:body>
-    <dash:nav-item href="${pageContext.request.contextPath}/admin/dashboard" icon="home" label="Dashboard" />
-    <dash:nav-item href="${pageContext.request.contextPath}/students" icon="users" label="Manage Students" />
-    <dash:nav-item href="${pageContext.request.contextPath}/admin/organizations" icon="building" label="Organizations" active="${true}" />
-    <dash:nav-item href="#" icon="settings" label="Settings" />
-  </jsp:body>
-</layout:dashboard>
+</layout:admin-dashboard>

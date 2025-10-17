@@ -7,6 +7,7 @@ public class Organization {
     private String title;
     private String description;
     private int createdByUserId;
+    private String status; // pending, approved, rejected
     private boolean approved;
     private Timestamp approvedAt;
     private Integer approvedByUserId;
@@ -22,6 +23,9 @@ public class Organization {
 
     public int getCreatedByUserId() { return createdByUserId; }
     public void setCreatedByUserId(int createdByUserId) { this.createdByUserId = createdByUserId; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public boolean isApproved() { return approved; }
     public void setApproved(boolean approved) { this.approved = approved; }

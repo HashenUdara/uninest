@@ -164,3 +164,115 @@
       .forEach((f) => attachValidation(f));
   });
 })();
+
+/* ===== Organization Management Functions ===== */
+
+// Initialize organization avatars and counts
+function initOrgAvatars() {
+  function avatarColorFromChar(ch) {
+    const A = "A".charCodeAt(0);
+    const idx = Math.max(0, (ch.toUpperCase().charCodeAt(0) - A) % 26);
+    const hue = Math.round((360 / 26) * idx);
+    const bg = `hsl(${hue} 85% 92%)`;
+    const fg = `hsl(${hue} 60% 35%)`;
+    return { bg, fg };
+  }
+
+  function firstAlpha(name) {
+    if (!name) return "U";
+    const normalized = name.normalize("NFD").replace(/\p{Diacritic}+/gu, "");
+    const match = normalized.match(/[A-Za-z]/);
+    return match ? match[0].toUpperCase() : "U";
+  }
+
+  document.querySelectorAll("table.c-table[data-org-table]").forEach((table) => {
+    const countEl = table.closest("section")?.querySelector(".js-org-count");
+    const rows = table.querySelectorAll("tbody tr");
+    if (countEl) countEl.textContent = String(rows.length);
+    
+    table.querySelectorAll(".c-org-cell").forEach((row) => {
+      const titleEl = row.querySelector(".c-org-cell__title");
+      const avatarEl = row.querySelector(".c-org-cell__avatar");
+      if (!titleEl || !avatarEl) return;
+      const title = titleEl.textContent.trim();
+      const first = firstAlpha(title);
+      const { bg, fg } = avatarColorFromChar(first);
+      avatarEl.style.setProperty("--avatar-bg", bg);
+      avatarEl.style.setProperty("--avatar-fg", fg);
+      avatarEl.textContent = first;
+    });
+  });
+}
+
+// Initialize organization confirm modals
+function initOrgConfirm() {
+  const modal = document.getElementById("confirm-modal");
+  if (!modal) return;
+
+  let pendingAction = null;
+  let pendingForm = null;
+
+  document.addEventListener("click", (e) => {
+    const approve = e.target.closest && e.target.closest(".js-org-approve");
+    const reject = e.target.closest && e.target.closest(".js-org-reject");
+    const del = e.target.closest && e.target.closest(".js-org-delete");
+    const trigger = approve || reject || del;
+    
+    if (!trigger) return;
+    
+    e.preventDefault();
+    
+    const titleText = approve
+      ? "Approve organization"
+      : reject
+      ? "Reject organization"
+      : "Delete organization";
+    
+    const bodyText = approve
+      ? "Are you sure you want to approve this organization?"
+      : reject
+      ? "Are you sure you want to reject this organization?"
+      : "Are you sure you want to delete this organization? This action cannot be undone.";
+    
+    const title = modal.querySelector("#confirm-title");
+    const body = modal.querySelector(".c-modal__body p");
+    if (title) title.textContent = titleText;
+    if (body) body.textContent = bodyText;
+    
+    pendingForm = trigger.closest("form");
+    
+    modal.hidden = false;
+    modal.querySelector(".js-confirm-action")?.focus();
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target.matches("[data-close]")) {
+      modal.hidden = true;
+      pendingForm = null;
+    }
+  });
+
+  const confirmBtn = modal.querySelector(".js-confirm-action");
+  if (confirmBtn) {
+    confirmBtn.addEventListener("click", () => {
+      if (pendingForm) {
+        pendingForm.submit();
+      }
+      modal.hidden = true;
+      pendingForm = null;
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (!modal.hidden && e.key === "Escape") {
+      modal.hidden = true;
+      pendingForm = null;
+    }
+  });
+}
+
+// Initialize on DOM ready
+document.addEventListener("DOMContentLoaded", function() {
+  initOrgAvatars();
+  initOrgConfirm();
+});

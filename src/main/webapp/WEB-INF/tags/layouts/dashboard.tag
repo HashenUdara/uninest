@@ -13,11 +13,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>${not empty title ? title : 'Dashboard'} • UniNest</title>
+  <title>${not empty title ? title : 'Dashboard'} • Uninest</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/static/dashboard.css" />
@@ -66,28 +66,7 @@
           <jsp:invoke fragment="alerts" />
         </div>
       </c:if>
-      <header class="c-page__header">
-        <c:if test="${not empty breadcrumb}">
-          <nav class="c-breadcrumbs" aria-label="Breadcrumb">
-            <c:forEach items="${breadcrumb}" var="crumb" varStatus="status">
-              <c:if test="${status.index > 0}">
-                <span class="c-breadcrumbs__sep">/</span>
-              </c:if>
-              <c:choose>
-                <c:when test="${not empty crumb.url}">
-                  <a href="${crumb.url}">${crumb.label}</a>
-                </c:when>
-                <c:otherwise>
-                  <span aria-current="page">${crumb.label}</span>
-                </c:otherwise>
-              </c:choose>
-            </c:forEach>
-          </nav>
-        </c:if>
-        <c:if test="${not empty pageTitle}">
-          <h1 class="c-page__title">${pageTitle}</h1>
-        </c:if>
-      </header>
+      
 
       <!-- Page content injected here -->
       <jsp:doBody />

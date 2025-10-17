@@ -3,47 +3,46 @@
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-<layout:admin-dashboard pageTitle="Edit Organization" activePage="organizations">
+<layout:admin-dashboard pageTitle="Create Community" activePage="communitys">
   <header class="c-page__header">
       <nav class="c-breadcrumbs" aria-label="Breadcrumb">
         <a href="${pageContext.request.contextPath}/admin/dashboard">Admin</a>
         <span class="c-breadcrumbs__sep">/</span>
-        <a href="${pageContext.request.contextPath}/admin/organizations">Organizations</a>
+        <a href="${pageContext.request.contextPath}/admin/communitys">Communitys</a>
         <span class="c-breadcrumbs__sep">/</span>
-        <span aria-current="page">Edit</span>
+        <span aria-current="page">Create</span>
       </nav>
       <div class="c-page__titlebar">
         <div>
-          <h1 class="c-page__title">Edit organization</h1>
-          <p class="c-page__subtitle u-text-muted">Update organization details.</p>
+          <h1 class="c-page__title">Create community</h1>
+          <p class="c-page__subtitle u-text-muted">Add a new community.</p>
         </div>
-        <a class="c-btn c-btn--ghost" href="${pageContext.request.contextPath}/admin/organizations?status=${organization.status}">
-          <i data-lucide="arrow-left"></i> Back to Organizations
+        <a class="c-btn c-btn--ghost" href="${pageContext.request.contextPath}/admin/communitys">
+          <i data-lucide="arrow-left"></i> Back to Communitys
         </a>
       </div>
     </header>
 
     <section>
-      <form class="c-form" action="${pageContext.request.contextPath}/admin/organizations/edit" method="post">
-        <input type="hidden" name="id" value="${organization.id}" />
+      <form class="c-form" action="${pageContext.request.contextPath}/admin/communitys/create" method="post">
         <div class="c-form-card">
           <div class="c-field">
             <label class="c-field__label" for="org-title">Title</label>
             <input class="c-field__input" id="org-title" name="title" type="text" 
-                   value="${organization.title}" placeholder="e.g., Northshore Group" required />
+                   placeholder="e.g., Northshore Group" required />
             <div class="c-field__error"></div>
           </div>
 
           <div class="c-field">
             <label class="c-field__label" for="org-desc">Description</label>
             <textarea class="c-field__input" id="org-desc" name="description" rows="4" 
-                      placeholder="Brief description (what does this organization do?)" required>${organization.description}</textarea>
+                      placeholder="Brief description (what does this community do?)" required></textarea>
             <div class="c-field__error"></div>
           </div>
 
           <div class="c-form-actions">
-            <a class="c-btn c-btn--ghost" href="${pageContext.request.contextPath}/admin/organizations?status=${organization.status}">Cancel</a>
-            <button type="submit" class="c-btn">Update Organization</button>
+            <a class="c-btn c-btn--ghost" href="${pageContext.request.contextPath}/admin/communitys">Cancel</a>
+            <button type="submit" class="c-btn">Create Community</button>
           </div>
         </div>
       </form>

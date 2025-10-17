@@ -21,10 +21,10 @@
       label="Manage Students" 
       active="${activePage eq 'students'}" />
     <dash:nav-item 
-      href="${pageContext.request.contextPath}/admin/organizations" 
+      href="${pageContext.request.contextPath}/admin/communities" 
       icon="building" 
-      label="Organizations" 
-      active="${activePage eq 'organizations'}" />
+      label="Communities" 
+      active="${activePage eq 'communities'}" />
     <dash:nav-item 
       href="#" 
       icon="settings" 

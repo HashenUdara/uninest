@@ -129,9 +129,9 @@ Each layout:
 **Modified Files (11):**
 - `src/main/webapp/WEB-INF/tags/layouts/dashboard.tag`
 - `src/main/webapp/WEB-INF/views/admin/dashboard.jsp`
-- `src/main/webapp/WEB-INF/views/admin/organizations.jsp`
-- `src/main/webapp/WEB-INF/views/admin/organization-create.jsp`
-- `src/main/webapp/WEB-INF/views/admin/organization-edit.jsp`
+- `src/main/webapp/WEB-INF/views/admin/communities.jsp`
+- `src/main/webapp/WEB-INF/views/admin/community-create.jsp`
+- `src/main/webapp/WEB-INF/views/admin/community-edit.jsp`
 - `src/main/webapp/WEB-INF/views/student/dashboard.jsp`
 - `src/main/webapp/WEB-INF/views/moderator/dashboard.jsp`
 - `src/main/webapp/WEB-INF/views/coordinator/dashboard.jsp`

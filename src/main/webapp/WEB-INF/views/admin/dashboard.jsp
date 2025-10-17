@@ -10,7 +10,7 @@
   <dash:section title="Quick Actions">
     <dash:grid>
       <dash:card title="Total Students" meta="Manage all students in the system" />
-      <dash:card title="Organizations" meta="View and manage organizations" />
+      <dash:card title="Communities" meta="View and manage communities" />
       <dash:card title="System Settings" meta="Configure system parameters" />
       <dash:card title="Reports" meta="View system reports and analytics" />
     </dash:grid>

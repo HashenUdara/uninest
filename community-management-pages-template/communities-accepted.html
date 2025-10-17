@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Organizations • Accepted • UniNest</title>
+    <title>Communitys • Accepted • UniNest</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -62,36 +62,36 @@
           <nav class="c-breadcrumbs" aria-label="Breadcrumb">
             <a href="#">Admin</a>
             <span class="c-breadcrumbs__sep">/</span>
-            <span aria-current="page">Organizations</span>
+            <span aria-current="page">Communitys</span>
           </nav>
           <div class="c-page__titlebar">
             <div>
-              <h1 class="c-page__title">Organizations</h1>
+              <h1 class="c-page__title">Communitys</h1>
               <p class="c-page__subtitle u-text-muted">
-                Accepted organizations.
+                Accepted communitys.
               </p>
             </div>
-            <a class="c-btn" href="organization-create.html">
-              <i data-lucide="plus"></i> Create Organization
+            <a class="c-btn" href="community-create.html">
+              <i data-lucide="plus"></i> Create Community
             </a>
           </div>
-          <div class="c-tabs" role="tablist" aria-label="Organization tabs">
+          <div class="c-tabs" role="tablist" aria-label="Community tabs">
             <a
-              href="organizations-pending.html"
+              href="communitys-pending.html"
               class="c-tabs__link"
               role="tab"
               aria-selected="false"
               >Pending</a
             >
             <a
-              href="organizations-accepted.html"
+              href="communitys-accepted.html"
               class="c-tabs__link is-active"
               role="tab"
               aria-selected="true"
               >Accepted</a
             >
             <a
-              href="organizations-rejected.html"
+              href="communitys-rejected.html"
               class="c-tabs__link"
               role="tab"
               aria-selected="false"
@@ -104,21 +104,21 @@
           <div class="c-table-toolbar">
             <div class="c-table-toolbar__left">
               <span class="u-text-muted"
-                ><span class="js-org-count">0</span> organizations</span
+                ><span class="js-comm-count">0</span> communitys</span
               >
             </div>
           </div>
           <div class="c-table-wrap">
             <table
               class="c-table c-table--sticky"
-              aria-label="Accepted organizations"
-              data-org-table
+              aria-label="Accepted communitys"
+              data-comm-table
             >
               <thead>
                 <tr>
                   <th aria-sort="none">
                     <button class="c-table-sort js-sort" data-key="title">
-                      Organization<span
+                      Community<span
                         class="c-sort-indicator"
                         aria-hidden="true"
                       ></span>
@@ -139,15 +139,15 @@
               <tbody>
                 <tr>
                   <td>
-                    <div class="c-org-cell">
+                    <div class="c-comm-cell">
                       <span
-                        class="c-org-cell__avatar"
+                        class="c-comm-cell__avatar"
                         aria-hidden="true"
                       ></span>
-                      <div class="c-org-cell__meta">
-                        <span class="c-org-cell__title">Summit Org</span>
-                        <span class="c-org-cell__sub u-text-muted"
-                          >ID: O-30001</span
+                      <div class="c-comm-cell__meta">
+                        <span class="c-comm-cell__title">Summit Org</span>
+                        <span class="c-comm-cell__sub u-text-muted"
+                          >ID: C-30001</span
                         >
                       </div>
                     </div>
@@ -166,7 +166,7 @@
                   <td class="u-text-right">
                     <div class="c-table-actions">
                       <button
-                        class="c-btn c-btn--sm c-btn--ghost js-org-reject"
+                        class="c-btn c-btn--sm c-btn--ghost js-comm-reject"
                         aria-label="Reject"
                       >
                         Reject
@@ -175,7 +175,7 @@
                         <i data-lucide="pencil"></i>
                       </a>
                       <button
-                        class="c-icon-btn js-org-delete"
+                        class="c-icon-btn js-comm-delete"
                         aria-label="Delete"
                       >
                         <i data-lucide="trash"></i>
@@ -185,17 +185,17 @@
                 </tr>
                 <tr>
                   <td>
-                    <div class="c-org-cell">
+                    <div class="c-comm-cell">
                       <span
-                        class="c-org-cell__avatar"
+                        class="c-comm-cell__avatar"
                         aria-hidden="true"
                       ></span>
-                      <div class="c-org-cell__meta">
-                        <span class="c-org-cell__title"
+                      <div class="c-comm-cell__meta">
+                        <span class="c-comm-cell__title"
                           >Crimson Valley Org</span
                         >
-                        <span class="c-org-cell__sub u-text-muted"
-                          >ID: O-30002</span
+                        <span class="c-comm-cell__sub u-text-muted"
+                          >ID: C-30002</span
                         >
                       </div>
                     </div>
@@ -214,7 +214,7 @@
                   <td class="u-text-right">
                     <div class="c-table-actions">
                       <button
-                        class="c-btn c-btn--sm c-btn--ghost js-org-reject"
+                        class="c-btn c-btn--sm c-btn--ghost js-comm-reject"
                         aria-label="Reject"
                       >
                         Reject
@@ -223,7 +223,7 @@
                         <i data-lucide="pencil"></i>
                       </a>
                       <button
-                        class="c-icon-btn js-org-delete"
+                        class="c-icon-btn js-comm-delete"
                         aria-label="Delete"
                       >
                         <i data-lucide="trash"></i>

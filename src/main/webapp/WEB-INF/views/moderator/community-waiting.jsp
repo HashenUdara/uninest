@@ -7,11 +7,11 @@
       <i data-lucide="hourglass"></i>
     </div>
     <div class="c-state__body">
-      <h1 class="c-state__title">Your organization is pending approval</h1>
+      <h1 class="c-state__title">Your community is pending approval</h1>
       <p class="c-state__text">
         <c:choose>
-          <c:when test="${not empty organization}">
-            "${organization.title}" has been submitted. An admin will review it shortly.
+          <c:when test="${not empty community}">
+            "${community.title}" has been submitted. An admin will review it shortly.
           </c:when>
           <c:otherwise>
             Your request is being processed. Please wait for admin approval.

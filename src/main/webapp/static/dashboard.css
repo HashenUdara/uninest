@@ -884,3 +884,212 @@ a:hover {
     grid-template-columns: 1fr;
   }
 }
+/* ===== Additional Organization Management Styles ===== */
+
+/* Org cell (similar to user cell, avatar with md radius) */
+.c-org-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.c-org-cell__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--avatar-bg, #e6e6e6);
+  color: var(--avatar-fg, var(--color-brand));
+  display: grid;
+  place-items: center;
+  font-weight: var(--fw-semibold);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+.c-org-cell__meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.c-org-cell__title {
+  font-weight: var(--fw-medium);
+}
+.c-org-cell__sub {
+  font-size: var(--fs-xs);
+}
+
+/* Members count badge */
+.c-members {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+.c-members svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Modal */
+.c-modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+.c-modal[hidden] {
+  display: none;
+}
+.c-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+.c-modal__dialog {
+  position: relative;
+  width: min(520px, 92vw);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: var(--space-6);
+  z-index: 1001;
+}
+.c-modal__header {
+  margin-bottom: var(--space-4);
+}
+.c-modal__header h3 {
+  margin: 0;
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+}
+.c-modal__body {
+  margin-bottom: var(--space-6);
+}
+.c-modal__footer {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+}
+
+/* Toast notifications */
+.c-toasts {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  z-index: 2000;
+}
+.c-toast {
+  background: var(--color-text);
+  color: var(--color-white);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: var(--fs-sm);
+  animation: slideIn 0.3s ease-out;
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Icon button */
+.c-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.c-icon-btn:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+.c-icon-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Table actions group */
+.c-table-actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Form card */
+.c-form-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  max-width: 640px;
+}
+
+/* Form actions */
+.c-form-actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  margin-top: var(--space-6);
+}
+
+/* Text utilities */
+.u-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Button variants */
+.c-btn--sm {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--fs-xs);
+}
+.c-btn--ghost {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+.c-btn--ghost:hover {
+  background: var(--color-surface);
+  text-decoration: none;
+}
+.c-btn--danger {
+  background: var(--color-danger);
+  color: var(--color-white);
+}
+.c-btn--danger:hover {
+  background: #b82319;
+}
+
+/* Table toolbar */
+.c-table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+.c-table-toolbar__left {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+}

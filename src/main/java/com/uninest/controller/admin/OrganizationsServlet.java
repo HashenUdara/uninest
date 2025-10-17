@@ -17,8 +17,14 @@ public class OrganizationsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Organization> orgs = organizationDAO.findAll();
+        String status = req.getParameter("status");
+        if (status == null || status.isEmpty()) {
+            status = "pending";
+        }
+        
+        List<Organization> orgs = organizationDAO.findByStatus(status);
         req.setAttribute("organizations", orgs);
+        req.setAttribute("currentStatus", status);
         req.getRequestDispatcher("/WEB-INF/views/admin/organizations.jsp").forward(req, resp);
     }
 }

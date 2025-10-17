@@ -46,11 +46,13 @@ CREATE TABLE `organizations` (
   `title` VARCHAR(150) NOT NULL,
   `description` VARCHAR(500) DEFAULT NULL,
   `created_by_user_id` INT NOT NULL,
+  `status` VARCHAR(20) NOT NULL DEFAULT 'pending',
   `approved` TINYINT(1) NOT NULL DEFAULT 0,
   `approved_at` TIMESTAMP NULL DEFAULT NULL,
   `approved_by_user_id` INT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  INDEX `idx_org_status` (`status`),
   INDEX `idx_org_approved` (`approved`),
   FOREIGN KEY (`created_by_user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`approved_by_user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL

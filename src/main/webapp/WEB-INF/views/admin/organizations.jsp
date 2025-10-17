@@ -3,8 +3,7 @@
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-<layout:dashboard title="Organizations">
-  <jsp:attribute name="content">
+<layout:admin-dashboard pageTitle="Organizations" activePage="organizations">
     <header class="c-page__header">
       <nav class="c-breadcrumbs" aria-label="Breadcrumb">
         <a href="${pageContext.request.contextPath}/admin/dashboard">Admin</a>
@@ -135,11 +134,4 @@
     </div>
 
     <div class="c-toasts" aria-live="polite" aria-atomic="true"></div>
-  </jsp:attribute>
-  <jsp:body>
-    <dash:nav-item href="${pageContext.request.contextPath}/admin/dashboard" icon="home" label="Dashboard" />
-    <dash:nav-item href="${pageContext.request.contextPath}/students" icon="users" label="Manage Students" />
-    <dash:nav-item href="${pageContext.request.contextPath}/admin/organizations" icon="building" label="Organizations" active="${true}" />
-    <dash:nav-item href="#" icon="settings" label="Settings" />
-  </jsp:body>
-</layout:dashboard>
+</layout:admin-dashboard>

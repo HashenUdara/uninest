@@ -3,9 +3,8 @@
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-<layout:dashboard title="Edit Organization">
-  <jsp:attribute name="content">
-    <header class="c-page__header">
+<layout:admin-dashboard pageTitle="Edit Organization" activePage="organizations">
+  <header class="c-page__header">
       <nav class="c-breadcrumbs" aria-label="Breadcrumb">
         <a href="${pageContext.request.contextPath}/admin/dashboard">Admin</a>
         <span class="c-breadcrumbs__sep">/</span>
@@ -49,11 +48,4 @@
         </div>
       </form>
     </section>
-  </jsp:attribute>
-  <jsp:body>
-    <dash:nav-item href="${pageContext.request.contextPath}/admin/dashboard" icon="home" label="Dashboard" />
-    <dash:nav-item href="${pageContext.request.contextPath}/students" icon="users" label="Manage Students" />
-    <dash:nav-item href="${pageContext.request.contextPath}/admin/organizations" icon="building" label="Organizations" active="${true}" />
-    <dash:nav-item href="#" icon="settings" label="Settings" />
-  </jsp:body>
-</layout:dashboard>
+</layout:admin-dashboard>

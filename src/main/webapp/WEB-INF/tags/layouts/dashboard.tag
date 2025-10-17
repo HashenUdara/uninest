@@ -6,7 +6,7 @@
 <%@ attribute name="active" required="false" %>
 <%@ attribute name="alerts" fragment="true" required="false" %>
 <%@ attribute name="scripts" fragment="true" required="false" %>
-<%@ attribute name="content" fragment="true" required="false" %>
+<%@ attribute name="navigation" fragment="true" required="false" %>
 <%@ attribute name="searchPlaceholder" required="false" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,7 +49,7 @@
         </div>
       </div>
       <nav class="c-nav" aria-label="Main">
-        <jsp:doBody />
+        <jsp:invoke fragment="navigation" />
       </nav>
 
       <form method="post" action="${pageContext.request.contextPath}/logout" style="margin-top: auto;">
@@ -90,16 +90,7 @@
       </header>
 
       <!-- Page content injected here -->
-      <c:if test="${empty pageTitle}">
-        <jsp:invoke var="content" fragment="content" />
-        ${content}
-      </c:if>
-      <c:if test="${not empty pageTitle}">
-        <section>
-          <jsp:invoke var="content" fragment="content" />
-          ${content}
-        </section>
-      </c:if>
+      <jsp:doBody />
     </main>
   </div>
   <script src="${pageContext.request.contextPath}/static/dashboard.js"></script>

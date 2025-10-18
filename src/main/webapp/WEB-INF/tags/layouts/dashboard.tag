@@ -38,6 +38,37 @@
   <div class="l-app">
     <!-- Sidebar -->
     <aside class="c-sidebar">
+
+        <span
+          aria-hidden="true"
+          style="
+            position: absolute;
+            bottom: -150px;
+            left: -80px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: rgba(255, 99, 174, 0.5);
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: -1;
+          "
+        ></span>
+        <span
+          aria-hidden="true"
+          style="
+            position: absolute;
+            bottom: -160px;
+            right: -100px;
+            width: 250px;
+            height: 400px;
+            border-radius: 50%;
+            background: rgba(84, 44, 245, 0.35);
+            filter: blur(140px);
+            pointer-events: none;
+            z-index: -1;
+          "
+        ></span>
       <div class="c-logo">
         <img src="${pageContext.request.contextPath}/static/img/logo.png" alt="Uninest" class="c-logo__mark" />
       </div>

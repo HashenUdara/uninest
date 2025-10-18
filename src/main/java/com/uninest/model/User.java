@@ -6,6 +6,7 @@ public class User {
     private String passwordHash;
     private String roleName; // Role name as string (student, subject_coordinator, moderator, admin)
     private Integer communityId; // null until student joins or moderator's community approved
+    private String communityName; // Community title for display
     private Integer academicYear; // 1..4
     private String university; // Sri Lankan university name
 
@@ -42,6 +43,9 @@ public class User {
 
     public Integer getCommunityId() { return communityId; }
     public void setCommunityId(Integer communityId) { this.communityId = communityId; }
+
+    public String getCommunityName() { return communityName; }
+    public void setCommunityName(String communityName) { this.communityName = communityName; }
 
     public Integer getAcademicYear() { return academicYear; }
     public void setAcademicYear(Integer academicYear) { this.academicYear = academicYear; }

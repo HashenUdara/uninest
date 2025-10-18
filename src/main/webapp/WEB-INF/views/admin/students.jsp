@@ -160,7 +160,6 @@
 
   <div class="c-toasts" aria-live="polite" aria-atomic="true"></div>
 
-  <jsp:attribute name="scripts">
     <script>
       // Delete confirmation handler
       document.querySelectorAll('.js-delete-student').forEach(btn => {
@@ -180,5 +179,5 @@
         });
       });
     </script>
-  </jsp:attribute>
+
 </layout:admin-dashboard>

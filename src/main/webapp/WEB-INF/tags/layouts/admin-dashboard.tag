@@ -21,11 +21,6 @@
       label="Students" 
       active="${activePage eq 'students'}" />
     <dash:nav-item 
-      href="${pageContext.request.contextPath}/admin/moderators" 
-      icon="shield" 
-      label="Moderators" 
-      active="${activePage eq 'moderators'}" />
-    <dash:nav-item 
       href="${pageContext.request.contextPath}/admin/communities" 
       icon="building" 
       label="Communities" 
@@ -35,6 +30,11 @@
       icon="settings" 
       label="Settings" 
       active="${activePage eq 'settings'}" />
+    <dash:nav-item 
+      href="${pageContext.request.contextPath}/admin/moderators" 
+      icon="shield" 
+      label="Moderators" 
+      active="${activePage eq 'moderators'}" />
   </jsp:attribute>
   <jsp:attribute name="alerts">
     <c:if test="${not empty alerts}">

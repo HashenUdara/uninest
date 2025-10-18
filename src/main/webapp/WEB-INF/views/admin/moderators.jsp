@@ -4,6 +4,28 @@
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
 <layout:admin-dashboard pageTitle="Moderators" activePage="moderators">
+  <jsp:attribute name="scripts">
+    <script>
+      // Delete confirmation handler
+      document.querySelectorAll('.js-delete-moderator').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = this.dataset.id;
+          document.getElementById('delete-id').value = id;
+          const modal = document.getElementById('confirm-modal');
+          modal.hidden = false;
+        });
+      });
+
+      // Modal close handlers
+      document.querySelectorAll('[data-close]').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const modal = document.getElementById('confirm-modal');
+          modal.hidden = true;
+        });
+      });
+    </script>
+  </jsp:attribute>
+  <jsp:body>
   <header class="c-page__header">
     <nav class="c-breadcrumbs" aria-label="Breadcrumb">
       <a href="${pageContext.request.contextPath}/admin/dashboard">Admin</a>
@@ -148,26 +170,5 @@
   </div>
 
   <div class="c-toasts" aria-live="polite" aria-atomic="true"></div>
-
-  <jsp:attribute name="scripts">
-    <script>
-      // Delete confirmation handler
-      document.querySelectorAll('.js-delete-moderator').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const id = this.dataset.id;
-          document.getElementById('delete-id').value = id;
-          const modal = document.getElementById('confirm-modal');
-          modal.hidden = false;
-        });
-      });
-
-      // Modal close handlers
-      document.querySelectorAll('[data-close]').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const modal = document.getElementById('confirm-modal');
-          modal.hidden = true;
-        });
-      });
-    </script>
-  </jsp:attribute>
+  </jsp:body>
 </layout:admin-dashboard>

@@ -123,4 +123,86 @@ public class UserDAO {
             throw new RuntimeException("Error assigning community", e);
         }
     }
+
+    public java.util.List<User> findByRole(String roleName) {
+        String sql = "SELECT u.id, u.email, u.password_hash, u.community_id, u.academic_year, u.university, r.name AS role_name " +
+                "FROM users u JOIN roles r ON u.role_id = r.id WHERE r.name = ? ORDER BY u.id DESC";
+        java.util.List<User> users = new java.util.ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, roleName);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    users.add(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching users by role", e);
+        }
+        return users;
+    }
+
+    public java.util.List<User> searchUsers(String roleName, String searchTerm) {
+        String sql = "SELECT u.id, u.email, u.password_hash, u.community_id, u.academic_year, u.university, r.name AS role_name " +
+                "FROM users u JOIN roles r ON u.role_id = r.id WHERE r.name = ? AND (u.email LIKE ? OR u.university LIKE ?) ORDER BY u.id DESC";
+        java.util.List<User> users = new java.util.ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, roleName);
+            String pattern = "%" + searchTerm + "%";
+            ps.setString(2, pattern);
+            ps.setString(3, pattern);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    users.add(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error searching users", e);
+        }
+        return users;
+    }
+
+    public Optional<User> findById(int id) {
+        String sql = "SELECT u.id, u.email, u.password_hash, u.community_id, u.academic_year, u.university, r.name AS role_name " +
+                "FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching user by id", e);
+        }
+        return Optional.empty();
+    }
+
+    public void update(User user) {
+        String sql = "UPDATE users SET email = ?, community_id = ?, academic_year = ?, university = ? WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, user.getEmail());
+            if (user.getCommunityId() == null) ps.setNull(2, Types.INTEGER); else ps.setInt(2, user.getCommunityId());
+            if (user.getAcademicYear() == null) ps.setNull(3, Types.TINYINT); else ps.setInt(3, user.getAcademicYear());
+            if (user.getUniversity() == null) ps.setNull(4, Types.VARCHAR); else ps.setString(4, user.getUniversity());
+            ps.setInt(5, user.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating user", e);
+        }
+    }
+
+    public boolean deleteUser(int userId) {
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error deleting user", e);
+        }
+    }
 }

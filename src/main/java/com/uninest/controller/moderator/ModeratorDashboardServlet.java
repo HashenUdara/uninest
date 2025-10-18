@@ -15,8 +15,13 @@ public class ModeratorDashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("authUser");
-        // If moderator has no approved community, redirect to creation/waiting
-        java.util.Optional<com.uninest.model.Community> commOpt = communityDAO.findByCreatorUserId(user.getId());
+        // If moderator has no community assigned, redirect to creation
+        if (user.getCommunityId() == null) {
+            resp.sendRedirect(req.getContextPath() + "/moderator/community/create");
+            return;
+        }
+        // Check if community is approved
+        java.util.Optional<com.uninest.model.Community> commOpt = communityDAO.findById(user.getCommunityId());
         if (commOpt.isEmpty()) {
             resp.sendRedirect(req.getContextPath() + "/moderator/community/create");
             return;

@@ -118,4 +118,6 @@ CREATE TABLE `password_reset_tokens` (
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+INSERT INTO `users` (`id`, `email`, `name`, `password_hash`, `role_id`, `community_id`, `academic_year`, `university_id`, `created_at`) VALUES (NULL, 'a1@abc.com', 'Admin', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', '4', NULL, '1', '19', '2025-10-18 10:01:26');
+
 COMMIT;

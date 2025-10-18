@@ -274,7 +274,7 @@
 
     // Users table enhancements (sorting, toolbar count, delete modal/toast)
     initUsersTable();
-    // Communitys: confirm-only modals + avatar coloring and counts
+    // Communities: confirm-only modals + avatar coloring and counts
     initCommConfirm();
     initCommAvatars();
   });
@@ -441,7 +441,7 @@ function initUsersTable() {
   }
 }
 
-/* ================= Communitys: confirm-only + avatars & count ================= */
+/* ================= Communities: confirm-only + avatars & count ================= */
 function initCommConfirm() {
   const modal = document.getElementById("confirm-modal");
   if (!modal) return;

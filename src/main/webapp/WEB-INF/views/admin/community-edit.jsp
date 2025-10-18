@@ -3,12 +3,12 @@
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-<layout:admin-dashboard pageTitle="Edit Community" activePage="communitys">
+<layout:admin-dashboard pageTitle="Edit Community" activePage="communities">
   <header class="c-page__header">
       <nav class="c-breadcrumbs" aria-label="Breadcrumb">
         <a href="${pageContext.request.contextPath}/admin/dashboard">Admin</a>
         <span class="c-breadcrumbs__sep">/</span>
-        <a href="${pageContext.request.contextPath}/admin/communitys">Communitys</a>
+        <a href="${pageContext.request.contextPath}/admin/communities">Communities</a>
         <span class="c-breadcrumbs__sep">/</span>
         <span aria-current="page">Edit</span>
       </nav>
@@ -17,14 +17,14 @@
           <h1 class="c-page__title">Edit community</h1>
           <p class="c-page__subtitle u-text-muted">Update community details.</p>
         </div>
-        <a class="c-btn c-btn--ghost" href="${pageContext.request.contextPath}/admin/communitys?status=${community.status}">
-          <i data-lucide="arrow-left"></i> Back to Communitys
+        <a class="c-btn c-btn--ghost" href="${pageContext.request.contextPath}/admin/communities?status=${community.status}">
+          <i data-lucide="arrow-left"></i> Back to Communities
         </a>
       </div>
     </header>
 
     <section>
-      <form class="c-form" action="${pageContext.request.contextPath}/admin/communitys/edit" method="post">
+      <form class="c-form" action="${pageContext.request.contextPath}/admin/communities/edit" method="post">
         <input type="hidden" name="id" value="${community.id}" />
         <div class="c-form-card">
           <div class="c-field">
@@ -42,7 +42,7 @@
           </div>
 
           <div class="c-form-actions">
-            <a class="c-btn c-btn--ghost" href="${pageContext.request.contextPath}/admin/communitys?status=${community.status}">Cancel</a>
+            <a class="c-btn c-btn--ghost" href="${pageContext.request.contextPath}/admin/communities?status=${community.status}">Cancel</a>
             <button type="submit" class="c-btn">Update Community</button>
           </div>
         </div>

@@ -1,19 +1,22 @@
 # Organization to Community Migration - Complete Summary
 
 ## Overview
+
 This document summarizes the complete migration from "organization" to "community" terminology throughout the UniNest codebase.
 
 ## Changes Made
 
 ### 1. Database Schema (`src/main/resources/db/migration/db.sql`)
+
 - **Table renamed**: `organizations` → `communities`
-- **Indexes renamed**: 
+- **Indexes renamed**:
   - `idx_org_status` → `idx_comm_status`
   - `idx_org_approved` → `idx_comm_approved`
 - **Column renamed in users table**: `organization_id` → `community_id`
 - **Constraint renamed**: `fk_users_organization` → `fk_users_community`
 
 ### 2. Java Model Classes
+
 - **Renamed**: `Organization.java` → `Community.java`
   - All getters/setters updated accordingly
 - **Updated**: `User.java`
@@ -22,6 +25,7 @@ This document summarizes the complete migration from "organization" to "communit
   - `setOrganizationId()` → `setCommunityId()`
 
 ### 3. Java DAO Classes
+
 - **Renamed**: `OrganizationDAO.java` → `CommunityDAO.java`
   - All SQL queries updated to use `communities` table
   - All method parameters renamed (e.g., `organizationId` → `communityId`)
@@ -33,6 +37,7 @@ This document summarizes the complete migration from "organization" to "communit
 ### 4. Java Controller Classes (11 files)
 
 #### Admin Controllers (6 files)
+
 - `ApproveOrganizationServlet.java` → `ApproveCommunityServlet.java`
   - URL pattern: `/admin/organizations/approve` → `/admin/communities/approve`
 - `RejectOrganizationServlet.java` → `RejectCommunityServlet.java`
@@ -47,45 +52,54 @@ This document summarizes the complete migration from "organization" to "communit
   - URL pattern: `/admin/organizations` → `/admin/communities`
 
 #### Moderator Controllers (2 files)
+
 - `OrganizationCreateServlet.java` → `CommunityCreateServlet.java`
   - URL pattern: `/moderator/organization/create` → `/moderator/community/create`
 - `OrganizationWaitingServlet.java` → `CommunityWaitingServlet.java`
   - URL pattern: `/moderator/organization/waiting` → `/moderator/community/waiting`
 
 #### Student Controllers (1 file)
+
 - `JoinOrganizationServlet.java` → `JoinCommunityServlet.java`
   - URL pattern: `/student/join-organization` → `/student/join-community`
 
 #### Auth Controllers (2 files updated)
+
 - `LoginServlet.java` - Updated redirects and logic
 - `SignUpServlet.java` - Updated redirects and logic
 
 #### Dashboard Controllers (2 files updated)
+
 - `ModeratorDashboardServlet.java` - Updated redirects
 - `StudentDashboardServlet.java` - Updated redirects
 
 ### 5. JSP View Files (6 files)
 
 #### Admin Views
+
 - `organizations.jsp` → `communities.jsp`
   - Updated all URLs, variable names, and text content
-  - Updated CSS classes: `js-org-*` → `js-comm-*`, `c-org-*` → `c-comm-*`
+  - Updated CSS classes: `js-org-*` → `js-comm-*`, `c-comm-*` → `c-comm-*`
   - Updated data attributes: `data-org-*` → `data-comm-*`
 - `organization-create.jsp` → `community-create.jsp`
 - `organization-edit.jsp` → `community-edit.jsp`
 
 #### Moderator Views
+
 - `organization-create.jsp` → `community-create.jsp`
 - `organization-waiting.jsp` → `community-waiting.jsp`
 
 #### Student Views
+
 - `join-organization.jsp` → `join-community.jsp`
 
 #### Layout Updates
+
 - `admin-dashboard.tag` - Updated navigation menu
 - `admin/dashboard.jsp` - Updated dashboard content
 
 ### 6. HTML Template Files (Directory + 4 files)
+
 - **Directory renamed**: `organization-management-pages-template` → `community-management-pages-template`
 - **Files renamed**:
   - `organizations-pending.html` → `communities-pending.html`
@@ -95,6 +109,7 @@ This document summarizes the complete migration from "organization" to "communit
 - **All files updated** with community terminology and updated CSS classes
 
 ### 7. JavaScript Files (2 files)
+
 - `src/main/webapp/static/dashboard.js`
   - Updated all function names: `initOrgAvatars()` → `initCommAvatars()`, etc.
   - Updated localStorage keys: `ORG_KEY` → `COMM_KEY`
@@ -103,8 +118,9 @@ This document summarizes the complete migration from "organization" to "communit
   - Updated all organization references to community
 
 ### 8. Documentation Files (5 files)
+
 - **Renamed**: `ORGANIZATION_MANAGEMENT_GUIDE.md` → `COMMUNITY_MANAGEMENT_GUIDE.md`
-- **Updated**: 
+- **Updated**:
   - `DASHBOARD_ARCHITECTURE.md` - Updated references
   - `DASHBOARD_REFACTORING.md` - Updated JSP file paths
   - `DASHBOARD_MIGRATION_SUMMARY.md` - Updated references
@@ -112,6 +128,7 @@ This document summarizes the complete migration from "organization" to "communit
 ## Migration Statistics
 
 ### Files Renamed: 29
+
 - 1 Java model class
 - 1 Java DAO class
 - 11 Java controller classes
@@ -121,6 +138,7 @@ This document summarizes the complete migration from "organization" to "communit
 - 1 documentation file
 
 ### Files Updated: 15+
+
 - 2 Java DAO classes (User-related)
 - 2 Java controller classes (Auth)
 - 2 Java controller classes (Dashboards)
@@ -129,6 +147,7 @@ This document summarizes the complete migration from "organization" to "communit
 - 5+ Documentation files
 
 ### Lines Changed: ~500+
+
 - Database schema changes
 - Java code changes
 - JSP/HTML template changes
@@ -138,24 +157,27 @@ This document summarizes the complete migration from "organization" to "communit
 ## URL Mapping Changes
 
 ### Admin URLs
-| Old URL | New URL |
-|---------|---------|
-| `/admin/organizations` | `/admin/communities` |
-| `/admin/organizations/create` | `/admin/communities/create` |
-| `/admin/organizations/edit` | `/admin/communities/edit` |
+
+| Old URL                        | New URL                      |
+| ------------------------------ | ---------------------------- |
+| `/admin/organizations`         | `/admin/communities`         |
+| `/admin/organizations/create`  | `/admin/communities/create`  |
+| `/admin/organizations/edit`    | `/admin/communities/edit`    |
 | `/admin/organizations/approve` | `/admin/communities/approve` |
-| `/admin/organizations/reject` | `/admin/communities/reject` |
-| `/admin/organizations/delete` | `/admin/communities/delete` |
+| `/admin/organizations/reject`  | `/admin/communities/reject`  |
+| `/admin/organizations/delete`  | `/admin/communities/delete`  |
 
 ### Moderator URLs
-| Old URL | New URL |
-|---------|---------|
-| `/moderator/organization/create` | `/moderator/community/create` |
+
+| Old URL                           | New URL                        |
+| --------------------------------- | ------------------------------ |
+| `/moderator/organization/create`  | `/moderator/community/create`  |
 | `/moderator/organization/waiting` | `/moderator/community/waiting` |
 
 ### Student URLs
-| Old URL | New URL |
-|---------|---------|
+
+| Old URL                      | New URL                   |
+| ---------------------------- | ------------------------- |
 | `/student/join-organization` | `/student/join-community` |
 
 ## Build Verification
@@ -184,15 +206,17 @@ This document summarizes the complete migration from "organization" to "communit
 ## Rollback Plan
 
 If needed, revert commits:
+
 ```bash
 git revert HEAD~2..HEAD
 ```
 
 Then update database:
+
 ```sql
 ALTER TABLE communities RENAME TO organizations;
 ALTER TABLE users CHANGE community_id organization_id INT NULL;
 ALTER TABLE users DROP FOREIGN KEY fk_users_community;
-ALTER TABLE users ADD CONSTRAINT fk_users_organization 
+ALTER TABLE users ADD CONSTRAINT fk_users_organization
   FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL;
 ```

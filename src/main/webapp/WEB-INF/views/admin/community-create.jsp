@@ -3,12 +3,12 @@
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-<layout:admin-dashboard pageTitle="Create Community" activePage="communitys">
+<layout:admin-dashboard pageTitle="Create Community" activePage="communities">
   <header class="c-page__header">
       <nav class="c-breadcrumbs" aria-label="Breadcrumb">
         <a href="${pageContext.request.contextPath}/admin/dashboard">Admin</a>
         <span class="c-breadcrumbs__sep">/</span>
-        <a href="${pageContext.request.contextPath}/admin/communitys">Communitys</a>
+        <a href="${pageContext.request.contextPath}/admin/communities">Communities</a>
         <span class="c-breadcrumbs__sep">/</span>
         <span aria-current="page">Create</span>
       </nav>
@@ -17,14 +17,14 @@
           <h1 class="c-page__title">Create community</h1>
           <p class="c-page__subtitle u-text-muted">Add a new community.</p>
         </div>
-        <a class="c-btn c-btn--ghost" href="${pageContext.request.contextPath}/admin/communitys">
-          <i data-lucide="arrow-left"></i> Back to Communitys
+        <a class="c-btn c-btn--ghost" href="${pageContext.request.contextPath}/admin/communities">
+          <i data-lucide="arrow-left"></i> Back to Communities
         </a>
       </div>
     </header>
 
     <section>
-      <form class="c-form" action="${pageContext.request.contextPath}/admin/communitys/create" method="post">
+      <form class="c-form" action="${pageContext.request.contextPath}/admin/communities/create" method="post">
         <div class="c-form-card">
           <div class="c-field">
             <label class="c-field__label" for="org-title">Title</label>
@@ -41,7 +41,7 @@
           </div>
 
           <div class="c-form-actions">
-            <a class="c-btn c-btn--ghost" href="${pageContext.request.contextPath}/admin/communitys">Cancel</a>
+            <a class="c-btn c-btn--ghost" href="${pageContext.request.contextPath}/admin/communities">Cancel</a>
             <button type="submit" class="c-btn">Create Community</button>
           </div>
         </div>

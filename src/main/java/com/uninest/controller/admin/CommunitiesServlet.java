@@ -1,7 +1,6 @@
 package com.uninest.controller.admin;
 
 import com.uninest.model.Community;
-import com.uninest.model.User;
 import com.uninest.model.dao.CommunityDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

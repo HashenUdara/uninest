@@ -3,11 +3,13 @@ package com.uninest.controller.admin;
 import com.uninest.model.User;
 import com.uninest.model.dao.UserDAO;
 import com.uninest.model.dao.CommunityDAO;
+import com.uninest.model.dao.UniversityDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.mindrot.jbcrypt.BCrypt;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class EditStudentServlet extends HttpServlet {
     private final UserDAO userDAO = new UserDAO();
     private final CommunityDAO communityDAO = new CommunityDAO();
+    private final UniversityDAO universityDAO = new UniversityDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,6 +37,7 @@ public class EditStudentServlet extends HttpServlet {
 
         req.setAttribute("student", studentOpt.get());
         req.setAttribute("communities", communityDAO.findByStatus("approved"));
+        req.setAttribute("universities", universityDAO.findAll());
         req.getRequestDispatcher("/WEB-INF/views/admin/edit-student.jsp").forward(req, resp);
     }
 
@@ -54,6 +58,14 @@ public class EditStudentServlet extends HttpServlet {
         }
 
         User student = studentOpt.get();
+        
+        String name = req.getParameter("name");
+        if (name != null && !name.isEmpty()) {
+            student.setName(name);
+        } else {
+            student.setName(null);
+        }
+        
         student.setEmail(req.getParameter("email"));
         
         String academicYearStr = req.getParameter("academicYear");
@@ -63,11 +75,11 @@ public class EditStudentServlet extends HttpServlet {
             student.setAcademicYear(null);
         }
         
-        String university = req.getParameter("university");
-        if (university != null && !university.isEmpty()) {
-            student.setUniversity(university);
+        String universityIdStr = req.getParameter("universityId");
+        if (universityIdStr != null && !universityIdStr.isEmpty()) {
+            student.setUniversityId(Integer.parseInt(universityIdStr));
         } else {
-            student.setUniversity(null);
+            student.setUniversityId(null);
         }
         
         String communityIdStr = req.getParameter("communityId");
@@ -75,6 +87,13 @@ public class EditStudentServlet extends HttpServlet {
             student.setCommunityId(Integer.parseInt(communityIdStr));
         } else {
             student.setCommunityId(null);
+        }
+        
+        // Handle password reset if provided
+        String newPassword = req.getParameter("newPassword");
+        if (newPassword != null && !newPassword.isEmpty()) {
+            String passwordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            userDAO.updatePassword(student.getId(), passwordHash);
         }
 
         userDAO.update(student);

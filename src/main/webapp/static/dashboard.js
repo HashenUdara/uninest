@@ -167,8 +167,8 @@
 
 /* ===== Community Management Functions ===== */
 
-// Initialize community avatars and counts
-function initCommAvatars() {
+// Reusable avatar utility function
+function initAvatars(selector, textSelector) {
   function avatarColorFromChar(ch) {
     const A = "A".charCodeAt(0);
     const idx = Math.max(0, (ch.toUpperCase().charCodeAt(0) - A) % 26);
@@ -185,23 +185,63 @@ function initCommAvatars() {
     return match ? match[0].toUpperCase() : "U";
   }
 
+  document.querySelectorAll(selector).forEach((cell) => {
+    const textEl = cell.querySelector(textSelector);
+    const avatarEl = cell.querySelector("[class$='__avatar'], [class*='__avatar ']");
+    if (!textEl || !avatarEl) return;
+    const text = textEl.textContent.trim();
+    const first = firstAlpha(text);
+    const { bg, fg } = avatarColorFromChar(first);
+    avatarEl.style.setProperty("--avatar-bg", bg);
+    avatarEl.style.setProperty("--avatar-fg", fg);
+    avatarEl.textContent = first;
+  });
+}
+
+// Initialize community avatars and counts
+function initCommAvatars() {
   document.querySelectorAll("table.c-table[data-comm-table]").forEach((table) => {
     const countEl = table.closest("section")?.querySelector(".js-comm-count");
     const rows = table.querySelectorAll("tbody tr");
     if (countEl) countEl.textContent = String(rows.length);
-    
-    table.querySelectorAll(".c-comm-cell").forEach((row) => {
-      const titleEl = row.querySelector(".c-comm-cell__title");
-      const avatarEl = row.querySelector(".c-comm-cell__avatar");
-      if (!titleEl || !avatarEl) return;
-      const title = titleEl.textContent.trim();
-      const first = firstAlpha(title);
-      const { bg, fg } = avatarColorFromChar(first);
-      avatarEl.style.setProperty("--avatar-bg", bg);
-      avatarEl.style.setProperty("--avatar-fg", fg);
-      avatarEl.textContent = first;
-    });
   });
+  
+  initAvatars(".c-comm-cell", ".c-comm-cell__title");
+}
+
+// Initialize user avatars (students and moderators)
+function initUserAvatars() {
+  initAvatars(".c-user-cell", ".c-user-cell__name");
+}
+
+// Initialize sidebar profile avatar
+function initSidebarAvatar() {
+  const miniAvatar = document.querySelector(".c-user-mini__avatar");
+  const miniName = document.querySelector(".c-user-mini__name");
+  if (!miniAvatar || !miniName) return;
+  
+  function firstAlpha(name) {
+    if (!name) return "U";
+    const normalized = name.normalize("NFD").replace(/\p{Diacritic}+/gu, "");
+    const match = normalized.match(/[A-Za-z]/);
+    return match ? match[0].toUpperCase() : "U";
+  }
+  
+  function avatarColorFromChar(ch) {
+    const A = "A".charCodeAt(0);
+    const idx = Math.max(0, (ch.toUpperCase().charCodeAt(0) - A) % 26);
+    const hue = Math.round((360 / 26) * idx);
+    const bg = `hsl(${hue} 85% 92%)`;
+    const fg = `hsl(${hue} 60% 35%)`;
+    return { bg, fg };
+  }
+  
+  const text = miniName.textContent.trim();
+  const first = firstAlpha(text);
+  const { bg, fg } = avatarColorFromChar(first);
+  miniAvatar.style.setProperty("--avatar-bg", bg);
+  miniAvatar.style.setProperty("--avatar-fg", fg);
+  miniAvatar.textContent = first;
 }
 
 // Initialize community confirm modals
@@ -274,5 +314,7 @@ function initCommConfirm() {
 // Initialize on DOM ready
 document.addEventListener("DOMContentLoaded", function() {
   initCommAvatars();
+  initUserAvatars();
+  initSidebarAvatar();
   initCommConfirm();
 });

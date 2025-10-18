@@ -28,6 +28,13 @@
       <input type="hidden" name="id" value="${moderator.id}" />
       <div class="c-form-card">
         <div class="c-field">
+          <label class="c-field__label" for="name">Full Name</label>
+          <input class="c-field__input" id="name" name="name" type="text" 
+                 value="${moderator.name}" placeholder="Enter moderator name" />
+          <div class="c-field__error"></div>
+        </div>
+
+        <div class="c-field">
           <label class="c-field__label" for="email">Email Address</label>
           <input class="c-field__input" id="email" name="email" type="email" 
                  value="${moderator.email}" required />
@@ -35,10 +42,36 @@
         </div>
 
         <div class="c-field">
-          <label class="c-field__label" for="university">University</label>
-          <input class="c-field__input" id="university" name="university" type="text" 
-                 value="${moderator.university}" placeholder="e.g., University of Colombo" />
+          <label class="c-field__label" for="academicYear">Academic Year</label>
+          <select class="c-field__input" id="academicYear" name="academicYear">
+            <option value="">Select year (optional)</option>
+            <option value="1" ${moderator.academicYear == 1 ? 'selected' : ''}>Year 1</option>
+            <option value="2" ${moderator.academicYear == 2 ? 'selected' : ''}>Year 2</option>
+            <option value="3" ${moderator.academicYear == 3 ? 'selected' : ''}>Year 3</option>
+            <option value="4" ${moderator.academicYear == 4 ? 'selected' : ''}>Year 4</option>
+          </select>
           <div class="c-field__error"></div>
+        </div>
+
+        <div class="c-field">
+          <label class="c-field__label" for="university">University</label>
+          <select class="c-field__input" id="university" name="universityId">
+            <option value="">Select university (optional)</option>
+            <c:forEach items="${universities}" var="uni">
+              <option value="${uni.id}" ${moderator.universityId == uni.id ? 'selected' : ''}>
+                ${uni.name}
+              </option>
+            </c:forEach>
+          </select>
+          <div class="c-field__error"></div>
+        </div>
+
+        <div class="c-field">
+          <label class="c-field__label" for="newPassword">New Password (Optional)</label>
+          <input class="c-field__input" id="newPassword" name="newPassword" type="password" 
+                 placeholder="Leave blank to keep current password" />
+          <div class="c-field__error"></div>
+          <small class="c-field__hint">Enter a new password only if you want to reset it.</small>
         </div>
 
         <div class="c-field">

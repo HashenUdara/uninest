@@ -101,7 +101,7 @@
                 <div class="c-user-cell">
                   <span class="c-user-cell__avatar" aria-hidden="true"></span>
                   <div class="c-user-cell__meta">
-                    <span class="c-user-cell__name">${moderator.email}</span>
+                    <span class="c-user-cell__name">${not empty moderator.name ? moderator.name : moderator.email}</span>
                     <span class="c-user-cell__sub u-text-muted">ID: U-${moderator.id}</span>
                   </div>
                 </div>
@@ -109,8 +109,8 @@
               <td>${moderator.email}</td>
               <td>
                 <c:choose>
-                  <c:when test="${not empty moderator.university}">
-                    ${moderator.university}
+                  <c:when test="${not empty moderator.universityName}">
+                    ${moderator.universityName}
                   </c:when>
                   <c:otherwise>
                     <span class="u-text-muted">N/A</span>

@@ -80,7 +80,7 @@
                 <div class="c-user-cell">
                   <span class="c-user-cell__avatar" aria-hidden="true"></span>
                   <div class="c-user-cell__meta">
-                    <span class="c-user-cell__name">${student.email}</span>
+                    <span class="c-user-cell__name">${not empty student.name ? student.name : student.email}</span>
                     <span class="c-user-cell__sub u-text-muted">ID: U-${student.id}</span>
                   </div>
                 </div>
@@ -98,8 +98,8 @@
               </td>
               <td>
                 <c:choose>
-                  <c:when test="${not empty student.university}">
-                    ${student.university}
+                  <c:when test="${not empty student.universityName}">
+                    ${student.universityName}
                   </c:when>
                   <c:otherwise>
                     <span class="u-text-muted">N/A</span>

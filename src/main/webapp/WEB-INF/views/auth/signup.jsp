@@ -157,27 +157,11 @@
 
     <div class="c-field">
       <label for="university" class="c-field__label">University (Sri Lanka)</label>
-      <select id="university" name="university" class="c-field__input">
+      <select id="university" name="universityId" class="c-field__input">
         <option value="">Select...</option>
-        <option ${param.university == 'University of Colombo' ? 'selected' : ''}>University of Colombo</option>
-        <option ${param.university == 'University of Peradeniya' ? 'selected' : ''}>University of Peradeniya</option>
-        <option ${param.university == 'University of Sri Jayewardenepura' ? 'selected' : ''}>University of Sri Jayewardenepura</option>
-        <option ${param.university == 'University of Kelaniya' ? 'selected' : ''}>University of Kelaniya</option>
-        <option ${param.university == 'University of Moratuwa' ? 'selected' : ''}>University of Moratuwa</option>
-        <option ${param.university == 'University of Jaffna' ? 'selected' : ''}>University of Jaffna</option>
-        <option ${param.university == 'University of Ruhuna' ? 'selected' : ''}>University of Ruhuna</option>
-        <option ${param.university == 'Eastern University, Sri Lanka' ? 'selected' : ''}>Eastern University, Sri Lanka</option>
-        <option ${param.university == 'South Eastern University of Sri Lanka' ? 'selected' : ''}>South Eastern University of Sri Lanka</option>
-        <option ${param.university == 'Rajarata University of Sri Lanka' ? 'selected' : ''}>Rajarata University of Sri Lanka</option>
-        <option ${param.university == 'Sabaragamuwa University of Sri Lanka' ? 'selected' : ''}>Sabaragamuwa University of Sri Lanka</option>
-        <option ${param.university == 'Wayamba University of Sri Lanka' ? 'selected' : ''}>Wayamba University of Sri Lanka</option>
-        <option ${param.university == 'Uva Wellassa University' ? 'selected' : ''}>Uva Wellassa University</option>
-        <option ${param.university == 'University of the Visual and Performing Arts' ? 'selected' : ''}>University of the Visual and Performing Arts</option>
-        <option ${param.university == 'Open University of Sri Lanka' ? 'selected' : ''}>Open University of Sri Lanka</option>
-        <option ${param.university == 'Gampaha Wickramarachchi University of Indigenous Medicine' ? 'selected' : ''}>Gampaha Wickramarachchi University of Indigenous Medicine</option>
-        <option ${param.university == 'Ocean University of Sri Lanka' ? 'selected' : ''}>Ocean University of Sri Lanka</option>
-        <option ${param.university == 'University of Vavuniya' ? 'selected' : ''}>University of Vavuniya</option>
-        <option ${param.university == 'National School of Business Management (NSBM Green University)' ? 'selected' : ''}>National School of Business Management (NSBM Green University)</option>
+        <c:forEach items="${universities}" var="uni">
+          <option value="${uni.id}" ${param.universityId == uni.id ? 'selected' : ''}>${uni.name}</option>
+        </c:forEach>
       </select>
       <p class="c-field__error" data-error-for="university" aria-live="polite"></p>
     </div>

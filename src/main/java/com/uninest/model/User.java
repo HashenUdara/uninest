@@ -3,12 +3,14 @@ package com.uninest.model;
 public class User {
     private int id;
     private String email;
+    private String name; // User's full name
     private String passwordHash;
     private String roleName; // Role name as string (student, subject_coordinator, moderator, admin)
     private Integer communityId; // null until student joins or moderator's community approved
     private String communityName; // Community title for display
     private Integer academicYear; // 1..4
-    private String university; // Sri Lankan university name
+    private Integer universityId; // Foreign key to universities table
+    private String universityName; // University name for display
 
     public User() {}
     
@@ -24,6 +26,9 @@ public class User {
     
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+    
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
     
     public String getPasswordHash() { return passwordHash; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
@@ -50,6 +55,9 @@ public class User {
     public Integer getAcademicYear() { return academicYear; }
     public void setAcademicYear(Integer academicYear) { this.academicYear = academicYear; }
 
-    public String getUniversity() { return university; }
-    public void setUniversity(String university) { this.university = university; }
+    public Integer getUniversityId() { return universityId; }
+    public void setUniversityId(Integer universityId) { this.universityId = universityId; }
+
+    public String getUniversityName() { return universityName; }
+    public void setUniversityName(String universityName) { this.universityName = universityName; }
 }

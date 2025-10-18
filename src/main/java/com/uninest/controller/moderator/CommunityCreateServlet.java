@@ -3,6 +3,7 @@ package com.uninest.controller.moderator;
 import com.uninest.model.Community;
 import com.uninest.model.User;
 import com.uninest.model.dao.CommunityDAO;
+import com.uninest.model.dao.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,6 +14,7 @@ import java.io.IOException;
 @WebServlet(name = "communityCreate", urlPatterns = "/moderator/community/create")
 public class CommunityCreateServlet extends HttpServlet {
     private final CommunityDAO communityDAO = new CommunityDAO();
+    private final UserDAO userDAO = new UserDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -35,7 +37,12 @@ public class CommunityCreateServlet extends HttpServlet {
         comm.setTitle(title.trim());
         comm.setDescription(description == null ? null : description.trim());
         comm.setCreatedByUserId(user.getId());
-        communityDAO.create(comm);
+        int communityId = communityDAO.create(comm);
+
+        // Set the community_id for the moderator who created it
+        userDAO.assignCommunity(user.getId(), communityId);
+        // Update the session user object
+        user.setCommunityId(communityId);
 
         resp.sendRedirect(req.getContextPath() + "/moderator/community/waiting");
     }

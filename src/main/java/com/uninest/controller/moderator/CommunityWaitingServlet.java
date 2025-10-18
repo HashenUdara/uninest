@@ -18,8 +18,10 @@ public class CommunityWaitingServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("authUser");
-        Optional<Community> commOpt = communityDAO.findByCreatorUserId(user.getId());
-        commOpt.ifPresent(comm -> req.setAttribute("community", comm));
+        if (user.getCommunityId() != null) {
+            Optional<Community> commOpt = communityDAO.findById(user.getCommunityId());
+            commOpt.ifPresent(comm -> req.setAttribute("community", comm));
+        }
         req.getRequestDispatcher("/WEB-INF/views/moderator/community-waiting.jsp").forward(req, resp);
     }
 }

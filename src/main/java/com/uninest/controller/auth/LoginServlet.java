@@ -47,19 +47,26 @@ public class LoginServlet extends HttpServlet {
         } else if (user.isSubjectCoordinator()) {
             resp.sendRedirect(req.getContextPath() + "/coordinator/dashboard");
         } else if (user.isModerator()) {
-            java.util.Optional<Community> commOpt = communityDAO.findByCreatorUserId(user.getId());
-            if (commOpt.isEmpty()) {
+            if (user.getCommunityId() == null) {
                 resp.sendRedirect(req.getContextPath() + "/moderator/community/create");
-            } else if (!commOpt.get().isApproved()) {
-                resp.sendRedirect(req.getContextPath() + "/moderator/community/waiting");
             } else {
-                resp.sendRedirect(req.getContextPath() + "/moderator/dashboard");
+                java.util.Optional<Community> commOpt = communityDAO.findById(user.getCommunityId());
+                if (commOpt.isEmpty() || !commOpt.get().isApproved()) {
+                    resp.sendRedirect(req.getContextPath() + "/moderator/community/waiting");
+                } else {
+                    resp.sendRedirect(req.getContextPath() + "/moderator/dashboard");
+                }
             }
         } else {
             if (user.getCommunityId() == null) {
                 resp.sendRedirect(req.getContextPath() + "/student/join-community");
             } else {
-                resp.sendRedirect(req.getContextPath() + "/student/dashboard");
+                java.util.Optional<Community> commOpt = communityDAO.findById(user.getCommunityId());
+                if (commOpt.isEmpty() || !commOpt.get().isApproved()) {
+                    resp.sendRedirect(req.getContextPath() + "/student/join-community");
+                } else {
+                    resp.sendRedirect(req.getContextPath() + "/student/dashboard");
+                }
             }
         }
     }

@@ -83,20 +83,18 @@ public class SignUpServlet extends HttpServlet {
         user.setName(fullName.trim());
         user.setPasswordHash(passwordHash);
         user.setRole(role);
-        // Only students capture academic year + university on signup
-        if (role.equals("student")) {
-            try {
-                if (academicYearStr != null && !academicYearStr.isBlank()) {
-                    int ay = Integer.parseInt(academicYearStr);
-                    if (ay >= 1 && ay <= 4) user.setAcademicYear(ay);
-                }
-            } catch (NumberFormatException ignored) {}
-            try {
-                if (universityIdStr != null && !universityIdStr.isBlank()) {
-                    user.setUniversityId(Integer.parseInt(universityIdStr));
-                }
-            } catch (NumberFormatException ignored) {}
-        }
+        // Both students and moderators capture academic year + university on signup
+        try {
+            if (academicYearStr != null && !academicYearStr.isBlank()) {
+                int ay = Integer.parseInt(academicYearStr);
+                if (ay >= 1 && ay <= 4) user.setAcademicYear(ay);
+            }
+        } catch (NumberFormatException ignored) {}
+        try {
+            if (universityIdStr != null && !universityIdStr.isBlank()) {
+                user.setUniversityId(Integer.parseInt(universityIdStr));
+            }
+        } catch (NumberFormatException ignored) {}
         
         try {
             userDAO.create(user);

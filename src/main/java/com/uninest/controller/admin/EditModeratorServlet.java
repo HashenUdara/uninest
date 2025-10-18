@@ -3,11 +3,13 @@ package com.uninest.controller.admin;
 import com.uninest.model.User;
 import com.uninest.model.dao.UserDAO;
 import com.uninest.model.dao.CommunityDAO;
+import com.uninest.model.dao.UniversityDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.mindrot.jbcrypt.BCrypt;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class EditModeratorServlet extends HttpServlet {
     private final UserDAO userDAO = new UserDAO();
     private final CommunityDAO communityDAO = new CommunityDAO();
+    private final UniversityDAO universityDAO = new UniversityDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,6 +37,7 @@ public class EditModeratorServlet extends HttpServlet {
 
         req.setAttribute("moderator", moderatorOpt.get());
         req.setAttribute("communities", communityDAO.findByStatus("approved"));
+        req.setAttribute("universities", universityDAO.findAll());
         req.getRequestDispatcher("/WEB-INF/views/admin/edit-moderator.jsp").forward(req, resp);
     }
 
@@ -54,13 +58,28 @@ public class EditModeratorServlet extends HttpServlet {
         }
 
         User moderator = moderatorOpt.get();
+        
+        String name = req.getParameter("name");
+        if (name != null && !name.isEmpty()) {
+            moderator.setName(name);
+        } else {
+            moderator.setName(null);
+        }
+        
         moderator.setEmail(req.getParameter("email"));
         
-        String university = req.getParameter("university");
-        if (university != null && !university.isEmpty()) {
-            moderator.setUniversity(university);
+        String academicYearStr = req.getParameter("academicYear");
+        if (academicYearStr != null && !academicYearStr.isEmpty()) {
+            moderator.setAcademicYear(Integer.parseInt(academicYearStr));
         } else {
-            moderator.setUniversity(null);
+            moderator.setAcademicYear(null);
+        }
+        
+        String universityIdStr = req.getParameter("universityId");
+        if (universityIdStr != null && !universityIdStr.isEmpty()) {
+            moderator.setUniversityId(Integer.parseInt(universityIdStr));
+        } else {
+            moderator.setUniversityId(null);
         }
         
         String communityIdStr = req.getParameter("communityId");
@@ -68,6 +87,13 @@ public class EditModeratorServlet extends HttpServlet {
             moderator.setCommunityId(Integer.parseInt(communityIdStr));
         } else {
             moderator.setCommunityId(null);
+        }
+        
+        // Handle password reset if provided
+        String newPassword = req.getParameter("newPassword");
+        if (newPassword != null && !newPassword.isEmpty()) {
+            String passwordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            userDAO.updatePassword(moderator.getId(), passwordHash);
         }
 
         userDAO.update(moderator);

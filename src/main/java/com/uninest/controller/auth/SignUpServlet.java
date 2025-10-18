@@ -2,6 +2,7 @@ package com.uninest.controller.auth;
 
 import com.uninest.model.User;
 import com.uninest.model.dao.UserDAO;
+import com.uninest.model.dao.UniversityDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,9 +16,11 @@ import java.util.Optional;
 @WebServlet(name = "signup", urlPatterns = "/signup")
 public class SignUpServlet extends HttpServlet {
     private final UserDAO userDAO = new UserDAO();
+    private final UniversityDAO universityDAO = new UniversityDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setAttribute("universities", universityDAO.findAll());
         req.getRequestDispatcher("/WEB-INF/views/auth/signup.jsp").forward(req, resp);
     }
 
@@ -29,7 +32,7 @@ public class SignUpServlet extends HttpServlet {
         String confirmPassword = req.getParameter("confirmPassword");
         String roleStr = req.getParameter("role");
         String academicYearStr = req.getParameter("academicYear");
-        String university = req.getParameter("university");
+        String universityIdStr = req.getParameter("universityId");
 
         // Validation
         if (fullName == null || fullName.trim().isEmpty() ||
@@ -77,6 +80,7 @@ public class SignUpServlet extends HttpServlet {
         // Create user
         User user = new User();
         user.setEmail(email.trim());
+        user.setName(fullName.trim());
         user.setPasswordHash(passwordHash);
         user.setRole(role);
         // Only students capture academic year + university on signup
@@ -87,9 +91,11 @@ public class SignUpServlet extends HttpServlet {
                     if (ay >= 1 && ay <= 4) user.setAcademicYear(ay);
                 }
             } catch (NumberFormatException ignored) {}
-            if (university != null && !university.isBlank()) {
-                user.setUniversity(university.trim());
-            }
+            try {
+                if (universityIdStr != null && !universityIdStr.isBlank()) {
+                    user.setUniversityId(Integer.parseInt(universityIdStr));
+                }
+            } catch (NumberFormatException ignored) {}
         }
         
         try {

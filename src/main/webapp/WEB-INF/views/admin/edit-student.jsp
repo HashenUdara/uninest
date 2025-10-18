@@ -28,6 +28,13 @@
       <input type="hidden" name="id" value="${student.id}" />
       <div class="c-form-card">
         <div class="c-field">
+          <label class="c-field__label" for="name">Full Name</label>
+          <input class="c-field__input" id="name" name="name" type="text" 
+                 value="${student.name}" placeholder="Enter student name" />
+          <div class="c-field__error"></div>
+        </div>
+
+        <div class="c-field">
           <label class="c-field__label" for="email">Email Address</label>
           <input class="c-field__input" id="email" name="email" type="email" 
                  value="${student.email}" required />
@@ -48,9 +55,23 @@
 
         <div class="c-field">
           <label class="c-field__label" for="university">University</label>
-          <input class="c-field__input" id="university" name="university" type="text" 
-                 value="${student.university}" placeholder="e.g., University of Colombo" />
+          <select class="c-field__input" id="university" name="universityId">
+            <option value="">Select university (optional)</option>
+            <c:forEach items="${universities}" var="uni">
+              <option value="${uni.id}" ${student.universityId == uni.id ? 'selected' : ''}>
+                ${uni.name}
+              </option>
+            </c:forEach>
+          </select>
           <div class="c-field__error"></div>
+        </div>
+
+        <div class="c-field">
+          <label class="c-field__label" for="newPassword">New Password (Optional)</label>
+          <input class="c-field__input" id="newPassword" name="newPassword" type="password" 
+                 placeholder="Leave blank to keep current password" />
+          <div class="c-field__error"></div>
+          <small class="c-field__hint">Enter a new password only if you want to reset it.</small>
         </div>
 
         <div class="c-field">

@@ -27,6 +27,13 @@
     <form class="c-form" action="${pageContext.request.contextPath}/admin/students/add" method="post">
       <div class="c-form-card">
         <div class="c-field">
+          <label class="c-field__label" for="name">Full Name</label>
+          <input class="c-field__input" id="name" name="name" type="text" 
+                 placeholder="Enter student name" required />
+          <div class="c-field__error"></div>
+        </div>
+
+        <div class="c-field">
           <label class="c-field__label" for="email">Email Address</label>
           <input class="c-field__input" id="email" name="email" type="email" 
                  placeholder="student@university.edu" required />
@@ -54,8 +61,12 @@
 
         <div class="c-field">
           <label class="c-field__label" for="university">University</label>
-          <input class="c-field__input" id="university" name="university" type="text" 
-                 placeholder="e.g., University of Colombo" />
+          <select class="c-field__input" id="university" name="universityId">
+            <option value="">Select university (optional)</option>
+            <c:forEach items="${universities}" var="uni">
+              <option value="${uni.id}">${uni.name}</option>
+            </c:forEach>
+          </select>
           <div class="c-field__error"></div>
         </div>
 

@@ -59,16 +59,51 @@ CREATE TABLE `communities` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
+-- Table: universities
+-- --------------------------------------------------------
+CREATE TABLE `universities` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(200) NOT NULL UNIQUE,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Insert Sri Lankan universities
+INSERT INTO `universities` (`name`) VALUES
+('University of Colombo'),
+('University of Peradeniya'),
+('University of Sri Jayewardenepura'),
+('University of Kelaniya'),
+('University of Moratuwa'),
+('University of Jaffna'),
+('University of Ruhuna'),
+('Eastern University, Sri Lanka'),
+('South Eastern University of Sri Lanka'),
+('Rajarata University of Sri Lanka'),
+('Sabaragamuwa University of Sri Lanka'),
+('Wayamba University of Sri Lanka'),
+('Uva Wellassa University'),
+('University of the Visual and Performing Arts'),
+('Open University of Sri Lanka'),
+('Gampaha Wickramarachchi University of Indigenous Medicine'),
+('Ocean University of Sri Lanka'),
+('University of Vavuniya'),
+('National School of Business Management (NSBM Green University)');
+
+-- --------------------------------------------------------
 -- Alter users: community membership + profile fields
 -- --------------------------------------------------------
 ALTER TABLE `users`
   ADD COLUMN `community_id` INT NULL AFTER `role_id`,
   ADD COLUMN `academic_year` TINYINT NULL AFTER `community_id`,
-  ADD COLUMN `university` VARCHAR(150) NULL AFTER `academic_year`;
+  ADD COLUMN `university_id` INT NULL AFTER `academic_year`,
+  ADD COLUMN `name` VARCHAR(200) NULL AFTER `email`;
 
 ALTER TABLE `users`
   ADD CONSTRAINT `fk_users_community`
-    FOREIGN KEY (`community_id`) REFERENCES `communities`(`id`) ON DELETE SET NULL;
+    FOREIGN KEY (`community_id`) REFERENCES `communities`(`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_users_university`
+    FOREIGN KEY (`university_id`) REFERENCES `universities`(`id`) ON DELETE SET NULL;
 
 -- --------------------------------------------------------
 -- Optional: password_reset_tokens (for auth system)

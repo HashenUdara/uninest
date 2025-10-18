@@ -1,7 +1,7 @@
 package com.uninest.controller.admin;
 
 import com.uninest.model.User;
-import com.uninest.model.dao.OrganizationDAO;
+import com.uninest.model.dao.CommunityDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,9 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "approveOrganization", urlPatterns = "/admin/organizations/approve")
-public class ApproveOrganizationServlet extends HttpServlet {
-    private final OrganizationDAO organizationDAO = new OrganizationDAO();
+@WebServlet(name = "approveCommunity", urlPatterns = "/admin/communities/approve")
+public class ApproveCommunityServlet extends HttpServlet {
+    private final CommunityDAO communityDAO = new CommunityDAO();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -19,10 +19,10 @@ public class ApproveOrganizationServlet extends HttpServlet {
         User admin = (User) req.getSession().getAttribute("authUser");
         try {
             int id = Integer.parseInt(idStr);
-            organizationDAO.approve(id, admin.getId());
-            resp.sendRedirect(req.getContextPath() + "/admin/organizations");
+            communityDAO.approve(id, admin.getId());
+            resp.sendRedirect(req.getContextPath() + "/admin/communities");
         } catch (NumberFormatException e) {
-            resp.sendRedirect(req.getContextPath() + "/admin/organizations");
+            resp.sendRedirect(req.getContextPath() + "/admin/communities");
         }
     }
 }

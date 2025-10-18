@@ -23,7 +23,7 @@
 │                   │              │                   │
 │ - Dashboard       │              │ - Dashboard       │
 │ - Students        │              │ - My Subjects     │
-│ - Organizations   │              │ - Kuppi Sessions  │
+│ - Communities   │              │ - Kuppi Sessions  │
 │ - Settings        │              │ - Resources       │
 │                   │              │ - Progress        │
 │ Passes through    │              │ - Community       │
@@ -98,7 +98,7 @@ When admin/dashboard.jsp is rendered:
            └─> Navigation defined once:
                - Dashboard (active)
                - Students
-               - Organizations
+               - Communities
                - Settings
 
 4. HTML Output:
@@ -111,7 +111,7 @@ When admin/dashboard.jsp is rendered:
            <!-- Navigation from admin-dashboard.tag -->
            <a class="active">Dashboard</a>
            <a>Students</a>
-           <a>Organizations</a>
+           <a>Communities</a>
            <a>Settings</a>
          </nav>
        </aside>

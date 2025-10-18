@@ -122,23 +122,23 @@
   }
   ns.password = { passwordScore, initPasswordMeter };
 
-  /* ================= Organization Switcher ================= */
+  /* ================= Community Switcher ================= */
   const ORG_KEY = "uninest-active-org";
-  function getActiveOrg() {
+  function getActiveComm() {
     return localStorage.getItem(ORG_KEY) || "Default University";
   }
-  function setActiveOrg(org) {
+  function setActiveComm(org) {
     localStorage.setItem(ORG_KEY, org);
   }
-  function initOrgSwitcher() {
-    document.querySelectorAll(".js-org-select").forEach((sel) => {
-      const current = getActiveOrg();
+  function initCommSwitcher() {
+    document.querySelectorAll(".js-comm-select").forEach((sel) => {
+      const current = getActiveComm();
       // If the current value exists in options, select it; otherwise keep first
       Array.from(sel.options).forEach((opt) => {
         if (opt.value === current) sel.value = current;
       });
       sel.addEventListener("change", () => {
-        setActiveOrg(sel.value);
+        setActiveComm(sel.value);
         // Optional: emit a custom event for components to react
         document.dispatchEvent(
           new CustomEvent("uninest:org-changed", { detail: { org: sel.value } })
@@ -147,9 +147,9 @@
     });
     // Reflect active org into any placeholder nodes
     const orgNodes = document.querySelectorAll(".js-active-org");
-    orgNodes.forEach((n) => (n.textContent = getActiveOrg()));
+    orgNodes.forEach((n) => (n.textContent = getActiveComm()));
   }
-  ns.org = { initOrgSwitcher, getActiveOrg, setActiveOrg };
+  ns.org = { initCommSwitcher, getActiveComm, setActiveComm };
 
   /* ================= Upload UI (Dropzone + Progress) ================= */
   function initUploadUI() {
@@ -249,7 +249,7 @@
       window.lucide.createIcons();
     }
     initTheme();
-    initOrgSwitcher();
+    initCommSwitcher();
     initUploadUI();
     initUploadTabs();
     // Rating chips (feedback page)
@@ -274,9 +274,9 @@
 
     // Users table enhancements (sorting, toolbar count, delete modal/toast)
     initUsersTable();
-    // Organizations: confirm-only modals + avatar coloring and counts
-    initOrgConfirm();
-    initOrgAvatars();
+    // Communities: confirm-only modals + avatar coloring and counts
+    initCommConfirm();
+    initCommAvatars();
   });
 })();
 
@@ -363,7 +363,7 @@ function initUsersTable() {
           const el = row.querySelector("td:nth-child(4)");
           return el ? el.textContent.trim().toLowerCase() : "";
         }
-        case "organization": {
+        case "community": {
           const el = row.querySelector("td:nth-child(5)");
           return el ? el.textContent.trim().toLowerCase() : "";
         }
@@ -441,21 +441,21 @@ function initUsersTable() {
   }
 }
 
-/* ================= Organizations: confirm-only + avatars & count ================= */
-function initOrgConfirm() {
+/* ================= Communities: confirm-only + avatars & count ================= */
+function initCommConfirm() {
   const modal = document.getElementById("confirm-modal");
   if (!modal) return;
   document.addEventListener("click", (e) => {
-    const approve = e.target.closest && e.target.closest(".js-org-approve");
-    const reject = e.target.closest && e.target.closest(".js-org-reject");
-    const del = e.target.closest && e.target.closest(".js-org-delete");
+    const approve = e.target.closest && e.target.closest(".js-comm-approve");
+    const reject = e.target.closest && e.target.closest(".js-comm-reject");
+    const del = e.target.closest && e.target.closest(".js-comm-delete");
     const trigger = approve || reject || del;
     if (!trigger) return;
     const titleText = approve
-      ? "Approve organization"
+      ? "Approve community"
       : reject
-      ? "Reject organization"
-      : "Delete organization";
+      ? "Reject community"
+      : "Delete community";
     const title = modal.querySelector("#confirm-title");
     if (title) title.textContent = titleText;
     modal.hidden = false;
@@ -469,17 +469,17 @@ function initOrgConfirm() {
   });
 }
 
-function initOrgAvatars() {
+function initCommAvatars() {
   // Colorize avatars and set counts per table
   document
-    .querySelectorAll("table.c-table[data-org-table]")
+    .querySelectorAll("table.c-table[data-comm-table]")
     .forEach((table) => {
-      const countEl = table.closest("section")?.querySelector(".js-org-count");
+      const countEl = table.closest("section")?.querySelector(".js-comm-count");
       const rows = table.querySelectorAll("tbody tr");
       if (countEl) countEl.textContent = String(rows.length);
-      table.querySelectorAll(".c-org-cell").forEach((row) => {
-        const titleEl = row.querySelector(".c-org-cell__title");
-        const avatarEl = row.querySelector(".c-org-cell__avatar");
+      table.querySelectorAll(".c-comm-cell").forEach((row) => {
+        const titleEl = row.querySelector(".c-comm-cell__title");
+        const avatarEl = row.querySelector(".c-comm-cell__avatar");
         if (!titleEl || !avatarEl) return;
         const title = titleEl.textContent.trim();
         const first = firstAlpha(title);

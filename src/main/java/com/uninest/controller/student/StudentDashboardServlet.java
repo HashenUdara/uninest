@@ -13,8 +13,8 @@ public class StudentDashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("authUser");
-        if (user.getOrganizationId() == null) {
-            resp.sendRedirect(req.getContextPath() + "/student/join-organization");
+        if (user.getCommunityId() == null) {
+            resp.sendRedirect(req.getContextPath() + "/student/join-community");
             return;
         }
         req.getRequestDispatcher("/WEB-INF/views/student/dashboard.jsp").forward(req, resp);

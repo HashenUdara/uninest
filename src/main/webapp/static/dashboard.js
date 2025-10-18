@@ -122,34 +122,34 @@
   }
   ns.password = { passwordScore, initPasswordMeter };
 
-  /* ================= Organization Switcher ================= */
-  const ORG_KEY = "uninest-active-org";
-  function getActiveOrg() {
-    return localStorage.getItem(ORG_KEY) || "Default University";
+  /* ================= Community Switcher ================= */
+  const COMM_KEY = "uninest-active-org";
+  function getActiveComm() {
+    return localStorage.getItem(COMM_KEY) || "Default University";
   }
-  function setActiveOrg(org) {
-    localStorage.setItem(ORG_KEY, org);
+  function setActiveComm(org) {
+    localStorage.setItem(COMM_KEY, org);
   }
-  function initOrgSwitcher() {
-    document.querySelectorAll(".js-org-select").forEach((sel) => {
-      const current = getActiveOrg();
+  function initCommSwitcher() {
+    document.querySelectorAll(".js-comm-select").forEach((sel) => {
+      const current = getActiveComm();
       // If the current value exists in options, select it; otherwise keep first
       Array.from(sel.options).forEach((opt) => {
         if (opt.value === current) sel.value = current;
       });
       sel.addEventListener("change", () => {
-        setActiveOrg(sel.value);
+        setActiveComm(sel.value);
         // Optional: emit a custom event for components to react
         document.dispatchEvent(
-          new CustomEvent("uninest:org-changed", { detail: { org: sel.value } })
+          new CustomEvent("uninest:comm-changed", { detail: { org: sel.value } })
         );
       });
     });
     // Reflect active org into any placeholder nodes
     const orgNodes = document.querySelectorAll(".js-active-org");
-    orgNodes.forEach((n) => (n.textContent = getActiveOrg()));
+    orgNodes.forEach((n) => (n.textContent = getActiveComm()));
   }
-  ns.org = { initOrgSwitcher, getActiveOrg, setActiveOrg };
+  ns.org = { initCommSwitcher, getActiveComm, setActiveComm };
 
   /* ================= Init (DOM Ready) ================= */
   document.addEventListener("DOMContentLoaded", () => {
@@ -158,17 +158,17 @@
       window.lucide.createIcons();
     }
     initTheme();
-    initOrgSwitcher();
+    initCommSwitcher();
     document
       .querySelectorAll("form.js-validate")
       .forEach((f) => attachValidation(f));
   });
 })();
 
-/* ===== Organization Management Functions ===== */
+/* ===== Community Management Functions ===== */
 
-// Initialize organization avatars and counts
-function initOrgAvatars() {
+// Initialize community avatars and counts
+function initCommAvatars() {
   function avatarColorFromChar(ch) {
     const A = "A".charCodeAt(0);
     const idx = Math.max(0, (ch.toUpperCase().charCodeAt(0) - A) % 26);
@@ -185,14 +185,14 @@ function initOrgAvatars() {
     return match ? match[0].toUpperCase() : "U";
   }
 
-  document.querySelectorAll("table.c-table[data-org-table]").forEach((table) => {
-    const countEl = table.closest("section")?.querySelector(".js-org-count");
+  document.querySelectorAll("table.c-table[data-comm-table]").forEach((table) => {
+    const countEl = table.closest("section")?.querySelector(".js-comm-count");
     const rows = table.querySelectorAll("tbody tr");
     if (countEl) countEl.textContent = String(rows.length);
     
-    table.querySelectorAll(".c-org-cell").forEach((row) => {
-      const titleEl = row.querySelector(".c-org-cell__title");
-      const avatarEl = row.querySelector(".c-org-cell__avatar");
+    table.querySelectorAll(".c-comm-cell").forEach((row) => {
+      const titleEl = row.querySelector(".c-comm-cell__title");
+      const avatarEl = row.querySelector(".c-comm-cell__avatar");
       if (!titleEl || !avatarEl) return;
       const title = titleEl.textContent.trim();
       const first = firstAlpha(title);
@@ -204,8 +204,8 @@ function initOrgAvatars() {
   });
 }
 
-// Initialize organization confirm modals
-function initOrgConfirm() {
+// Initialize community confirm modals
+function initCommConfirm() {
   const modal = document.getElementById("confirm-modal");
   if (!modal) return;
 
@@ -213,9 +213,9 @@ function initOrgConfirm() {
   let pendingForm = null;
 
   document.addEventListener("click", (e) => {
-    const approve = e.target.closest && e.target.closest(".js-org-approve");
-    const reject = e.target.closest && e.target.closest(".js-org-reject");
-    const del = e.target.closest && e.target.closest(".js-org-delete");
+    const approve = e.target.closest && e.target.closest(".js-comm-approve");
+    const reject = e.target.closest && e.target.closest(".js-comm-reject");
+    const del = e.target.closest && e.target.closest(".js-comm-delete");
     const trigger = approve || reject || del;
     
     if (!trigger) return;
@@ -223,16 +223,16 @@ function initOrgConfirm() {
     e.preventDefault();
     
     const titleText = approve
-      ? "Approve organization"
+      ? "Approve community"
       : reject
-      ? "Reject organization"
-      : "Delete organization";
+      ? "Reject community"
+      : "Delete community";
     
     const bodyText = approve
-      ? "Are you sure you want to approve this organization?"
+      ? "Are you sure you want to approve this community?"
       : reject
-      ? "Are you sure you want to reject this organization?"
-      : "Are you sure you want to delete this organization? This action cannot be undone.";
+      ? "Are you sure you want to reject this community?"
+      : "Are you sure you want to delete this community? This action cannot be undone.";
     
     const title = modal.querySelector("#confirm-title");
     const body = modal.querySelector(".c-modal__body p");
@@ -273,6 +273,6 @@ function initOrgConfirm() {
 
 // Initialize on DOM ready
 document.addEventListener("DOMContentLoaded", function() {
-  initOrgAvatars();
-  initOrgConfirm();
+  initCommAvatars();
+  initCommConfirm();
 });

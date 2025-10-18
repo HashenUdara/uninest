@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Organizations • Rejected • UniNest</title>
+    <title>Communities • Accepted • UniNest</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -62,39 +62,37 @@
           <nav class="c-breadcrumbs" aria-label="Breadcrumb">
             <a href="#">Admin</a>
             <span class="c-breadcrumbs__sep">/</span>
-            <span aria-current="page">Organizations</span>
+            <span aria-current="page">Communities</span>
           </nav>
           <div class="c-page__titlebar">
             <div>
-              <h1 class="c-page__title">Organizations</h1>
-              <p class="c-page__subtitle u-text-muted">
-                Rejected organizations.
-              </p>
+              <h1 class="c-page__title">Communities</h1>
+              <p class="c-page__subtitle u-text-muted">Accepted communities.</p>
             </div>
-            <a class="c-btn" href="organization-create.html">
-              <i data-lucide="plus"></i> Create Organization
+            <a class="c-btn" href="community-create.html">
+              <i data-lucide="plus"></i> Create Community
             </a>
           </div>
-          <div class="c-tabs" role="tablist" aria-label="Organization tabs">
+          <div class="c-tabs" role="tablist" aria-label="Community tabs">
             <a
-              href="organizations-pending.html"
+              href="communities-pending.html"
               class="c-tabs__link"
               role="tab"
               aria-selected="false"
               >Pending</a
             >
             <a
-              href="organizations-accepted.html"
-              class="c-tabs__link"
-              role="tab"
-              aria-selected="false"
-              >Accepted</a
-            >
-            <a
-              href="organizations-rejected.html"
+              href="communities-accepted.html"
               class="c-tabs__link is-active"
               role="tab"
               aria-selected="true"
+              >Accepted</a
+            >
+            <a
+              href="communities-rejected.html"
+              class="c-tabs__link"
+              role="tab"
+              aria-selected="false"
               >Rejected</a
             >
           </div>
@@ -104,21 +102,21 @@
           <div class="c-table-toolbar">
             <div class="c-table-toolbar__left">
               <span class="u-text-muted"
-                ><span class="js-org-count">0</span> organizations</span
+                ><span class="js-comm-count">0</span> communities</span
               >
             </div>
           </div>
           <div class="c-table-wrap">
             <table
               class="c-table c-table--sticky"
-              aria-label="Rejected organizations"
-              data-org-table
+              aria-label="Accepted communities"
+              data-comm-table
             >
               <thead>
                 <tr>
                   <th aria-sort="none">
                     <button class="c-table-sort js-sort" data-key="title">
-                      Organization<span
+                      Community<span
                         class="c-sort-indicator"
                         aria-hidden="true"
                       ></span>
@@ -139,43 +137,91 @@
               <tbody>
                 <tr>
                   <td>
-                    <div class="c-org-cell">
+                    <div class="c-comm-cell">
                       <span
-                        class="c-org-cell__avatar"
+                        class="c-comm-cell__avatar"
                         aria-hidden="true"
                       ></span>
-                      <div class="c-org-cell__meta">
-                        <span class="c-org-cell__title">Highland Org</span>
-                        <span class="c-org-cell__sub u-text-muted"
-                          >ID: O-40001</span
+                      <div class="c-comm-cell__meta">
+                        <span class="c-comm-cell__title">Summit Org</span>
+                        <span class="c-comm-cell__sub u-text-muted"
+                          >ID: C-30001</span
                         >
                       </div>
                     </div>
                   </td>
                   <td>
                     <div class="u-clamp-2">
-                      Previously rejected due to incomplete documentation.
-                      Awaiting resubmission for review.
+                      Career development and alumni networking community running
+                      monthly meetups.
                     </div>
                   </td>
                   <td>
                     <span class="c-members"
-                      ><i data-lucide="users"></i><span>51</span></span
+                      ><i data-lucide="users"></i><span>214</span></span
                     >
                   </td>
                   <td class="u-text-right">
                     <div class="c-table-actions">
                       <button
-                        class="c-btn c-btn--sm js-org-approve"
-                        aria-label="Approve"
+                        class="c-btn c-btn--sm c-btn--ghost js-comm-reject"
+                        aria-label="Reject"
                       >
-                        Approve
+                        Reject
                       </button>
                       <a class="c-icon-btn" aria-label="Edit" href="edit?id=1">
                         <i data-lucide="pencil"></i>
                       </a>
                       <button
-                        class="c-icon-btn js-org-delete"
+                        class="c-icon-btn js-comm-delete"
+                        aria-label="Delete"
+                      >
+                        <i data-lucide="trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="c-comm-cell">
+                      <span
+                        class="c-comm-cell__avatar"
+                        aria-hidden="true"
+                      ></span>
+                      <div class="c-comm-cell__meta">
+                        <span class="c-comm-cell__title"
+                          >Crimson Valley Org</span
+                        >
+                        <span class="c-comm-cell__sub u-text-muted"
+                          >ID: C-30002</span
+                        >
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="u-clamp-2">
+                      STEM outreach group facilitating lab tours for local high
+                      schools and hosting fairs.
+                    </div>
+                  </td>
+                  <td>
+                    <span class="c-members"
+                      ><i data-lucide="users"></i><span>341</span></span
+                    >
+                  </td>
+                  <td class="u-text-right">
+                    <div class="c-table-actions">
+                      <button
+                        class="c-btn c-btn--sm c-btn--ghost js-comm-reject"
+                        aria-label="Reject"
+                      >
+                        Reject
+                      </button>
+                      <a class="c-icon-btn" aria-label="Edit" href="edit?id=1">
+                        <i data-lucide="pencil"></i>
+                      </a>
+                      <button
+                        class="c-icon-btn js-comm-delete"
                         aria-label="Delete"
                       >
                         <i data-lucide="trash"></i>

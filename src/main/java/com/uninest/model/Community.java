@@ -2,7 +2,7 @@ package com.uninest.model;
 
 import java.sql.Timestamp;
 
-public class Organization {
+public class Community {
     private int id;
     private String title;
     private String description;

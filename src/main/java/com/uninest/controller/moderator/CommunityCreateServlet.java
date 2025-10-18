@@ -1,8 +1,8 @@
 package com.uninest.controller.moderator;
 
-import com.uninest.model.Organization;
+import com.uninest.model.Community;
 import com.uninest.model.User;
-import com.uninest.model.dao.OrganizationDAO;
+import com.uninest.model.dao.CommunityDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,13 +10,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "organizationCreate", urlPatterns = "/moderator/organization/create")
-public class OrganizationCreateServlet extends HttpServlet {
-    private final OrganizationDAO organizationDAO = new OrganizationDAO();
+@WebServlet(name = "communityCreate", urlPatterns = "/moderator/community/create")
+public class CommunityCreateServlet extends HttpServlet {
+    private final CommunityDAO communityDAO = new CommunityDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/views/moderator/organization-create.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/moderator/community-create.jsp").forward(req, resp);
     }
 
     @Override
@@ -27,16 +27,16 @@ public class OrganizationCreateServlet extends HttpServlet {
 
         if (title == null || title.trim().isEmpty()) {
             req.setAttribute("error", "Title is required");
-            req.getRequestDispatcher("/WEB-INF/views/moderator/organization-create.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/views/moderator/community-create.jsp").forward(req, resp);
             return;
         }
 
-        Organization org = new Organization();
-        org.setTitle(title.trim());
-        org.setDescription(description == null ? null : description.trim());
-        org.setCreatedByUserId(user.getId());
-        organizationDAO.create(org);
+        Community comm = new Community();
+        comm.setTitle(title.trim());
+        comm.setDescription(description == null ? null : description.trim());
+        comm.setCreatedByUserId(user.getId());
+        communityDAO.create(comm);
 
-        resp.sendRedirect(req.getContextPath() + "/moderator/organization/waiting");
+        resp.sendRedirect(req.getContextPath() + "/moderator/community/waiting");
     }
 }

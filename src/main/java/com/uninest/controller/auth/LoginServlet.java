@@ -2,8 +2,8 @@ package com.uninest.controller.auth;
 
 import com.uninest.model.User;
 import com.uninest.model.dao.UserDAO;
-import com.uninest.model.dao.OrganizationDAO;
-import com.uninest.model.Organization;
+import com.uninest.model.dao.CommunityDAO;
+import com.uninest.model.Community;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @WebServlet(name = "login", urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
     private final UserDAO userDAO = new UserDAO();
-    private final OrganizationDAO organizationDAO = new OrganizationDAO();
+    private final CommunityDAO communityDAO = new CommunityDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -47,17 +47,17 @@ public class LoginServlet extends HttpServlet {
         } else if (user.isSubjectCoordinator()) {
             resp.sendRedirect(req.getContextPath() + "/coordinator/dashboard");
         } else if (user.isModerator()) {
-            java.util.Optional<Organization> orgOpt = organizationDAO.findByCreatorUserId(user.getId());
-            if (orgOpt.isEmpty()) {
-                resp.sendRedirect(req.getContextPath() + "/moderator/organization/create");
-            } else if (!orgOpt.get().isApproved()) {
-                resp.sendRedirect(req.getContextPath() + "/moderator/organization/waiting");
+            java.util.Optional<Community> commOpt = communityDAO.findByCreatorUserId(user.getId());
+            if (commOpt.isEmpty()) {
+                resp.sendRedirect(req.getContextPath() + "/moderator/community/create");
+            } else if (!commOpt.get().isApproved()) {
+                resp.sendRedirect(req.getContextPath() + "/moderator/community/waiting");
             } else {
                 resp.sendRedirect(req.getContextPath() + "/moderator/dashboard");
             }
         } else {
-            if (user.getOrganizationId() == null) {
-                resp.sendRedirect(req.getContextPath() + "/student/join-organization");
+            if (user.getCommunityId() == null) {
+                resp.sendRedirect(req.getContextPath() + "/student/join-community");
             } else {
                 resp.sendRedirect(req.getContextPath() + "/student/dashboard");
             }

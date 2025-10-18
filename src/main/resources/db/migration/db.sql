@@ -39,9 +39,9 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
--- Table: organizations
+-- Table: communities
 -- --------------------------------------------------------
-CREATE TABLE `organizations` (
+CREATE TABLE `communities` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(150) NOT NULL,
   `description` VARCHAR(1024) DEFAULT NULL,
@@ -52,23 +52,23 @@ CREATE TABLE `organizations` (
   `approved_by_user_id` INT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `idx_org_status` (`status`),
-  INDEX `idx_org_approved` (`approved`),
+  INDEX `idx_comm_status` (`status`),
+  INDEX `idx_comm_approved` (`approved`),
   FOREIGN KEY (`created_by_user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`approved_by_user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
--- Alter users: organization membership + profile fields
+-- Alter users: community membership + profile fields
 -- --------------------------------------------------------
 ALTER TABLE `users`
-  ADD COLUMN `organization_id` INT NULL AFTER `role_id`,
-  ADD COLUMN `academic_year` TINYINT NULL AFTER `organization_id`,
+  ADD COLUMN `community_id` INT NULL AFTER `role_id`,
+  ADD COLUMN `academic_year` TINYINT NULL AFTER `community_id`,
   ADD COLUMN `university` VARCHAR(150) NULL AFTER `academic_year`;
 
 ALTER TABLE `users`
-  ADD CONSTRAINT `fk_users_organization`
-    FOREIGN KEY (`organization_id`) REFERENCES `organizations`(`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_users_community`
+    FOREIGN KEY (`community_id`) REFERENCES `communities`(`id`) ON DELETE SET NULL;
 
 -- --------------------------------------------------------
 -- Optional: password_reset_tokens (for auth system)

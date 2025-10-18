@@ -97,8 +97,8 @@
               </td>
               <td>
                 <c:choose>
-                  <c:when test="${not empty moderator.communityId}">
-                    Community ${moderator.communityId}
+                  <c:when test="${not empty moderator.communityName}">
+                    ${moderator.communityName}
                   </c:when>
                   <c:otherwise>
                     <span class="u-text-muted">Not assigned</span>

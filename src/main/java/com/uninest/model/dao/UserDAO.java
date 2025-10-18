@@ -9,8 +9,12 @@ import java.util.Optional;
 public class UserDAO {
 
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT u.id, u.email, u.password_hash, u.community_id, u.academic_year, u.university, r.name AS role_name " +
-                "FROM users u JOIN roles r ON u.role_id = r.id WHERE u.email = ?";
+        String sql = "SELECT u.id, u.email, u.password_hash, u.community_id, u.academic_year, u.university, " +
+                "r.name AS role_name, c.title AS community_name " +
+                "FROM users u " +
+                "JOIN roles r ON u.role_id = r.id " +
+                "LEFT JOIN communities c ON u.community_id = c.id " +
+                "WHERE u.email = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -106,6 +110,7 @@ public class UserDAO {
         );
         int commId = rs.getInt("community_id");
         u.setCommunityId(rs.wasNull() ? null : commId);
+        u.setCommunityName(rs.getString("community_name"));
         int ay = rs.getInt("academic_year");
         u.setAcademicYear(rs.wasNull() ? null : ay);
         u.setUniversity(rs.getString("university"));
@@ -125,8 +130,12 @@ public class UserDAO {
     }
 
     public java.util.List<User> findByRole(String roleName) {
-        String sql = "SELECT u.id, u.email, u.password_hash, u.community_id, u.academic_year, u.university, r.name AS role_name " +
-                "FROM users u JOIN roles r ON u.role_id = r.id WHERE r.name = ? ORDER BY u.id DESC";
+        String sql = "SELECT u.id, u.email, u.password_hash, u.community_id, u.academic_year, u.university, " +
+                "r.name AS role_name, c.title AS community_name " +
+                "FROM users u " +
+                "JOIN roles r ON u.role_id = r.id " +
+                "LEFT JOIN communities c ON u.community_id = c.id " +
+                "WHERE r.name = ? ORDER BY u.id DESC";
         java.util.List<User> users = new java.util.ArrayList<>();
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -143,8 +152,12 @@ public class UserDAO {
     }
 
     public java.util.List<User> searchUsers(String roleName, String searchTerm) {
-        String sql = "SELECT u.id, u.email, u.password_hash, u.community_id, u.academic_year, u.university, r.name AS role_name " +
-                "FROM users u JOIN roles r ON u.role_id = r.id WHERE r.name = ? AND (u.email LIKE ? OR u.university LIKE ?) ORDER BY u.id DESC";
+        String sql = "SELECT u.id, u.email, u.password_hash, u.community_id, u.academic_year, u.university, " +
+                "r.name AS role_name, c.title AS community_name " +
+                "FROM users u " +
+                "JOIN roles r ON u.role_id = r.id " +
+                "LEFT JOIN communities c ON u.community_id = c.id " +
+                "WHERE r.name = ? AND (u.email LIKE ? OR u.university LIKE ?) ORDER BY u.id DESC";
         java.util.List<User> users = new java.util.ArrayList<>();
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -164,8 +177,12 @@ public class UserDAO {
     }
 
     public Optional<User> findById(int id) {
-        String sql = "SELECT u.id, u.email, u.password_hash, u.community_id, u.academic_year, u.university, r.name AS role_name " +
-                "FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?";
+        String sql = "SELECT u.id, u.email, u.password_hash, u.community_id, u.academic_year, u.university, " +
+                "r.name AS role_name, c.title AS community_name " +
+                "FROM users u " +
+                "JOIN roles r ON u.role_id = r.id " +
+                "LEFT JOIN communities c ON u.community_id = c.id " +
+                "WHERE u.id = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);

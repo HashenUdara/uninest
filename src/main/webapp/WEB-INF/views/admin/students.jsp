@@ -108,8 +108,8 @@
               </td>
               <td>
                 <c:choose>
-                  <c:when test="${not empty student.communityId}">
-                    Community ${student.communityId}
+                  <c:when test="${not empty student.communityName}">
+                    ${student.communityName}
                   </c:when>
                   <c:otherwise>
                     <span class="u-text-muted">Not assigned</span>

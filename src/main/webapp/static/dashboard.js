@@ -311,10 +311,84 @@ function initCommConfirm() {
   });
 }
 
+// Initialize join request avatars
+function initReqAvatars() {
+  document.querySelectorAll("table.c-table[data-req-table]").forEach((table) => {
+    const countEl = table.closest("section")?.querySelector(".js-req-count");
+    const rows = table.querySelectorAll("tbody tr");
+    if (countEl) countEl.textContent = String(rows.length);
+  });
+  
+  initAvatars(".c-comm-cell", ".c-comm-cell__title");
+}
+
+// Initialize join request confirm modals
+function initReqConfirm() {
+  const modal = document.getElementById("confirm-modal");
+  if (!modal) return;
+
+  let pendingForm = null;
+
+  document.addEventListener("click", (e) => {
+    const approve = e.target.closest && e.target.closest(".js-req-approve");
+    const reject = e.target.closest && e.target.closest(".js-req-reject");
+    const trigger = approve || reject;
+    
+    if (!trigger) return;
+    
+    e.preventDefault();
+    
+    const titleText = approve
+      ? "Approve join request"
+      : "Reject join request";
+    
+    const bodyText = approve
+      ? "Are you sure you want to approve this join request?"
+      : "Are you sure you want to reject this join request?";
+    
+    const title = modal.querySelector("#confirm-title");
+    const body = modal.querySelector(".c-modal__body p");
+    if (title) title.textContent = titleText;
+    if (body) body.textContent = bodyText;
+    
+    pendingForm = trigger.closest("form");
+    
+    modal.hidden = false;
+    modal.querySelector(".js-confirm-action")?.focus();
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target.matches("[data-close]")) {
+      modal.hidden = true;
+      pendingForm = null;
+    }
+  });
+
+  const confirmBtn = modal.querySelector(".js-confirm-action");
+  if (confirmBtn) {
+    confirmBtn.addEventListener("click", () => {
+      if (pendingForm) {
+        pendingForm.submit();
+      }
+      modal.hidden = true;
+      pendingForm = null;
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (!modal.hidden && e.key === "Escape") {
+      modal.hidden = true;
+      pendingForm = null;
+    }
+  });
+}
+
 // Initialize on DOM ready
 document.addEventListener("DOMContentLoaded", function() {
   initCommAvatars();
   initUserAvatars();
   initSidebarAvatar();
+  initReqAvatars();
   initCommConfirm();
+  initReqConfirm();
 });

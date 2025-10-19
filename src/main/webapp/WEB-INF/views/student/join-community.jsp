@@ -7,6 +7,9 @@
   <c:if test="${not empty error}">
     <div class="c-field__error" style="text-align: center; font-size: var(--fs-sm); margin-bottom: var(--space-4);">${error}</div>
   </c:if>
+  <c:if test="${not empty success}">
+    <div style="text-align: center; font-size: var(--fs-sm); margin-bottom: var(--space-4); color: #22c55e;">${success}</div>
+  </c:if>
   <form class="c-auth__form js-auth-form" method="post" action="${pageContext.request.contextPath}/student/join-community" novalidate>
     <div class="c-field" style="grid-column: 1 / -1;">
       <label for="communityId" class="c-field__label">Community ID</label>

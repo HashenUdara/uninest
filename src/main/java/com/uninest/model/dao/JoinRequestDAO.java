@@ -173,4 +173,15 @@ public class JoinRequestDAO {
             throw new RuntimeException("Error deleting join request", e);
         }
     }
+
+    public int deleteByUserId(int userId) {
+        String sql = "DELETE FROM community_join_requests WHERE user_id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error deleting join requests for user", e);
+        }
+    }
 }

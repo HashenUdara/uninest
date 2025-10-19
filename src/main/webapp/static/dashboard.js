@@ -383,6 +383,80 @@ function initReqConfirm() {
   });
 }
 
+// Initialize student removal confirm modals
+function initStudentConfirm() {
+  const modal = document.getElementById("confirm-modal");
+  if (!modal) return;
+
+  let pendingForm = null;
+
+  document.addEventListener("click", (e) => {
+    const remove = e.target.closest && e.target.closest(".js-student-remove");
+    
+    if (!remove) return;
+    
+    e.preventDefault();
+    
+    const titleText = "Remove student from community";
+    const bodyText = "Are you sure you want to remove this student from your community? They will need to submit a new join request to rejoin.";
+    
+    const title = modal.querySelector("#confirm-title");
+    const body = modal.querySelector(".c-modal__body p");
+    if (title) title.textContent = titleText;
+    if (body) body.textContent = bodyText;
+    
+    pendingForm = remove.closest("form");
+    
+    modal.hidden = false;
+    modal.querySelector(".js-confirm-action")?.focus();
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target.matches("[data-close]")) {
+      modal.hidden = true;
+      pendingForm = null;
+    }
+  });
+
+  const confirmBtn = modal.querySelector(".js-confirm-action");
+  if (confirmBtn) {
+    confirmBtn.addEventListener("click", () => {
+      if (pendingForm) {
+        pendingForm.submit();
+      }
+      modal.hidden = true;
+      pendingForm = null;
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (!modal.hidden && e.key === "Escape") {
+      modal.hidden = true;
+      pendingForm = null;
+    }
+  });
+}
+
+// Initialize navigation groups (collapsible sidebar items)
+function initNavGroups() {
+  document.querySelectorAll('[data-nav-group]').forEach(trigger => {
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      const groupId = this.getAttribute('data-nav-group');
+      const content = document.getElementById('nav-group-' + groupId);
+      const isExpanded = this.getAttribute('aria-expanded') === 'true';
+      
+      if (isExpanded) {
+        this.setAttribute('aria-expanded', 'false');
+        content.style.display = 'none';
+      } else {
+        this.setAttribute('aria-expanded', 'true');
+        content.style.display = 'flex';
+      }
+    });
+  });
+}
+
 // Initialize on DOM ready
 document.addEventListener("DOMContentLoaded", function() {
   initCommAvatars();
@@ -391,4 +465,6 @@ document.addEventListener("DOMContentLoaded", function() {
   initReqAvatars();
   initCommConfirm();
   initReqConfirm();
+  initStudentConfirm();
+  initNavGroups();
 });

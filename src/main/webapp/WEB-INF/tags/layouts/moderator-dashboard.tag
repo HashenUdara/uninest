@@ -13,13 +13,22 @@
     <dash:nav-item 
       href="${pageContext.request.contextPath}/moderator/dashboard" 
       icon="home" 
-      label="Dashboard" 
+      label="Overview" 
       active="${activePage eq 'dashboard' or empty activePage}" />
-    <dash:nav-item 
-      href="${pageContext.request.contextPath}/moderator/join-requests" 
-      icon="user-plus" 
-      label="Join Requests" 
-      active="${activePage eq 'join-requests'}" />
+    <dash:nav-group 
+      icon="users" 
+      label="Student Management" 
+      groupId="student-mgmt"
+      active="${activePage eq 'join-requests' or activePage eq 'students'}">
+      <dash:nav-subitem 
+        href="${pageContext.request.contextPath}/moderator/join-requests" 
+        label="Join Requests" 
+        active="${activePage eq 'join-requests'}" />
+      <dash:nav-subitem 
+        href="${pageContext.request.contextPath}/moderator/students" 
+        label="Students" 
+        active="${activePage eq 'students'}" />
+    </dash:nav-group>
     <dash:nav-item 
       href="#" 
       icon="shield" 
@@ -30,11 +39,6 @@
       icon="flag" 
       label="Reported Content" 
       active="${activePage eq 'reported'}" />
-    <dash:nav-item 
-      href="#" 
-      icon="users" 
-      label="User Management" 
-      active="${activePage eq 'users'}" />
     <dash:nav-item 
       href="#" 
       icon="activity" 

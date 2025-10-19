@@ -232,4 +232,38 @@ public class UserDAO {
             throw new RuntimeException("Error deleting user", e);
         }
     }
+
+    public boolean removeCommunity(int userId) {
+        String sql = "UPDATE users SET community_id = NULL WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error removing community", e);
+        }
+    }
+
+    public java.util.List<User> findByCommunityId(int communityId) {
+        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, " +
+                "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
+                "FROM users u " +
+                "JOIN roles r ON u.role_id = r.id " +
+                "LEFT JOIN communities c ON u.community_id = c.id " +
+                "LEFT JOIN universities uni ON u.university_id = uni.id " +
+                "WHERE u.community_id = ? AND r.name = 'student' ORDER BY u.id DESC";
+        java.util.List<User> users = new java.util.ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, communityId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    users.add(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching users by community", e);
+        }
+        return users;
+    }
 }

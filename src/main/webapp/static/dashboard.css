@@ -269,6 +269,60 @@ a:hover {
   display: inline-block;
 }
 
+/* Navigation group (collapsible) */
+.c-nav-group {
+  display: flex;
+  flex-direction: column;
+}
+.c-nav-group__trigger {
+  width: 100%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  font-family: inherit;
+  font-size: inherit;
+}
+.c-nav-group__trigger:hover {
+  background: var(--color-surface);
+}
+.c-nav-group__icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-left: auto;
+  transition: transform 0.2s ease;
+}
+.c-nav-group__trigger[aria-expanded="true"] .c-nav-group__icon {
+  transform: rotate(180deg);
+}
+.c-nav-group__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-left: var(--space-7);
+  margin-top: var(--space-2);
+}
+.c-nav__subitem {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.c-nav__subitem:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-decoration: none;
+}
+.c-nav__subitem.is-active {
+  background: rgba(84, 44, 245, 0.06);
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
 .c-user-mini {
   padding: var(--space-4);
   background: var(--color-surface);

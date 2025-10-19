@@ -282,4 +282,86 @@ CREATE TABLE `community_join_requests` (
   FOREIGN KEY (`processed_by_user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+-- Table: subjects (Belong to a community + academic year + semester + status)
+-- --------------------------------------------------------
+CREATE TABLE `subjects` (
+  `subject_id` INT NOT NULL AUTO_INCREMENT,
+  `community_id` INT NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `description` TEXT,
+  `code` VARCHAR(50),
+  `academic_year` TINYINT NOT NULL,
+  `semester` TINYINT NOT NULL,
+  `status` ENUM('upcoming', 'ongoing', 'completed') DEFAULT 'upcoming',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`subject_id`),
+  INDEX `idx_subject_community` (`community_id`),
+  INDEX `idx_subject_status` (`status`),
+  FOREIGN KEY (`community_id`) REFERENCES `communities`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+-- Table: topics (Each topic belongs to a subject)
+-- --------------------------------------------------------
+CREATE TABLE `topics` (
+  `topic_id` INT NOT NULL AUTO_INCREMENT,
+  `subject_id` INT NOT NULL,
+  `title` VARCHAR(150) NOT NULL,
+  `description` TEXT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`topic_id`),
+  INDEX `idx_topic_subject` (`subject_id`),
+  FOREIGN KEY (`subject_id`) REFERENCES `subjects`(`subject_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+-- Demo Data: Subjects for different communities
+-- --------------------------------------------------------
+INSERT INTO `subjects` (`community_id`, `name`, `description`, `code`, `academic_year`, `semester`, `status`) VALUES
+-- Computer Science Society (community 1)
+(1, 'Data Structures', 'Core DS concepts and ADTs.', 'CS204', 3, 1, 'ongoing'),
+(1, 'Algorithms', 'Algorithm design and analysis.', 'CS205', 3, 2, 'upcoming'),
+(1, 'Database Systems', 'Relational databases and SQL.', 'CS301', 3, 1, 'ongoing'),
+-- Engineering Students Hub (community 2)
+(2, 'Calculus II', 'Integrals, series, and applications.', 'MA201', 2, 2, 'completed'),
+(2, 'Physics for Engineers', 'Mechanics, waves, and heat.', 'PH102', 1, 2, 'ongoing'),
+(2, 'Circuit Analysis', 'DC/AC circuit fundamentals.', 'EE201', 2, 1, 'ongoing'),
+-- Medical Students Network (community 3)
+(3, 'Anatomy', 'Human body structure.', 'MED101', 1, 1, 'completed'),
+(3, 'Physiology', 'Function of human body systems.', 'MED102', 1, 2, 'ongoing'),
+-- Business Students Forum (community 4)
+(4, 'Marketing Management', 'Marketing principles and strategy.', 'BUS201', 2, 1, 'ongoing'),
+(4, 'Financial Accounting', 'Accounting fundamentals.', 'BUS101', 1, 1, 'completed'),
+-- Arts & Humanities Circle (community 5)
+(5, 'Technical Writing', 'Clarity and structure in tech docs.', 'LA101', 1, 1, 'completed'),
+(5, 'World Literature', 'Global literary traditions.', 'LIT201', 2, 1, 'ongoing');
+
+-- --------------------------------------------------------
+-- Demo Data: Topics for subjects
+-- --------------------------------------------------------
+INSERT INTO `topics` (`subject_id`, `title`, `description`) VALUES
+-- Topics for Data Structures (subject_id 1)
+(1, 'Arrays and Linked Lists', 'Introduction to basic data structures'),
+(1, 'Stacks and Queues', 'LIFO and FIFO data structures'),
+(1, 'Trees and Graphs', 'Non-linear data structures'),
+(1, 'Hash Tables', 'Hash functions and collision resolution'),
+-- Topics for Algorithms (subject_id 2)
+(2, 'Sorting Algorithms', 'Bubble, merge, quick, and heap sort'),
+(2, 'Searching Algorithms', 'Linear and binary search'),
+(2, 'Dynamic Programming', 'Optimization problems'),
+-- Topics for Database Systems (subject_id 3)
+(3, 'SQL Basics', 'SELECT, INSERT, UPDATE, DELETE'),
+(3, 'Database Design', 'Normalization and ER diagrams'),
+(3, 'Transactions', 'ACID properties'),
+-- Topics for Circuit Analysis (subject_id 6)
+(6, 'Ohms Law', 'Voltage, current, and resistance relationships'),
+(6, 'Kirchhoffs Laws', 'Circuit analysis fundamentals'),
+-- Topics for Physiology (subject_id 8)
+(8, 'Cardiovascular System', 'Heart and blood vessels'),
+(8, 'Respiratory System', 'Lungs and breathing'),
+-- Topics for Marketing Management (subject_id 9)
+(9, 'Marketing Mix', 'Product, price, place, promotion'),
+(9, 'Consumer Behavior', 'Understanding customer decisions');
+
 COMMIT;

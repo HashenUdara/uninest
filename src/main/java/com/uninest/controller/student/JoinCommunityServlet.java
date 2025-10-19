@@ -18,12 +18,47 @@ public class JoinCommunityServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = (User) req.getSession().getAttribute("authUser");
+        
+        // Check if student already has a community (approved by moderator)
+        if (user.getCommunityId() != null) {
+            // Redirect to dashboard if already in a community
+            resp.sendRedirect(req.getContextPath() + "/student/dashboard");
+            return;
+        }
+        
+        // Check if there's a pending request
+        Optional<com.uninest.model.JoinRequest> pendingRequest = 
+            joinRequestDAO.findPendingRequestByUser(user.getId());
+        
+        if (pendingRequest.isPresent()) {
+            req.setAttribute("pendingRequest", pendingRequest.get());
+        }
+        
         req.getRequestDispatcher("/WEB-INF/views/student/join-community.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("authUser");
+        
+        // Check if student already has a community
+        if (user.getCommunityId() != null) {
+            resp.sendRedirect(req.getContextPath() + "/student/dashboard");
+            return;
+        }
+        
+        // Check if there's already a pending request (for any community)
+        Optional<com.uninest.model.JoinRequest> existingPending = 
+            joinRequestDAO.findPendingRequestByUser(user.getId());
+        
+        if (existingPending.isPresent()) {
+            req.setAttribute("pendingRequest", existingPending.get());
+            req.setAttribute("error", "You already have a pending request. Please cancel it first before submitting a new one.");
+            req.getRequestDispatcher("/WEB-INF/views/student/join-community.jsp").forward(req, resp);
+            return;
+        }
+        
         String commIdStr = req.getParameter("communityId");
         try {
             int commId = Integer.parseInt(commIdStr);
@@ -34,18 +69,14 @@ public class JoinCommunityServlet extends HttpServlet {
                 return;
             }
             
-            // Check if there's already a pending request
-            Optional<com.uninest.model.JoinRequest> existingRequest = 
-                joinRequestDAO.findPendingRequestByUserAndCommunity(user.getId(), commId);
-            if (existingRequest.isPresent()) {
-                req.setAttribute("success", "Your join request is pending moderator approval.");
-                req.getRequestDispatcher("/WEB-INF/views/student/join-community.jsp").forward(req, resp);
-                return;
-            }
-            
-            // Create join request instead of directly assigning
+            // Create join request
             int requestId = joinRequestDAO.create(user.getId(), commId);
             if (requestId > 0) {
+                // Fetch the created request to display it
+                Optional<com.uninest.model.JoinRequest> newRequest = joinRequestDAO.findById(requestId);
+                if (newRequest.isPresent()) {
+                    req.setAttribute("pendingRequest", newRequest.get());
+                }
                 req.setAttribute("success", "Join request submitted! Please wait for moderator approval.");
                 req.getRequestDispatcher("/WEB-INF/views/student/join-community.jsp").forward(req, resp);
             } else {

@@ -4,8 +4,7 @@
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
 <layout:moderator-dashboard pageTitle="Manage Topics" activePage="subjects">
-  <jsp:attribute name="scripts">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/subjects.css" />
+
     <script>
       // Minimal client-side count and sort for this table
       (function () {
@@ -44,7 +43,7 @@
         });
       })();
     </script>
-  </jsp:attribute>
+
 
   <header class="c-page__header">
     <nav class="c-breadcrumbs" aria-label="Breadcrumb">

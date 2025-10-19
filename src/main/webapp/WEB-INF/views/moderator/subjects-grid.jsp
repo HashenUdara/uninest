@@ -4,8 +4,7 @@
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
 <layout:moderator-dashboard pageTitle="Manage Subjects" activePage="subjects">
-  <jsp:attribute name="scripts">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/subjects.css" />
+  
     <script>
       /* ================= Subjects: grid thumbnails with code ================= */
       function initSubjectThumbnails() {
@@ -32,7 +31,7 @@
       }
       document.addEventListener("DOMContentLoaded", initSubjectThumbnails);
     </script>
-  </jsp:attribute>
+ 
 
   <header class="c-page__header">
     <nav class="c-breadcrumbs" aria-label="Breadcrumb">

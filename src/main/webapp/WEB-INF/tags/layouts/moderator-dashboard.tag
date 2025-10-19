@@ -16,6 +16,11 @@
       label="Dashboard" 
       active="${activePage eq 'dashboard' or empty activePage}" />
     <dash:nav-item 
+      href="${pageContext.request.contextPath}/moderator/join-requests" 
+      icon="user-plus" 
+      label="Join Requests" 
+      active="${activePage eq 'join-requests'}" />
+    <dash:nav-item 
       href="#" 
       icon="shield" 
       label="Content Review" 

@@ -262,4 +262,25 @@ INSERT INTO `users` (`email`, `name`, `password_hash`, `role_id`, `community_id`
 ('s99@abc.com', 'Student 99', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 1, 5, 3, 4),
 ('s100@abc.com', 'Student 100', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 1, 5, 4, 5);
 
+-- --------------------------------------------------------
+-- Table: community_join_requests
+-- --------------------------------------------------------
+CREATE TABLE `community_join_requests` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `community_id` INT NOT NULL,
+  `status` VARCHAR(20) NOT NULL DEFAULT 'pending',
+  `requested_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `processed_at` TIMESTAMP NULL DEFAULT NULL,
+  `processed_by_user_id` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `idx_join_req_status` (`status`),
+  INDEX `idx_join_req_user` (`user_id`),
+  INDEX `idx_join_req_community` (`community_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`community_id`) REFERENCES `communities`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`processed_by_user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL,
+  UNIQUE KEY `unique_user_community_request` (`user_id`, `community_id`, `status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 COMMIT;

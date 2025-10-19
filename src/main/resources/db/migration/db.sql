@@ -279,8 +279,7 @@ CREATE TABLE `community_join_requests` (
   INDEX `idx_join_req_community` (`community_id`),
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`community_id`) REFERENCES `communities`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`processed_by_user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL,
-  UNIQUE KEY `unique_user_community_request` (`user_id`, `community_id`, `status`)
+  FOREIGN KEY (`processed_by_user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 COMMIT;

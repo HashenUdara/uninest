@@ -20,6 +20,11 @@
       icon="book" 
       label="Subjects" 
       active="${activePage eq 'subjects'}" />
+    <dash:nav-item 
+      href="${pageContext.request.contextPath}/moderator/coordinators" 
+      icon="user-check" 
+      label="Subject Coordinators" 
+      active="${activePage eq 'coordinators'}" />
     <dash:nav-group 
       icon="users" 
       label="Student Management" 

@@ -364,4 +364,19 @@ INSERT INTO `topics` (`subject_id`, `title`, `description`) VALUES
 (9, 'Marketing Mix', 'Product, price, place, promotion'),
 (9, 'Consumer Behavior', 'Understanding customer decisions');
 
+-- --------------------------------------------------------
+-- Table: subject_coordinators
+-- --------------------------------------------------------
+CREATE TABLE `subject_coordinators` (
+  `coordinator_id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `subject_id` INT NOT NULL,
+  `assigned_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`coordinator_id`),
+  UNIQUE KEY `unique_user` (`user_id`),
+  INDEX `idx_coordinator_subject` (`subject_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`subject_id`) REFERENCES `subjects`(`subject_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 COMMIT;

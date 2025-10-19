@@ -315,4 +315,53 @@ CREATE TABLE `topics` (
   FOREIGN KEY (`subject_id`) REFERENCES `subjects`(`subject_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+-- Demo Data: Subjects for different communities
+-- --------------------------------------------------------
+INSERT INTO `subjects` (`community_id`, `name`, `description`, `code`, `academic_year`, `semester`, `status`) VALUES
+-- Computer Science Society (community 1)
+(1, 'Data Structures', 'Core DS concepts and ADTs.', 'CS204', 3, 1, 'ongoing'),
+(1, 'Algorithms', 'Algorithm design and analysis.', 'CS205', 3, 2, 'upcoming'),
+(1, 'Database Systems', 'Relational databases and SQL.', 'CS301', 3, 1, 'ongoing'),
+-- Engineering Students Hub (community 2)
+(2, 'Calculus II', 'Integrals, series, and applications.', 'MA201', 2, 2, 'completed'),
+(2, 'Physics for Engineers', 'Mechanics, waves, and heat.', 'PH102', 1, 2, 'ongoing'),
+(2, 'Circuit Analysis', 'DC/AC circuit fundamentals.', 'EE201', 2, 1, 'ongoing'),
+-- Medical Students Network (community 3)
+(3, 'Anatomy', 'Human body structure.', 'MED101', 1, 1, 'completed'),
+(3, 'Physiology', 'Function of human body systems.', 'MED102', 1, 2, 'ongoing'),
+-- Business Students Forum (community 4)
+(4, 'Marketing Management', 'Marketing principles and strategy.', 'BUS201', 2, 1, 'ongoing'),
+(4, 'Financial Accounting', 'Accounting fundamentals.', 'BUS101', 1, 1, 'completed'),
+-- Arts & Humanities Circle (community 5)
+(5, 'Technical Writing', 'Clarity and structure in tech docs.', 'LA101', 1, 1, 'completed'),
+(5, 'World Literature', 'Global literary traditions.', 'LIT201', 2, 1, 'ongoing');
+
+-- --------------------------------------------------------
+-- Demo Data: Topics for subjects
+-- --------------------------------------------------------
+INSERT INTO `topics` (`subject_id`, `title`, `description`) VALUES
+-- Topics for Data Structures (subject_id 1)
+(1, 'Arrays and Linked Lists', 'Introduction to basic data structures'),
+(1, 'Stacks and Queues', 'LIFO and FIFO data structures'),
+(1, 'Trees and Graphs', 'Non-linear data structures'),
+(1, 'Hash Tables', 'Hash functions and collision resolution'),
+-- Topics for Algorithms (subject_id 2)
+(2, 'Sorting Algorithms', 'Bubble, merge, quick, and heap sort'),
+(2, 'Searching Algorithms', 'Linear and binary search'),
+(2, 'Dynamic Programming', 'Optimization problems'),
+-- Topics for Database Systems (subject_id 3)
+(3, 'SQL Basics', 'SELECT, INSERT, UPDATE, DELETE'),
+(3, 'Database Design', 'Normalization and ER diagrams'),
+(3, 'Transactions', 'ACID properties'),
+-- Topics for Circuit Analysis (subject_id 6)
+(6, 'Ohms Law', 'Voltage, current, and resistance relationships'),
+(6, 'Kirchhoffs Laws', 'Circuit analysis fundamentals'),
+-- Topics for Physiology (subject_id 8)
+(8, 'Cardiovascular System', 'Heart and blood vessels'),
+(8, 'Respiratory System', 'Lungs and breathing'),
+-- Topics for Marketing Management (subject_id 9)
+(9, 'Marketing Mix', 'Product, price, place, promotion'),
+(9, 'Consumer Behavior', 'Understanding customer decisions');
+
 COMMIT;

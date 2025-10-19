@@ -282,4 +282,37 @@ CREATE TABLE `community_join_requests` (
   FOREIGN KEY (`processed_by_user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+-- Table: subjects (Belong to a community + academic year + semester + status)
+-- --------------------------------------------------------
+CREATE TABLE `subjects` (
+  `subject_id` INT NOT NULL AUTO_INCREMENT,
+  `community_id` INT NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `description` TEXT,
+  `code` VARCHAR(50),
+  `academic_year` TINYINT NOT NULL,
+  `semester` TINYINT NOT NULL,
+  `status` ENUM('upcoming', 'ongoing', 'completed') DEFAULT 'upcoming',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`subject_id`),
+  INDEX `idx_subject_community` (`community_id`),
+  INDEX `idx_subject_status` (`status`),
+  FOREIGN KEY (`community_id`) REFERENCES `communities`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+-- Table: topics (Each topic belongs to a subject)
+-- --------------------------------------------------------
+CREATE TABLE `topics` (
+  `topic_id` INT NOT NULL AUTO_INCREMENT,
+  `subject_id` INT NOT NULL,
+  `title` VARCHAR(150) NOT NULL,
+  `description` TEXT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`topic_id`),
+  INDEX `idx_topic_subject` (`subject_id`),
+  FOREIGN KEY (`subject_id`) REFERENCES `subjects`(`subject_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 COMMIT;

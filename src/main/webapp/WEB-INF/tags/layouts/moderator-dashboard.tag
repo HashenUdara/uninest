@@ -15,6 +15,11 @@
       icon="home" 
       label="Overview" 
       active="${activePage eq 'dashboard' or empty activePage}" />
+    <dash:nav-item 
+      href="${pageContext.request.contextPath}/moderator/subjects" 
+      icon="book" 
+      label="Subjects" 
+      active="${activePage eq 'subjects'}" />
     <dash:nav-group 
       icon="users" 
       label="Student Management" 

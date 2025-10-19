@@ -3,6 +3,7 @@ package com.uninest.controller.student;
 import com.uninest.model.User;
 import com.uninest.model.dao.CommunityDAO;
 import com.uninest.model.dao.JoinRequestDAO;
+import com.uninest.model.dao.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,10 +16,18 @@ import java.util.Optional;
 public class JoinCommunityServlet extends HttpServlet {
     private final CommunityDAO communityDAO = new CommunityDAO();
     private final JoinRequestDAO joinRequestDAO = new JoinRequestDAO();
+    private final UserDAO userDAO = new UserDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("authUser");
+        
+        // Refresh user from database to get latest community_id
+        Optional<User> freshUser = userDAO.findById(user.getId());
+        if (freshUser.isPresent()) {
+            user = freshUser.get();
+            req.getSession().setAttribute("authUser", user);
+        }
         
         // Check if student already has a community (approved by moderator)
         if (user.getCommunityId() != null) {
@@ -41,6 +50,13 @@ public class JoinCommunityServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("authUser");
+        
+        // Refresh user from database to get latest community_id
+        Optional<User> freshUser = userDAO.findById(user.getId());
+        if (freshUser.isPresent()) {
+            user = freshUser.get();
+            req.getSession().setAttribute("authUser", user);
+        }
         
         // Check if student already has a community
         if (user.getCommunityId() != null) {

@@ -140,4 +140,37 @@ public class JoinRequestDAO {
         }
         return Optional.empty();
     }
+
+    public Optional<JoinRequest> findPendingRequestByUser(int userId) {
+        String sql = "SELECT jr.*, u.name AS user_name, u.email AS user_email, u.academic_year AS user_academic_year, " +
+                "uni.name AS university_name, c.title AS community_title " +
+                "FROM community_join_requests jr " +
+                "JOIN users u ON jr.user_id = u.id " +
+                "LEFT JOIN universities uni ON u.university_id = uni.id " +
+                "JOIN communities c ON jr.community_id = c.id " +
+                "WHERE jr.user_id = ? AND jr.status = 'pending'";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding pending request for user", e);
+        }
+        return Optional.empty();
+    }
+
+    public boolean delete(int requestId) {
+        String sql = "DELETE FROM community_join_requests WHERE id = ? AND status = 'pending'";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, requestId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error deleting join request", e);
+        }
+    }
 }

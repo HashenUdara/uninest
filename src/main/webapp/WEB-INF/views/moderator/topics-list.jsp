@@ -42,6 +42,47 @@
           });
         });
       })();
+      
+      /* ================= Search functionality ================= */
+      function performSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#topics-table tbody tr');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+          const title = (row.getAttribute('data-title') || '').toLowerCase();
+          const description = (row.getAttribute('data-description') || '').toLowerCase();
+          
+          if (searchTerm === '' || 
+              title.includes(searchTerm) || 
+              description.includes(searchTerm)) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+        
+        // Update count
+        const countEl = document.querySelector('.js-topic-count');
+        if (countEl) {
+          countEl.textContent = String(visibleCount);
+        }
+      }
+      
+      // Allow search on Enter key and real-time search
+      document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+          searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              performSearch();
+            }
+          });
+          searchInput.addEventListener('input', performSearch);
+        }
+      });
     </script>
 
 
@@ -64,8 +105,8 @@
     </div>
     <div class="c-toolbar">
       <div class="c-input-group">
-        <input class="c-input" type="search" placeholder="Search topics" aria-label="Search topics" />
-        <button class="c-btn">Search</button>
+        <input id="searchInput" class="c-input" type="search" placeholder="Search topics" aria-label="Search topics" />
+        <button class="c-btn" onclick="performSearch()">Search</button>
       </div>
       <div class="c-view-switch" role="group" aria-label="View switch">
         <a class="c-view-switch__btn" href="${pageContext.request.contextPath}/moderator/topics?subjectId=${subject.subjectId}">
@@ -122,7 +163,7 @@
           </thead>
           <tbody>
             <c:forEach items="${topics}" var="topic">
-              <tr>
+              <tr data-title="${topic.title}" data-description="${topic.description}">
                 <td>${topic.title}</td>
                 <td>${topic.description != null ? topic.description : '-'}</td>
                 <td class="u-text-right">

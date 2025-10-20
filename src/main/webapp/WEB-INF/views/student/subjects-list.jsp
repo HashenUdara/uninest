@@ -70,6 +70,49 @@
       })();
       
       document.addEventListener("DOMContentLoaded", initSubjectAvatars);
+      
+      /* ================= Search functionality ================= */
+      function performSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#subjects-table tbody tr');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+          const code = (row.getAttribute('data-code') || '').toLowerCase();
+          const name = (row.getAttribute('data-name') || '').toLowerCase();
+          const description = (row.getAttribute('data-description') || '').toLowerCase();
+          
+          if (searchTerm === '' || 
+              code.includes(searchTerm) || 
+              name.includes(searchTerm) || 
+              description.includes(searchTerm)) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+        
+        // Update count
+        const countEl = document.querySelector('.js-subject-count');
+        if (countEl) {
+          countEl.textContent = String(visibleCount);
+        }
+      }
+      
+      // Allow search on Enter key and real-time search
+      document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+          searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              performSearch();
+            }
+          });
+          searchInput.addEventListener('input', performSearch);
+        }
+      });
     </script>
 
   <header class="c-page__header">
@@ -86,8 +129,8 @@
     </div>
     <div class="c-toolbar">
       <div class="c-input-group">
-        <input class="c-input" type="search" placeholder="Search subjects by name or code" aria-label="Search subjects" />
-        <button class="c-btn">Search</button>
+        <input id="searchInput" class="c-input" type="search" placeholder="Search subjects by name or code" aria-label="Search subjects" />
+        <button class="c-btn" onclick="performSearch()">Search</button>
       </div>
       <div class="c-view-switch" role="group" aria-label="View switch">
         <a class="c-view-switch__btn" href="${pageContext.request.contextPath}/student/subjects">
@@ -144,7 +187,7 @@
           </thead>
           <tbody>
             <c:forEach items="${subjects}" var="subject">
-              <tr data-code="${subject.code}" style="cursor: pointer;" onclick="window.location.href='${pageContext.request.contextPath}/student/topics?subjectId=${subject.subjectId}'">
+              <tr data-code="${subject.code}" data-name="${subject.name}" data-description="${subject.description}" data-year="${subject.academicYear}" data-semester="${subject.semester}" style="cursor: pointer;" onclick="window.location.href='${pageContext.request.contextPath}/student/topics?subjectId=${subject.subjectId}'">
                 <td>
                   <div style="display: flex; align-items: center; gap: var(--space-3);">
                     <div class="c-subj-avatar"></div>
@@ -153,8 +196,8 @@
                 </td>
                 <td>${subject.name}</td>
                 <td>${subject.description != null ? subject.description : '-'}</td>
-                <td>${subject.academicYear}</td>
-                <td>${subject.semester}</td>
+                <td>Year ${subject.academicYear}</td>
+                <td>Semester ${subject.semester}</td>
                 <td><span class="c-status is-${subject.status}">${subject.status}</span></td>
               </tr>
             </c:forEach>

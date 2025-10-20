@@ -113,6 +113,9 @@
             <a href="${pageContext.request.contextPath}/moderator/topics?subjectId=${subject.subjectId}" class="c-icon-btn" aria-label="View topics">
               <i data-lucide="folder"></i>
             </a>
+            <a href="${pageContext.request.contextPath}/moderator/subject-coordinators?subjectId=${subject.subjectId}" class="c-icon-btn" aria-label="Assign coordinators">
+              <i data-lucide="user-plus"></i>
+            </a>
             <a href="${pageContext.request.contextPath}/moderator/subjects/edit?id=${subject.subjectId}" class="c-icon-btn" aria-label="Edit subject">
               <i data-lucide="pencil"></i>
             </a>

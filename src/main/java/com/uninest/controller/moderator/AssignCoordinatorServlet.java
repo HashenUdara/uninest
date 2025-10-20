@@ -56,8 +56,12 @@ public class AssignCoordinatorServlet extends HttpServlet {
             .filter(student -> !coordinatorDAO.isCoordinator(student.getId()))
             .collect(Collectors.toList());
 
+        // Get returnTo parameter (defaults to subject-specific view)
+        String returnTo = req.getParameter("returnTo");
+
         req.setAttribute("subject", subject);
         req.setAttribute("students", availableStudents);
+        req.setAttribute("returnTo", returnTo);
         req.getRequestDispatcher("/WEB-INF/views/moderator/assign-coordinator.jsp").forward(req, resp);
     }
 
@@ -72,6 +76,7 @@ public class AssignCoordinatorServlet extends HttpServlet {
 
         String subjectIdParam = req.getParameter("subjectId");
         String[] selectedStudentIds = req.getParameterValues("studentIds");
+        String returnTo = req.getParameter("returnTo");
 
         if (subjectIdParam == null || selectedStudentIds == null || selectedStudentIds.length == 0) {
             resp.sendRedirect(req.getContextPath() + "/moderator/subjects");
@@ -96,6 +101,11 @@ public class AssignCoordinatorServlet extends HttpServlet {
             }
         }
 
-        resp.sendRedirect(req.getContextPath() + "/moderator/subject-coordinators?subjectId=" + subjectId + "&success=assigned");
+        // Redirect based on returnTo parameter
+        if ("all".equals(returnTo)) {
+            resp.sendRedirect(req.getContextPath() + "/moderator/coordinators?success=assigned");
+        } else {
+            resp.sendRedirect(req.getContextPath() + "/moderator/subject-coordinators?subjectId=" + subjectId + "&success=assigned");
+        }
     }
 }

@@ -55,6 +55,7 @@
         <c:otherwise>
           <form method="post" action="${pageContext.request.contextPath}/moderator/subject-coordinators/assign" id="assign-form">
             <input type="hidden" name="subjectId" value="${subject.subjectId}" />
+            <input type="hidden" name="returnTo" value="${returnTo}" />
             
             <div class="c-table-toolbar">
               <div class="c-table-toolbar__left">

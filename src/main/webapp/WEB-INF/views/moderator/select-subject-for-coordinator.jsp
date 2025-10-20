@@ -63,7 +63,7 @@
                     <td>${subject.academicYear}</td>
                     <td>${subject.semester}</td>
                     <td class="u-text-right">
-                      <a href="${pageContext.request.contextPath}/moderator/subject-coordinators/assign?subjectId=${subject.subjectId}" class="c-btn c-btn--sm c-btn--primary">
+                      <a href="${pageContext.request.contextPath}/moderator/subject-coordinators/assign?subjectId=${subject.subjectId}&returnTo=${returnTo}" class="c-btn c-btn--sm c-btn--primary">
                         <i data-lucide="arrow-right"></i> Select
                       </a>
                     </td>

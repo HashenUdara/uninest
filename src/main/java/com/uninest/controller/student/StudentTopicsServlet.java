@@ -44,7 +44,7 @@ public class StudentTopicsServlet extends HttpServlet {
             }
 
             Subject subject = subjectOpt.get();
-            List<Topic> topics = topicDAO.findBySubjectId(subjectId);
+            List<Topic> topics = topicDAO.findBySubjectIdWithProgress(subjectId, student.getId());
             
             req.setAttribute("subject", subject);
             req.setAttribute("topics", topics);

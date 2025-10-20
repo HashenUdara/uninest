@@ -526,6 +526,9 @@ a:hover {
   font-size: var(--fs-xs);
   color: var(--color-text-muted);
 }
+.c-card__footer {
+  padding: 0 var(--space-4) var(--space-4);
+}
 /* Progress */
 .c-progress {
   position: relative;

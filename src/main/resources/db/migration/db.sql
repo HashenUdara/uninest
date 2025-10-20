@@ -379,4 +379,47 @@ CREATE TABLE `subject_coordinators` (
   FOREIGN KEY (`subject_id`) REFERENCES `subjects`(`subject_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+-- Table: topic_progress
+-- --------------------------------------------------------
+CREATE TABLE `topic_progress` (
+  `progress_id` INT NOT NULL AUTO_INCREMENT,
+  `topic_id` INT NOT NULL,
+  `user_id` INT NOT NULL,
+  `progress_percent` DECIMAL(5,2) DEFAULT 0.00,
+  `last_accessed` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`progress_id`),
+  UNIQUE KEY `unique_user_topic` (`user_id`, `topic_id`),
+  INDEX `idx_progress_topic` (`topic_id`),
+  INDEX `idx_progress_user` (`user_id`),
+  FOREIGN KEY (`topic_id`) REFERENCES `topics`(`topic_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+-- Demo Data: Topic Progress for some students
+-- --------------------------------------------------------
+INSERT INTO `topic_progress` (`topic_id`, `user_id`, `progress_percent`, `last_accessed`) VALUES
+-- Student 1 (user_id 22) - Community 1
+(1, 22, 75.00, '2025-10-20 10:00:00'),
+(2, 22, 50.00, '2025-10-20 09:30:00'),
+(3, 22, 25.00, '2025-10-20 08:00:00'),
+(4, 22, 100.00, '2025-10-19 14:00:00'),
+(5, 22, 0.00, '2025-10-18 16:00:00'),
+-- Student 2 (user_id 23)
+(1, 23, 60.00, '2025-10-20 11:00:00'),
+(2, 23, 80.00, '2025-10-20 10:30:00'),
+-- Student 3 (user_id 24)
+(1, 24, 90.00, '2025-10-20 12:00:00'),
+(3, 24, 45.00, '2025-10-19 15:00:00'),
+-- Student 5 (user_id 26) - Community 2
+(11, 26, 65.00, '2025-10-20 09:00:00'),
+(12, 26, 30.00, '2025-10-19 17:00:00'),
+-- Student 9 (user_id 30) - Community 3
+(13, 30, 85.00, '2025-10-20 08:30:00'),
+(14, 30, 55.00, '2025-10-20 07:00:00'),
+-- Student 13 (user_id 34) - Community 4
+(15, 34, 70.00, '2025-10-20 13:00:00'),
+(16, 34, 40.00, '2025-10-19 16:30:00');
+
 COMMIT;

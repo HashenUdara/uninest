@@ -166,6 +166,7 @@
                 </button>
               </th>
               <th>Description</th>
+              <th>Progress</th>
             </tr>
           </thead>
           <tbody>
@@ -178,6 +179,12 @@
                   </div>
                 </td>
                 <td>${topic.description != null ? topic.description : '-'}</td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: var(--space-3); min-width: 150px;">
+                    <div class="c-progress" style="flex: 1; --progress: ${topic.progressPercent != null ? topic.progressPercent : 0}%"></div>
+                    <span style="font-size: var(--fs-xs); color: var(--color-text-muted); white-space: nowrap;">${topic.progressPercent != null ? topic.progressPercent.intValue() : 0}%</span>
+                  </div>
+                </td>
               </tr>
             </c:forEach>
           </tbody>

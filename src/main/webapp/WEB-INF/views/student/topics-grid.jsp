@@ -137,7 +137,10 @@
           <div class="c-card__media c-topic-avatar"></div>
           <div class="c-card__body">
             <h3 class="c-card__title">${topic.title}</h3>
-            <p class="c-card__meta">${topic.description != null ? topic.description : 'No description'}</p>
+            <p class="c-card__meta">${topic.progressPercent != null ? topic.progressPercent.intValue() : 0}% Completed</p>
+          </div>
+          <div class="c-card__footer">
+            <div class="c-progress" style="--progress: ${topic.progressPercent != null ? topic.progressPercent : 0}%"></div>
           </div>
         </article>
       </c:forEach>

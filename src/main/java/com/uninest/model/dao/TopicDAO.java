@@ -3,6 +3,7 @@ package com.uninest.model.dao;
 import com.uninest.model.Topic;
 import com.uninest.util.DBConnection;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,13 @@ public class TopicDAO {
         topic.setTitle(rs.getString("title"));
         topic.setDescription(rs.getString("description"));
         topic.setCreatedAt(rs.getTimestamp("created_at"));
+        return topic;
+    }
+
+    private Topic mapWithProgress(ResultSet rs) throws SQLException {
+        Topic topic = map(rs);
+        BigDecimal progress = rs.getBigDecimal("progress_percent");
+        topic.setProgressPercent(progress != null ? progress : BigDecimal.ZERO);
         return topic;
     }
 
@@ -45,6 +53,26 @@ public class TopicDAO {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error listing topics", e);
+        }
+        return list;
+    }
+
+    public List<Topic> findBySubjectIdWithProgress(int subjectId, int userId) {
+        String sql = "SELECT t.*, COALESCE(tp.progress_percent, 0.00) as progress_percent " +
+                     "FROM topics t " +
+                     "LEFT JOIN topic_progress tp ON t.topic_id = tp.topic_id AND tp.user_id = ? " +
+                     "WHERE t.subject_id = ? " +
+                     "ORDER BY t.created_at DESC";
+        List<Topic> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, subjectId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(mapWithProgress(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error listing topics with progress", e);
         }
         return list;
     }

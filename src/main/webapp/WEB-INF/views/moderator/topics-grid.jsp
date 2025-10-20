@@ -5,6 +5,62 @@
 
 <layout:moderator-dashboard pageTitle="Manage Topics" activePage="subjects">
 
+    <script>
+      /* ================= Search functionality ================= */
+      function performSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.c-card');
+        let visibleCount = 0;
+        
+        cards.forEach(card => {
+          const title = (card.getAttribute('data-title') || '').toLowerCase();
+          const description = (card.getAttribute('data-description') || '').toLowerCase();
+          
+          if (searchTerm === '' || 
+              title.includes(searchTerm) || 
+              description.includes(searchTerm)) {
+            card.style.display = '';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        
+        // Show/hide empty message
+        if (visibleCount === 0 && searchTerm !== '') {
+          if (!document.getElementById('no-results-message')) {
+            const noResultsDiv = document.createElement('div');
+            noResultsDiv.id = 'no-results-message';
+            noResultsDiv.style.textAlign = 'center';
+            noResultsDiv.style.padding = 'var(--space-10)';
+            noResultsDiv.style.color = 'var(--text-muted)';
+            noResultsDiv.innerHTML = '<p>No topics found matching your search.</p>';
+            document.querySelector('section').appendChild(noResultsDiv);
+          }
+          document.getElementById('no-results-message').style.display = 'block';
+        } else {
+          const noResultsDiv = document.getElementById('no-results-message');
+          if (noResultsDiv) {
+            noResultsDiv.style.display = 'none';
+          }
+        }
+      }
+      
+      // Allow search on Enter key and real-time search
+      document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+          searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              performSearch();
+            }
+          });
+          searchInput.addEventListener('input', performSearch);
+        }
+      });
+    </script>
+
 
   <header class="c-page__header">
     <nav class="c-breadcrumbs" aria-label="Breadcrumb">
@@ -25,8 +81,8 @@
     </div>
     <div class="c-toolbar">
       <div class="c-input-group">
-        <input class="c-input" type="search" placeholder="Search topics" aria-label="Search topics" />
-        <button class="c-btn">Search</button>
+        <input id="searchInput" class="c-input" type="search" placeholder="Search topics" aria-label="Search topics" />
+        <button class="c-btn" onclick="performSearch()">Search</button>
       </div>
       <div class="c-view-switch" role="group" aria-label="View switch">
         <a class="c-view-switch__btn is-active" href="${pageContext.request.contextPath}/moderator/topics?subjectId=${subject.subjectId}" aria-current="page">
@@ -69,7 +125,7 @@
 
     <div class="o-grid o-grid--cards">
       <c:forEach items="${topics}" var="topic">
-        <article class="c-card">
+        <article class="c-card" data-title="${topic.title}" data-description="${topic.description}">
           <div class="c-card__body">
             <h3 class="c-card__title">${topic.title}</h3>
             <p class="c-card__meta">${topic.description != null ? topic.description : 'No description'}</p>

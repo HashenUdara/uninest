@@ -4,6 +4,51 @@
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
 <layout:moderator-dashboard pageTitle="Subject Coordinators" activePage="coordinators">
+    <script>
+      /* ================= Search functionality ================= */
+      function performSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('.c-table tbody tr');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+          const name = (row.getAttribute('data-name') || '').toLowerCase();
+          const id = (row.getAttribute('data-id') || '').toLowerCase();
+          const email = (row.getAttribute('data-email') || '').toLowerCase();
+          
+          if (searchTerm === '' || 
+              name.includes(searchTerm) || 
+              id.includes(searchTerm) || 
+              email.includes(searchTerm)) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+        
+        // Update count
+        const countEl = document.querySelector('.js-coordinator-count');
+        if (countEl) {
+          countEl.textContent = String(visibleCount);
+        }
+      }
+      
+      // Allow search on Enter key and real-time search
+      document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+          searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              performSearch();
+            }
+          });
+          searchInput.addEventListener('input', performSearch);
+        }
+      });
+    </script>
+
     <header class="c-page__header">
       <nav class="c-breadcrumbs" aria-label="Breadcrumb">
         <a href="${pageContext.request.contextPath}/moderator/dashboard">Moderator</a>
@@ -18,6 +63,12 @@
         <a href="${pageContext.request.contextPath}/moderator/coordinators/select-subject?returnTo=all" class="c-btn c-btn--primary">
           <i data-lucide="user-plus"></i> Assign New Coordinator
         </a>
+      </div>
+      <div class="c-toolbar" style="margin-top: var(--space-4);">
+        <div class="c-input-group">
+          <input id="searchInput" class="c-input" type="search" placeholder="Search by name, ID, or email" aria-label="Search coordinators" />
+          <button class="c-btn" onclick="performSearch()">Search</button>
+        </div>
       </div>
     </header>
 
@@ -74,7 +125,7 @@
               </thead>
               <tbody>
                 <c:forEach items="${coordinators}" var="coordinator">
-                  <tr>
+                  <tr data-name="${coordinator.userName}" data-id="${coordinator.userId}" data-email="${coordinator.userEmail}">
                     <td>
                       <div class="c-user-cell">
                         <span class="c-user-cell__avatar" aria-hidden="true"></span>

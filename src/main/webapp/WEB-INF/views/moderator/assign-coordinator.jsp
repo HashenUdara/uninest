@@ -27,9 +27,16 @@
       <nav class="c-breadcrumbs" aria-label="Breadcrumb">
         <a href="${pageContext.request.contextPath}/moderator/dashboard">Moderator</a>
         <span class="c-breadcrumbs__sep">/</span>
-        <a href="${pageContext.request.contextPath}/moderator/subjects">Subjects</a>
-        <span class="c-breadcrumbs__sep">/</span>
-        <a href="${pageContext.request.contextPath}/moderator/subject-coordinators?subjectId=${subject.subjectId}">Coordinators</a>
+        <c:choose>
+          <c:when test="${returnTo == 'all'}">
+            <a href="${pageContext.request.contextPath}/moderator/coordinators">Subject Coordinators</a>
+          </c:when>
+          <c:otherwise>
+            <a href="${pageContext.request.contextPath}/moderator/subjects">Subjects</a>
+            <span class="c-breadcrumbs__sep">/</span>
+            <a href="${pageContext.request.contextPath}/moderator/subject-coordinators?subjectId=${subject.subjectId}">Coordinators</a>
+          </c:otherwise>
+        </c:choose>
         <span class="c-breadcrumbs__sep">/</span>
         <span aria-current="page">Assign</span>
       </nav>
@@ -47,7 +54,7 @@
           <div class="o-panel" style="text-align: center; padding: var(--space-10);">
             <i data-lucide="users" style="width: 64px; height: 64px; color: var(--text-muted); margin-bottom: var(--space-4);"></i>
             <p class="u-text-muted" style="margin-bottom: var(--space-4);">No available students to assign as coordinators. All students are either already coordinators or not part of this community.</p>
-            <a href="${pageContext.request.contextPath}/moderator/subject-coordinators?subjectId=${subject.subjectId}" class="c-btn c-btn--ghost">
+            <a href="<c:choose><c:when test="${returnTo == 'all'}">${pageContext.request.contextPath}/moderator/coordinators</c:when><c:otherwise>${pageContext.request.contextPath}/moderator/subject-coordinators?subjectId=${subject.subjectId}</c:otherwise></c:choose>" class="c-btn c-btn--ghost">
               <i data-lucide="arrow-left"></i> Back to Coordinators
             </a>
           </div>
@@ -64,7 +71,7 @@
                 </span>
               </div>
               <div class="c-table-toolbar__right">
-                <a href="${pageContext.request.contextPath}/moderator/subject-coordinators?subjectId=${subject.subjectId}" class="c-btn c-btn--ghost">
+                <a href="<c:choose><c:when test="${returnTo == 'all'}">${pageContext.request.contextPath}/moderator/coordinators</c:when><c:otherwise>${pageContext.request.contextPath}/moderator/subject-coordinators?subjectId=${subject.subjectId}</c:otherwise></c:choose>" class="c-btn c-btn--ghost">
                   Cancel
                 </a>
                 <button type="submit" class="c-btn c-btn--primary" id="submit-btn">

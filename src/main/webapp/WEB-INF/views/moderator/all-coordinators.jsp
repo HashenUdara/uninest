@@ -15,7 +15,7 @@
           <h1 class="c-page__title">Subject Coordinators</h1>
           <p class="c-page__subtitle u-text-muted">View and manage all subject coordinators in your community.</p>
         </div>
-        <a href="${pageContext.request.contextPath}/moderator/coordinators/select-subject" class="c-btn c-btn--primary">
+        <a href="${pageContext.request.contextPath}/moderator/coordinators/select-subject?returnTo=all" class="c-btn c-btn--primary">
           <i data-lucide="user-plus"></i> Assign New Coordinator
         </a>
       </div>

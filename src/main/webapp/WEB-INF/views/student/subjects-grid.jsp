@@ -30,6 +30,114 @@
         });
       }
       document.addEventListener("DOMContentLoaded", initSubjectThumbnails);
+      
+      /* ================= Tab filtering by status ================= */
+      let currentStatusFilter = 'all';
+      let currentSearchTerm = '';
+      
+      function filterByStatus(status) {
+        currentStatusFilter = status;
+        // Update active tab
+        document.querySelectorAll('.c-tabs__link').forEach(tab => {
+          tab.classList.remove('is-active');
+          if (tab.getAttribute('data-status') === status) {
+            tab.classList.add('is-active');
+          }
+        });
+        applyFilters();
+      }
+      
+      /* ================= Search functionality ================= */
+      function performSearch() {
+        const searchInput = document.getElementById('searchInput');
+        currentSearchTerm = searchInput.value.toLowerCase().trim();
+        applyFilters();
+      }
+      
+      function applyFilters() {
+        const cards = document.querySelectorAll('.c-card');
+        const sections = document.querySelectorAll('.c-section-title');
+        const grids = document.querySelectorAll('.o-grid--cards');
+        
+        // Hide all sections and grids first
+        sections.forEach(section => section.style.display = 'none');
+        grids.forEach(grid => grid.style.display = 'none');
+        
+        let hasVisibleCards = false;
+        
+        cards.forEach(card => {
+          const status = card.getAttribute('data-status') || '';
+          const name = (card.getAttribute('data-name') || '').toLowerCase();
+          const code = (card.getAttribute('data-code') || '').toLowerCase();
+          const description = (card.getAttribute('data-description') || '').toLowerCase();
+          
+          // Check status filter
+          const statusMatch = currentStatusFilter === 'all' || status === currentStatusFilter;
+          
+          // Check search filter
+          const searchMatch = currentSearchTerm === '' || 
+                            name.includes(currentSearchTerm) || 
+                            code.includes(currentSearchTerm) || 
+                            description.includes(currentSearchTerm);
+          
+          if (statusMatch && searchMatch) {
+            card.style.display = '';
+            hasVisibleCards = true;
+            // Show the parent grid
+            const parentGrid = card.closest('.o-grid--cards');
+            if (parentGrid) {
+              parentGrid.style.display = '';
+              // Show the section title before this grid
+              let prevElement = parentGrid.previousElementSibling;
+              while (prevElement && !prevElement.classList.contains('c-section-title')) {
+                prevElement = prevElement.previousElementSibling;
+              }
+              if (prevElement && prevElement.classList.contains('c-section-title')) {
+                prevElement.style.display = '';
+              }
+            }
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        
+        // Show "no results" message if needed
+        showNoResultsMessage(!hasVisibleCards);
+      }
+      
+      function showNoResultsMessage(show) {
+        let noResultsDiv = document.getElementById('no-results-message');
+        if (show) {
+          if (!noResultsDiv) {
+            noResultsDiv = document.createElement('div');
+            noResultsDiv.id = 'no-results-message';
+            noResultsDiv.style.textAlign = 'center';
+            noResultsDiv.style.padding = 'var(--space-10)';
+            noResultsDiv.style.color = 'var(--text-muted)';
+            noResultsDiv.innerHTML = '<p>No subjects found matching your criteria.</p>';
+            document.querySelector('section').appendChild(noResultsDiv);
+          }
+          noResultsDiv.style.display = 'block';
+        } else {
+          if (noResultsDiv) {
+            noResultsDiv.style.display = 'none';
+          }
+        }
+      }
+      
+      // Allow search on Enter key
+      document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+          searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              performSearch();
+            }
+          });
+          // Real-time search as user types
+          searchInput.addEventListener('input', performSearch);
+        }
+      });
     </script>
  
 
@@ -47,8 +155,8 @@
     </div>
     <div class="c-toolbar">
       <div class="c-input-group">
-        <input class="c-input" type="search" placeholder="Search subjects by name or code" aria-label="Search subjects" />
-        <button class="c-btn">Search</button>
+        <input id="searchInput" class="c-input" type="search" placeholder="Search subjects by name or code" aria-label="Search subjects" />
+        <button class="c-btn" onclick="performSearch()">Search</button>
       </div>
       <div class="c-view-switch" role="group" aria-label="View switch">
         <a class="c-view-switch__btn is-active" href="${pageContext.request.contextPath}/student/subjects" aria-current="page">
@@ -61,6 +169,12 @@
         </a>
       </div>
     </div>
+    <div class="c-tabs" role="tablist" style="margin-top: var(--space-4);">
+      <button class="c-tabs__link is-active" role="tab" data-status="all" onclick="filterByStatus('all')">All</button>
+      <button class="c-tabs__link" role="tab" data-status="ongoing" onclick="filterByStatus('ongoing')">Ongoing</button>
+      <button class="c-tabs__link" role="tab" data-status="upcoming" onclick="filterByStatus('upcoming')">Upcoming</button>
+      <button class="c-tabs__link" role="tab" data-status="completed" onclick="filterByStatus('completed')">Completed</button>
+    </div>
   </header>
 
   <section>
@@ -70,18 +184,19 @@
       </div>
     </c:if>
 
-    <c:set var="currentSemester" value="-1" />
+    <c:set var="currentGroup" value="" />
     <c:forEach items="${subjects}" var="subject">
-      <c:if test="${subject.semester != currentSemester}">
-        <c:if test="${currentSemester != -1}">
+      <c:set var="groupKey" value="Year ${subject.academicYear}, Semester ${subject.semester}" />
+      <c:if test="${groupKey != currentGroup}">
+        <c:if test="${not empty currentGroup}">
           </div>
         </c:if>
-        <h2 class="c-section-title">Semester ${subject.semester}</h2>
-        <div class="o-grid o-grid--cards">
-        <c:set var="currentSemester" value="${subject.semester}" />
+        <h2 class="c-section-title">${groupKey}</h2>
+        <div class="o-grid o-grid--cards" data-group="${groupKey}">
+        <c:set var="currentGroup" value="${groupKey}" />
       </c:if>
       
-      <article class="c-card" data-code="${subject.code}" style="cursor: pointer;" onclick="window.location.href='${pageContext.request.contextPath}/student/topics?subjectId=${subject.subjectId}'">
+      <article class="c-card" data-code="${subject.code}" data-status="${subject.status}" data-name="${subject.name}" data-description="${subject.description}" style="cursor: pointer;" onclick="window.location.href='${pageContext.request.contextPath}/student/topics?subjectId=${subject.subjectId}'">
         <div class="c-card__media c-subj-thumb"></div>
         <div class="c-card__body">
           <span class="c-status is-${subject.status}">${subject.status}</span>
@@ -90,7 +205,7 @@
         </div>
       </article>
     </c:forEach>
-    <c:if test="${currentSemester != -1}">
+    <c:if test="${not empty currentGroup}">
       </div>
     </c:if>
   </section>

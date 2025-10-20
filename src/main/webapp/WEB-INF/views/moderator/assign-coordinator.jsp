@@ -64,10 +64,17 @@
             <input type="hidden" name="subjectId" value="${subject.subjectId}" />
             <input type="hidden" name="returnTo" value="${returnTo}" />
             
+            <div class="c-input-group" style="margin-bottom: var(--space-4);">
+              <div class="c-input-icon">
+                <span class="c-input-icon__icon"><i data-lucide="search"></i></span>
+                <input class="c-input" type="search" id="search-input" placeholder="Search by ID, name, or email" aria-label="Search students" />
+              </div>
+            </div>
+            
             <div class="c-table-toolbar">
               <div class="c-table-toolbar__left">
                 <span class="u-text-muted">
-                  Select one or more students to assign as coordinators for this subject
+                  <span id="student-count">${students.size()}</span> of ${students.size()} students
                 </span>
               </div>
               <div class="c-table-toolbar__right">
@@ -131,12 +138,52 @@
           <script>
             // Select all functionality
             document.getElementById("select-all").addEventListener("change", function(e) {
-              const checkboxes = document.querySelectorAll('input[name="studentIds"]');
-              checkboxes.forEach(cb => cb.checked = e.target.checked);
+              const checkboxes = document.querySelectorAll('input[name="studentIds"]:not([style*="display: none"])');
+              checkboxes.forEach(cb => {
+                const row = cb.closest('tr');
+                if (row && row.style.display !== 'none') {
+                  cb.checked = e.target.checked;
+                }
+              });
               
               // Trigger change event to update button state
               const event = new Event('change');
               if (checkboxes.length > 0) checkboxes[0].dispatchEvent(event);
+            });
+            
+            // Search functionality
+            document.getElementById("search-input").addEventListener("input", function(e) {
+              const searchTerm = e.target.value.toLowerCase().trim();
+              const tableBody = document.querySelector('table tbody');
+              const rows = tableBody.querySelectorAll('tr');
+              const totalStudents = ${students.size()};
+              let visibleCount = 0;
+              
+              rows.forEach(row => {
+                const studentId = row.querySelector('.c-user-cell__sub').textContent.toLowerCase();
+                const studentName = row.querySelector('.c-user-cell__name').textContent.toLowerCase();
+                const studentEmail = row.querySelectorAll('td')[2].textContent.toLowerCase();
+                
+                const matchesSearch = searchTerm === '' || 
+                  studentId.includes(searchTerm) || 
+                  studentName.includes(searchTerm) || 
+                  studentEmail.includes(searchTerm);
+                
+                if (matchesSearch) {
+                  row.style.display = '';
+                  visibleCount++;
+                } else {
+                  row.style.display = 'none';
+                }
+              });
+              
+              // Update student count
+              document.getElementById('student-count').textContent = visibleCount;
+              
+              // Uncheck "select all" if search is active
+              if (searchTerm !== '') {
+                document.getElementById('select-all').checked = false;
+              }
             });
           </script>
         </c:otherwise>

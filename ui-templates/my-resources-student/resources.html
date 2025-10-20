@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Introduction to Calculus - Resources • UniNest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/app.css" />
+    <!-- Page-specific (resources) styles -->
+    <link rel="stylesheet" href="styles/resources.css" />
+    <script src="scripts/vendor/lucide.js"></script>
+  </head>
+  <body>
+    <!-- Theme toggle (reused) -->
+    <button
+      type="button"
+      class="c-theme-toggle js-theme-toggle"
+      aria-pressed="false"
+      aria-label="Toggle dark mode"
+    >
+      <span class="c-theme-toggle__icon" aria-hidden="true"
+        ><i data-lucide="moon"></i
+      ></span>
+      <span class="c-theme-toggle__label">Dark</span>
+    </button>
+
+    <div class="l-app">
+      <!-- Sidebar (reused from dashboard) -->
+      <aside class="c-sidebar">
+        <div class="c-logo">
+          <img src="img/logo.png" alt="Uninest" class="c-logo__mark" />
+        </div>
+        <div class="c-user-mini">
+          <div class="c-user-mini__avatar" aria-hidden="true"></div>
+          <div class="c-user-mini__meta">
+            <span class="c-user-mini__name">Sophia</span>
+            <span class="c-user-mini__role">Student</span>
+          </div>
+        </div>
+        <nav class="c-nav" aria-label="Main">
+          <a href="#" class="c-nav__item is-active"
+            ><span class="c-nav__icon"><i data-lucide="home"></i></span
+            >Dashboard</a
+          >
+          <a href="#" class="c-nav__item"
+            ><span class="c-nav__icon"><i data-lucide="book"></i></span>My
+            Subjects</a
+          >
+          <a href="#" class="c-nav__item"
+            ><span class="c-nav__icon"
+              ><i data-lucide="graduation-cap"></i></span
+            >Kuppi Sessions</a
+          >
+          <a href="#" class="c-nav__item"
+            ><span class="c-nav__icon"><i data-lucide="file-text"></i></span>My
+            Resources</a
+          >
+          <a href="#" class="c-nav__item"
+            ><span class="c-nav__icon"><i data-lucide="bar-chart-3"></i></span
+            >Progress Analysis</a
+          >
+          <a href="#" class="c-nav__item"
+            ><span class="c-nav__icon"
+              ><i data-lucide="message-square"></i></span
+            >Community</a
+          >
+          <a href="#" class="c-nav__item"
+            ><span class="c-nav__icon"><i data-lucide="user"></i></span>Profile
+            Settings</a
+          >
+        </nav>
+
+        <a href="#" class="c-nav__item c-logout-button"
+          ><span class="c-nav__icon"><i data-lucide="log-out"></i></span
+          >Logout</a
+        >
+      </aside>
+
+      <!-- Content -->
+      <main class="c-page">
+        <div class="o-panel">
+          <header class="c-page__header">
+            <nav class="c-breadcrumbs" aria-label="Breadcrumb">
+              <a href="#">Home</a>
+              <span class="c-breadcrumbs__sep">/</span>
+              <a href="#">CS204</a>
+              <span class="c-breadcrumbs__sep">/</span>
+              <span aria-current="page">Trees &amp; Graphs</span>
+            </nav>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: var(--space-4);
+              "
+            >
+              <div>
+                <h1 class="c-page__title">
+                  Introduction to Calculus -Resources
+                </h1>
+                <p class="u-text-muted" style="margin-top: var(--space-2)">
+                  Explore a wealth of study materials shared by your peers and
+                  instructors.
+                </p>
+              </div>
+              <button class="c-btn c-btn--secondary">
+                <i data-lucide="upload"></i> Upload Resources
+              </button>
+            </div>
+            <div class="c-input-group">
+              <div class="c-input-icon">
+                <span class="c-input-icon__icon" aria-hidden="true"
+                  ><i data-lucide="search"></i
+                ></span>
+                <input
+                  class="c-input"
+                  type="search"
+                  placeholder="Search Resources"
+                  aria-label="Search resources"
+                />
+              </div>
+              <button class="c-btn">Search</button>
+            </div>
+            <div class="c-chip-group">
+              <a href="#" class="c-chip is-active">Lecture Notes</a>
+              <a href="#" class="c-chip">Supplementary</a>
+              <a href="#" class="c-chip">Practice Exams</a>
+              <a href="#" class="c-chip">Study Guides</a>
+              <a href="#" class="c-chip">Video Tutorials</a>
+            </div>
+          </header>
+
+          <section>
+            <div class="o-grid o-grid--cards">
+              <!-- Resource cards sample (file-type thumbnails) -->
+
+              <article class="c-card" data-filetype="pdf">
+                <div class="c-card__media c-thumb"></div>
+                <div class="c-card__body">
+                  <h3 class="c-card__title">Introduction to Calculus</h3>
+                  <p class="c-card__meta">Uploaded by Sophia</p>
+                  <p class="c-card__meta">Student · 2023-08-15</p>
+                </div>
+              </article>
+
+              <article class="c-card" data-filetype="pptx">
+                <div class="c-card__media c-thumb"></div>
+                <div class="c-card__body">
+                  <h3 class="c-card__title">Introduction to Calculus</h3>
+                  <p class="c-card__meta">Uploaded by Sophia</p>
+                  <p class="c-card__meta">Student · 2023-08-15</p>
+                </div>
+              </article>
+
+              <article class="c-card" data-filetype="docx">
+                <div class="c-card__media c-thumb"></div>
+                <div class="c-card__body">
+                  <h3 class="c-card__title">Introduction to Calculus</h3>
+                  <p class="c-card__meta">Uploaded by Sophia</p>
+                  <p class="c-card__meta">Student · 2023-08-15</p>
+                </div>
+              </article>
+
+              <article class="c-card" data-filetype="xlsx">
+                <div class="c-card__media c-thumb"></div>
+                <div class="c-card__body">
+                  <h3 class="c-card__title">Introduction to Calculus</h3>
+                  <p class="c-card__meta">Uploaded by Sophia</p>
+                  <p class="c-card__meta">Student · 2023-08-15</p>
+                </div>
+              </article>
+
+              <article class="c-card" data-filetype="image">
+                <div class="c-card__media c-thumb"></div>
+                <div class="c-card__body">
+                  <h3 class="c-card__title">Introduction to Calculus</h3>
+                  <p class="c-card__meta">Uploaded by Sophia</p>
+                  <p class="c-card__meta">Student · 2023-08-15</p>
+                </div>
+              </article>
+
+              <article class="c-card" data-filetype="video">
+                <div class="c-card__media c-thumb"></div>
+                <div class="c-card__body">
+                  <h3 class="c-card__title">Introduction to Calculus</h3>
+                  <p class="c-card__meta">Uploaded by Sophia</p>
+                  <p class="c-card__meta">Student · 2023-08-15</p>
+                </div>
+              </article>
+
+              <article class="c-card" data-filetype="zip">
+                <div class="c-card__media c-thumb"></div>
+                <div class="c-card__body">
+                  <h3 class="c-card__title">Introduction to Calculus</h3>
+                  <p class="c-card__meta">Uploaded by Sophia</p>
+                  <p class="c-card__meta">Student · 2023-08-15</p>
+                </div>
+              </article>
+
+              <article class="c-card" data-filetype="txt">
+                <div class="c-card__media c-thumb"></div>
+                <div class="c-card__body">
+                  <h3 class="c-card__title">Introduction to Calculus</h3>
+                  <p class="c-card__meta">Uploaded by Sophia</p>
+                  <p class="c-card__meta">Student · 2023-08-15</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="scripts/app.js"></script>
+    <script>
+      /* ================= Resources: thumbnails by file type ================= */
+      function initResourceThumbnails() {
+        const cards = document.querySelectorAll(
+          ".c-card[data-filetype] .c-card__media.c-thumb"
+        );
+        if (!cards.length) return;
+        const iconMap = {
+          pdf: "file-text", // lucide doesn't have dedicated pdf; use file-text
+          doc: "file-text",
+          docx: "file-text",
+          txt: "file-text",
+          md: "file-text",
+          ppt: "file-input",
+          pptx: "file-input",
+          xls: "table",
+          xlsx: "table",
+          csv: "table",
+          image: "image",
+          jpg: "image",
+          jpeg: "image",
+          png: "image",
+          gif: "image",
+          svg: "image",
+          video: "film",
+          mp4: "film",
+          mov: "film",
+          avi: "film",
+          zip: "file-archive",
+          rar: "file-archive",
+          code: "code",
+        };
+        const palette = [
+          "hsl(210 100% 97%)", // blue 50
+          "hsl(190 95% 95%)", // cyan 50
+          "hsl(150 60% 94%)", // green 70
+          "hsl(45 100% 95%)", // amber 50
+          "hsl(270 80% 96%)", // violet 60
+          "hsl(0 85% 96%)", // red 60
+          "hsl(320 80% 96%)", // pink 60
+        ];
+        const fgForBg = (hslStr) => {
+          // Extract hue to compute a pleasant darker fg
+          const m = hslStr.match(/hsl\((\d+)/);
+          const hue = m ? parseInt(m[1], 10) : Math.floor(Math.random() * 360);
+          return `hsl(${hue} 60% 30%)`;
+        };
+        cards.forEach((thumb, idx) => {
+          const article = thumb.closest(".c-card");
+          const type = (
+            article?.getAttribute("data-filetype") || "file"
+          ).toLowerCase();
+          const icon = iconMap[type] || "file";
+          const bg = palette[idx % palette.length];
+          const fg = fgForBg(bg);
+          thumb.style.background = bg;
+          thumb.style.color = fg;
+          thumb.innerHTML = `<i data-lucide="${icon}"></i>`;
+        });
+        if (window.lucide) window.lucide.createIcons();
+      }
+    </script>
+  </body>
+</html>

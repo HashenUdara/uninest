@@ -28,7 +28,14 @@ public class SelectSubjectForCoordinatorServlet extends HttpServlet {
 
         List<Subject> subjects = subjectDAO.findByCommunityId(moderator.getCommunityId());
 
+        // Track the return URL (defaults to all-coordinators page)
+        String returnTo = req.getParameter("returnTo");
+        if (returnTo == null || returnTo.isEmpty()) {
+            returnTo = "all";
+        }
+
         req.setAttribute("subjects", subjects);
+        req.setAttribute("returnTo", returnTo);
         req.getRequestDispatcher("/WEB-INF/views/moderator/select-subject-for-coordinator.jsp").forward(req, resp);
     }
 }

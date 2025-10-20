@@ -15,17 +15,29 @@
           <h1 class="c-page__title">Subject Coordinators</h1>
           <p class="c-page__subtitle u-text-muted">View and manage all subject coordinators in your community.</p>
         </div>
-        <a href="${pageContext.request.contextPath}/moderator/coordinators/select-subject" class="c-btn c-btn--primary">
+        <a href="${pageContext.request.contextPath}/moderator/coordinators/select-subject?returnTo=all" class="c-btn c-btn--primary">
           <i data-lucide="user-plus"></i> Assign New Coordinator
         </a>
       </div>
     </header>
 
     <section>
+      <c:if test="${param.success == 'assigned'}">
+        <div class="c-alert c-alert--success" role="alert">
+          <i data-lucide="check-circle"></i>
+          <span>Coordinator(s) assigned successfully!</span>
+        </div>
+      </c:if>
       <c:if test="${param.success == 'unassigned'}">
         <div class="c-alert c-alert--success" role="alert">
           <i data-lucide="check-circle"></i>
           <span>Coordinator removed successfully!</span>
+        </div>
+      </c:if>
+      <c:if test="${param.success == 'updated'}">
+        <div class="c-alert c-alert--success" role="alert">
+          <i data-lucide="check-circle"></i>
+          <span>Coordinator subject updated successfully!</span>
         </div>
       </c:if>
 
@@ -93,6 +105,9 @@
                     <td>${coordinator.assignedAt}</td>
                     <td class="u-text-right">
                       <div class="c-table-actions">
+                        <a href="${pageContext.request.contextPath}/moderator/subject-coordinators/edit?coordinatorId=${coordinator.coordinatorId}&returnTo=all" class="c-btn c-btn--sm c-btn--ghost" aria-label="Edit coordinator">
+                          <i data-lucide="edit"></i> Edit
+                        </a>
                         <form method="post" action="${pageContext.request.contextPath}/moderator/subject-coordinators/unassign" style="display:inline" onsubmit="return confirm('Are you sure you want to remove this coordinator?');">
                           <input type="hidden" name="coordinatorId" value="${coordinator.coordinatorId}" />
                           <input type="hidden" name="returnToAll" value="true" />

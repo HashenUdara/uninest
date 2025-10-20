@@ -6,6 +6,7 @@ import com.uninest.util.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SubjectCoordinatorDAO {
 
@@ -155,5 +156,47 @@ public class SubjectCoordinatorDAO {
             throw new RuntimeException("Error checking coordinator for subject", e);
         }
         return false;
+    }
+
+    /**
+     * Find a coordinator by ID
+     */
+    public Optional<SubjectCoordinator> findById(int coordinatorId) {
+        String sql = "SELECT sc.coordinator_id, sc.user_id, sc.subject_id, sc.assigned_at, " +
+                "u.name AS user_name, u.email AS user_email, u.academic_year, " +
+                "uni.name AS university_name, " +
+                "s.name AS subject_name, s.code AS subject_code " +
+                "FROM subject_coordinators sc " +
+                "JOIN users u ON sc.user_id = u.id " +
+                "JOIN subjects s ON sc.subject_id = s.subject_id " +
+                "LEFT JOIN universities uni ON u.university_id = uni.id " +
+                "WHERE sc.coordinator_id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, coordinatorId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching coordinator by ID", e);
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Update the subject assigned to a coordinator
+     */
+    public boolean updateSubject(int coordinatorId, int newSubjectId) {
+        String sql = "UPDATE subject_coordinators SET subject_id = ? WHERE coordinator_id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, newSubjectId);
+            ps.setInt(2, coordinatorId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating coordinator subject", e);
+        }
     }
 }

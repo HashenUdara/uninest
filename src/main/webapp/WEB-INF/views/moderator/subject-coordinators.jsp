@@ -36,6 +36,12 @@
           <span>Coordinator removed successfully!</span>
         </div>
       </c:if>
+      <c:if test="${param.success == 'updated'}">
+        <div class="c-alert c-alert--success" role="alert">
+          <i data-lucide="check-circle"></i>
+          <span>Coordinator subject updated successfully!</span>
+        </div>
+      </c:if>
 
       <c:choose>
         <c:when test="${empty coordinators}">
@@ -95,6 +101,9 @@
                     <td>${coordinator.assignedAt}</td>
                     <td class="u-text-right">
                       <div class="c-table-actions">
+                        <a href="${pageContext.request.contextPath}/moderator/subject-coordinators/edit?coordinatorId=${coordinator.coordinatorId}&returnTo=subject" class="c-btn c-btn--sm c-btn--ghost" aria-label="Edit coordinator">
+                          <i data-lucide="edit"></i> Edit
+                        </a>
                         <form method="post" action="${pageContext.request.contextPath}/moderator/subject-coordinators/unassign" style="display:inline" onsubmit="return confirm('Are you sure you want to remove this coordinator?');">
                           <input type="hidden" name="coordinatorId" value="${coordinator.coordinatorId}" />
                           <input type="hidden" name="subjectId" value="${subject.subjectId}" />

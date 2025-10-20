@@ -25,17 +25,25 @@ public class UnassignCoordinatorServlet extends HttpServlet {
 
         String coordinatorIdParam = req.getParameter("coordinatorId");
         String subjectIdParam = req.getParameter("subjectId");
+        String returnToAll = req.getParameter("returnToAll");
 
-        if (coordinatorIdParam == null || subjectIdParam == null) {
+        if (coordinatorIdParam == null) {
             resp.sendRedirect(req.getContextPath() + "/moderator/subjects");
             return;
         }
 
         int coordinatorId = Integer.parseInt(coordinatorIdParam);
-        int subjectId = Integer.parseInt(subjectIdParam);
 
         coordinatorDAO.unassign(coordinatorId);
 
-        resp.sendRedirect(req.getContextPath() + "/moderator/subject-coordinators?subjectId=" + subjectId + "&success=unassigned");
+        // If returnToAll is true, redirect to all-coordinators page
+        if ("true".equals(returnToAll)) {
+            resp.sendRedirect(req.getContextPath() + "/moderator/coordinators?success=unassigned");
+        } else if (subjectIdParam != null) {
+            int subjectId = Integer.parseInt(subjectIdParam);
+            resp.sendRedirect(req.getContextPath() + "/moderator/subject-coordinators?subjectId=" + subjectId + "&success=unassigned");
+        } else {
+            resp.sendRedirect(req.getContextPath() + "/moderator/coordinators?success=unassigned");
+        }
     }
 }

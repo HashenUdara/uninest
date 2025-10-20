@@ -16,7 +16,7 @@
       label="Dashboard" 
       active="${activePage eq 'dashboard' or empty activePage}" />
     <dash:nav-item 
-      href="#" 
+      href="${pageContext.request.contextPath}/student/subjects" 
       icon="book" 
       label="My Subjects" 
       active="${activePage eq 'subjects'}" />

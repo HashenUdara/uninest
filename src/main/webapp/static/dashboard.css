@@ -1011,6 +1011,33 @@ a:hover {
   font-size: var(--fs-xs);
 }
 
+/* Subject avatar (square, for list view) */
+.c-subj-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  font-weight: var(--fw-bold);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+/* Topic avatar (square, for list and grid view) */
+.c-topic-avatar {
+  width: 100%;
+  height: 180px;
+  border-radius: var(--radius-3);
+  display: grid;
+  place-items: center;
+  font-weight: var(--fw-bold);
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 /* Small/Ghost buttons for table actions */
 .c-btn--sm {
   padding: var(--space-2) var(--space-4);

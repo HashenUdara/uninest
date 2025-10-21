@@ -199,4 +199,29 @@ public class SubjectCoordinatorDAO {
             throw new RuntimeException("Error updating coordinator subject", e);
         }
     }
+
+    /**
+     * Find all subject coordinator records for a specific user
+     */
+    public List<SubjectCoordinator> findByUserId(int userId) {
+        String sql = "SELECT sc.coordinator_id, sc.user_id, sc.subject_id, sc.assigned_at, " +
+                "s.name AS subject_name, s.code AS subject_code " +
+                "FROM subject_coordinators sc " +
+                "JOIN subjects s ON sc.subject_id = s.subject_id " +
+                "WHERE sc.user_id = ? " +
+                "ORDER BY sc.assigned_at DESC";
+        List<SubjectCoordinator> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching coordinators for user " + userId, e);
+        }
+        return list;
+    }
 }

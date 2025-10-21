@@ -1508,3 +1508,91 @@ th[aria-sort="none"] .c-sort-indicator {
   display: inline-flex;
   gap: var(--space-2);
 }
+
+/* Empty state */
+.c-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  min-height: 400px;
+}
+
+.c-empty-state__icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+}
+
+.c-empty-state__icon i {
+  width: 40px;
+  height: 40px;
+  color: var(--text-muted);
+}
+
+.c-empty-state__title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+  color: var(--text-primary);
+}
+
+.c-empty-state__message {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+  max-width: 400px;
+}
+
+/* Navigation divider */
+.c-nav__divider {
+  height: 1px;
+  background: var(--border-1);
+  margin: var(--space-3) var(--space-4);
+}
+
+.c-nav__label {
+  padding: var(--space-2) var(--space-4);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* Table actions improvements */
+.c-table-actions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+.c-table-actions form {
+  margin: 0;
+}
+
+/* Badge variants */
+.c-badge--warning {
+  background: hsl(45 100% 95%);
+  color: hsl(45 100% 35%);
+  border: 1px solid hsl(45 100% 85%);
+}
+
+.c-badge--success {
+  background: hsl(150 60% 94%);
+  color: hsl(150 60% 35%);
+  border: 1px solid hsl(150 60% 85%);
+}
+
+.c-badge--danger {
+  background: hsl(0 85% 96%);
+  color: hsl(0 85% 35%);
+  border: 1px solid hsl(0 85% 85%);
+}

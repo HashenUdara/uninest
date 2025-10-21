@@ -422,4 +422,50 @@ INSERT INTO `topic_progress` (`topic_id`, `user_id`, `progress_percent`, `last_a
 (15, 34, 70.00, '2025-10-20 13:00:00'),
 (16, 34, 40.00, '2025-10-19 16:30:00');
 
+-- --------------------------------------------------------
+-- Table: resource_categories
+-- --------------------------------------------------------
+CREATE TABLE `resource_categories` (
+  `category_id` INT NOT NULL AUTO_INCREMENT,
+  `category_name` VARCHAR(100) NOT NULL UNIQUE,
+  `description` TEXT,
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `resource_categories` (`category_name`, `description`) VALUES
+('Lecture Notes', 'Notes or slides provided during lectures'),
+('Short Notes', 'Concise summaries or quick revision materials'),
+('Past Papers', 'Previous exam or test question papers'),
+('Tutorials', 'Step-by-step exercises or practical lessons'),
+('Assignments', 'Coursework or take-home exercises'),
+('Lab Sheets', 'Experiment or practical lab instructions'),
+('Video Tutorials', 'Recorded videos explaining course topics'),
+('Project Reports', 'Example or reference project documentation'),
+('Reference Materials', 'Books, articles, or external reading materials'),
+('Model Answers', 'Example or solution sets for past papers or exercises');
+
+-- --------------------------------------------------------
+-- Table: resources (private by default)
+-- --------------------------------------------------------
+CREATE TABLE `resources` (
+  `resource_id` INT NOT NULL AUTO_INCREMENT,
+  `topic_id` INT NOT NULL,
+  `uploaded_by` INT NOT NULL,
+  `category_id` INT NOT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `description` TEXT,
+  `file_url` VARCHAR(500) NOT NULL,
+  `file_type` VARCHAR(100) NOT NULL,
+  `upload_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `status` ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+  `visibility` ENUM('private','public') DEFAULT 'private',
+  `approved_by` INT DEFAULT NULL,
+  `approval_date` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`resource_id`),
+  FOREIGN KEY (`topic_id`) REFERENCES `topics`(`topic_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`category_id`) REFERENCES `resource_categories`(`category_id`),
+  FOREIGN KEY (`uploaded_by`) REFERENCES `users`(`id`),
+  FOREIGN KEY (`approved_by`) REFERENCES `users`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 COMMIT;

@@ -26,7 +26,7 @@
       label="Kuppi Sessions" 
       active="${activePage eq 'kuppi'}" />
     <dash:nav-item 
-      href="#" 
+      href="${pageContext.request.contextPath}/student/resources" 
       icon="file-text" 
       label="My Resources" 
       active="${activePage eq 'resources'}" />
@@ -45,6 +45,17 @@
       icon="user" 
       label="Profile Settings" 
       active="${activePage eq 'profile'}" />
+    
+    <%-- Coordinator section - only show if user is a coordinator --%>
+    <c:if test="${sessionScope.isCoordinator}">
+      <div class="c-nav__divider"></div>
+      <div class="c-nav__label">Coordinator</div>
+      <dash:nav-item 
+        href="${pageContext.request.contextPath}/coordinator/resource-approvals" 
+        icon="check-square" 
+        label="Resource Approvals" 
+        active="${activePage eq 'resource-approvals'}" />
+    </c:if>
   </jsp:attribute>
   <jsp:attribute name="alerts">
     <c:if test="${not empty alerts}">

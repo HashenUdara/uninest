@@ -155,7 +155,7 @@
                 <c:when test="${topic != null}">
                     <a href="${pageContext.request.contextPath}/student/subjects">My Subjects</a>
                     <span class="c-breadcrumbs__sep">/</span>
-                    <a href="${pageContext.request.contextPath}/student/topics?subjectId=${topic.subjectId}">${topic.subjectName}</a>
+                    <a href="${pageContext.request.contextPath}/student/topics?subjectId=${topic.subjectId}">${subject != null ? subject.name : 'Subject'}</a>
                     <span class="c-breadcrumbs__sep">/</span>
                     <span aria-current="page">${topic.title}</span>
                 </c:when>

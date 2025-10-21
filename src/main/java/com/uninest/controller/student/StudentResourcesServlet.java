@@ -2,10 +2,12 @@ package com.uninest.controller.student;
 
 import com.uninest.model.Resource;
 import com.uninest.model.ResourceCategory;
+import com.uninest.model.Subject;
 import com.uninest.model.Topic;
 import com.uninest.model.User;
 import com.uninest.model.dao.ResourceCategoryDAO;
 import com.uninest.model.dao.ResourceDAO;
+import com.uninest.model.dao.SubjectDAO;
 import com.uninest.model.dao.TopicDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,6 +23,7 @@ public class StudentResourcesServlet extends HttpServlet {
     private final ResourceDAO resourceDAO = new ResourceDAO();
     private final ResourceCategoryDAO categoryDAO = new ResourceCategoryDAO();
     private final TopicDAO topicDAO = new TopicDAO();
+    private final SubjectDAO subjectDAO = new SubjectDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,6 +37,7 @@ public class StudentResourcesServlet extends HttpServlet {
         String topicIdParam = req.getParameter("topicId");
         Integer topicId = null;
         Topic topic = null;
+        Subject subject = null;
         
         if (topicIdParam != null && !topicIdParam.isEmpty()) {
             try {
@@ -41,6 +45,11 @@ public class StudentResourcesServlet extends HttpServlet {
                 Optional<Topic> topicOpt = topicDAO.findById(topicId);
                 if (topicOpt.isPresent()) {
                     topic = topicOpt.get();
+                    // Fetch the subject for breadcrumbs
+                    Optional<Subject> subjectOpt = subjectDAO.findById(topic.getSubjectId());
+                    if (subjectOpt.isPresent()) {
+                        subject = subjectOpt.get();
+                    }
                 }
             } catch (NumberFormatException e) {
                 // Ignore invalid topic ID
@@ -84,6 +93,7 @@ public class StudentResourcesServlet extends HttpServlet {
         req.setAttribute("selectedCategoryId", categoryId);
         req.setAttribute("topic", topic);
         req.setAttribute("topicId", topicId);
+        req.setAttribute("subject", subject);
 
         req.getRequestDispatcher("/WEB-INF/views/student/resources.jsp").forward(req, resp);
     }

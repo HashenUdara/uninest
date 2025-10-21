@@ -1,4 +1,4 @@
-package com.uninest.controller.coordinator;
+package com.uninest.controller.subjectcoordinator;
 
 import com.uninest.model.User;
 import com.uninest.model.dao.ResourceDAO;
@@ -10,8 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "approveResource", urlPatterns = "/coordinator/resource-approvals/approve")
-public class ApproveResourceServlet extends HttpServlet {
+@WebServlet(name = "rejectResource", urlPatterns = "/subject-coordinator/resource-approvals/reject")
+public class RejectResourceServlet extends HttpServlet {
     private final ResourceDAO resourceDAO = new ResourceDAO();
     private final SubjectCoordinatorDAO coordinatorDAO = new SubjectCoordinatorDAO();
 
@@ -31,17 +31,17 @@ public class ApproveResourceServlet extends HttpServlet {
 
         String resourceIdStr = req.getParameter("resourceId");
         if (resourceIdStr == null || resourceIdStr.trim().isEmpty()) {
-            resp.sendRedirect(req.getContextPath() + "/coordinator/resource-approvals?error=invalid");
+            resp.sendRedirect(req.getContextPath() + "/subject-coordinator/resource-approvals?error=invalid");
             return;
         }
 
         try {
             int resourceId = Integer.parseInt(resourceIdStr);
-            resourceDAO.approve(resourceId, user.getId());
-            resp.sendRedirect(req.getContextPath() + "/coordinator/resource-approvals?success=approved");
+            resourceDAO.reject(resourceId, user.getId());
+            resp.sendRedirect(req.getContextPath() + "/subject-coordinator/resource-approvals?success=rejected");
         } catch (Exception e) {
             e.printStackTrace();
-            resp.sendRedirect(req.getContextPath() + "/coordinator/resource-approvals?error=failed");
+            resp.sendRedirect(req.getContextPath() + "/subject-coordinator/resource-approvals?error=failed");
         }
     }
 }

@@ -46,12 +46,12 @@
       label="Profile Settings" 
       active="${activePage eq 'profile'}" />
     
-    <%-- Coordinator section - only show if user is a coordinator --%>
+    <%-- Subject Coordinator section - only show if user is a coordinator --%>
     <c:if test="${sessionScope.isCoordinator}">
       <div class="c-nav__divider"></div>
-      <div class="c-nav__label">Coordinator</div>
+      <div class="c-nav__label">Subject Coordinator</div>
       <dash:nav-item 
-        href="${pageContext.request.contextPath}/coordinator/resource-approvals" 
+        href="${pageContext.request.contextPath}/subject-coordinator/resource-approvals" 
         icon="check-square" 
         label="Resource Approvals" 
         active="${activePage eq 'resource-approvals'}" />

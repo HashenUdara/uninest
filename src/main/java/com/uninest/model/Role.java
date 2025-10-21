@@ -2,7 +2,9 @@ package com.uninest.model;
 
 /**
  * Represents a role in the system with hierarchical inheritance support.
- * Roles: student, subject_coordinator, moderator, admin
+ * Roles: student, moderator, admin
+ * Note: Subject coordinators are not a role - they are students with special privileges
+ * granted via the subject_coordinators table.
  */
 public class Role {
     private int id;

@@ -40,16 +40,10 @@ public class DebugUserServlet extends HttpServlet {
             out.println("<tr><td>Is Admin?</td><td>" + user.isAdmin() + "</td></tr>");
             out.println("</table>");
             
-            out.println("<br><h2>How to fix 403 Forbidden:</h2>");
-            if (!user.isSubjectCoordinator()) {
-                out.println("<p style='color: red;'>❌ You are NOT a subject coordinator. You need to:</p>");
-                out.println("<ol>");
-                out.println("<li>Login with a subject coordinator account, OR</li>");
-                out.println("<li>Update your role in the database to 'subject_coordinator'</li>");
-                out.println("</ol>");
-            } else {
-                out.println("<p style='color: green;'>✅ You ARE a subject coordinator. The /coordinator/* routes should work!</p>");
-            }
+            out.println("<br><h2>Roles Explanation:</h2>");
+            out.println("<p><strong>Note:</strong> Subject Coordinator is NOT a role.</p>");
+            out.println("<p>Subject coordinators are students with special privileges granted via the subject_coordinators table.</p>");
+            out.println("<p>To become a coordinator, a moderator must assign you to a subject.</p>");
         }
         
         out.println("</body></html>");

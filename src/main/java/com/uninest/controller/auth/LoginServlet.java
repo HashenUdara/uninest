@@ -42,10 +42,9 @@ public class LoginServlet extends HttpServlet {
         User user = userOpt.get();
         req.getSession(true).setAttribute("authUser", user);
         // Redirect by role with gating
+        // Note: Subject coordinators are students, not a separate role
         if (user.isAdmin()) {
             resp.sendRedirect(req.getContextPath() + "/admin/dashboard");
-        } else if (user.isSubjectCoordinator()) {
-            resp.sendRedirect(req.getContextPath() + "/coordinator/dashboard");
         } else if (user.isModerator()) {
             if (user.getCommunityId() == null) {
                 resp.sendRedirect(req.getContextPath() + "/moderator/community/create");

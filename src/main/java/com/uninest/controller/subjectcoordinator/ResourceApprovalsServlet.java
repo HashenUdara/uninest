@@ -1,4 +1,4 @@
-package com.uninest.controller.coordinator;
+package com.uninest.controller.subjectcoordinator;
 
 import com.uninest.model.Resource;
 import com.uninest.model.SubjectCoordinator;
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "coordinatorResourceApprovals", urlPatterns = "/coordinator/resource-approvals")
+@WebServlet(name = "subjectCoordinatorResourceApprovals", urlPatterns = "/subject-coordinator/resource-approvals")
 public class ResourceApprovalsServlet extends HttpServlet {
     private final ResourceDAO resourceDAO = new ResourceDAO();
     private final SubjectCoordinatorDAO coordinatorDAO = new SubjectCoordinatorDAO();
@@ -44,6 +44,6 @@ public class ResourceApprovalsServlet extends HttpServlet {
         List<Resource> pendingResources = resourceDAO.findPendingBySubjectIds(coordinatedSubjectIds);
 
         req.setAttribute("resources", pendingResources);
-        req.getRequestDispatcher("/WEB-INF/views/coordinator/resource-approvals.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/subject-coordinator/resource-approvals.jsp").forward(req, resp);
     }
 }

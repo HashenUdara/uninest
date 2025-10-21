@@ -11,7 +11,7 @@
 <layout:dashboard title="${finalPageTitle}" pageTitle="${finalPageTitle}" breadcrumb="${breadcrumb}">
   <jsp:attribute name="navigation">
     <dash:nav-item 
-      href="${pageContext.request.contextPath}/coordinator/dashboard" 
+      href="${pageContext.request.contextPath}/subject-coordinator/dashboard" 
       icon="home" 
       label="Dashboard" 
       active="${activePage eq 'dashboard' or empty activePage}" />

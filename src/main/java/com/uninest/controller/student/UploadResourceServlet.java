@@ -9,7 +9,6 @@ import com.uninest.model.dao.ResourceCategoryDAO;
 import com.uninest.model.dao.ResourceDAO;
 import com.uninest.model.dao.SubjectDAO;
 import com.uninest.model.dao.TopicDAO;
-import com.uninest.util.AppConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -28,8 +27,8 @@ import java.util.List;
 @WebServlet(name = "uploadResource", urlPatterns = "/student/resources/upload")
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-    maxFileSize = 1024 * 1024 * 50,      // 50MB - can be overridden in application.properties
-    maxRequestSize = 1024 * 1024 * 60    // 60MB - can be overridden in application.properties
+    maxFileSize = 1024 * 1024 * 50,      // 50MB
+    maxRequestSize = 1024 * 1024 * 60    // 60MB
 )
 public class UploadResourceServlet extends HttpServlet {
     private final ResourceDAO resourceDAO = new ResourceDAO();
@@ -37,6 +36,8 @@ public class UploadResourceServlet extends HttpServlet {
     private final SubjectDAO subjectDAO = new SubjectDAO();
     private final TopicDAO topicDAO = new TopicDAO();
     
+    // Store uploads outside the webapp to survive redeployments
+    private static final String UPLOAD_BASE_PATH = System.getProperty("user.home") + "/uninest-uploads";
     private static final String UPLOAD_DIRECTORY = "resources";
 
     @Override

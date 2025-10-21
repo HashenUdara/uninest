@@ -124,7 +124,7 @@
                                                 </a>
                                             </c:if>
                                             <form method="post" 
-                                                  action="${pageContext.request.contextPath}/coordinator/resource-approvals/approve" 
+                                                  action="${pageContext.request.contextPath}/subject-coordinator/resource-approvals/approve" 
                                                   style="display:inline">
                                                 <input type="hidden" name="resourceId" value="${res.resourceId}" />
                                                 <button class="c-btn c-btn--sm c-btn--success" type="submit" aria-label="Approve">
@@ -132,7 +132,7 @@
                                                 </button>
                                             </form>
                                             <form method="post" 
-                                                  action="${pageContext.request.contextPath}/coordinator/resource-approvals/reject" 
+                                                  action="${pageContext.request.contextPath}/subject-coordinator/resource-approvals/reject" 
                                                   style="display:inline">
                                                 <input type="hidden" name="resourceId" value="${res.resourceId}" />
                                                 <button class="c-btn c-btn--sm c-btn--danger" type="submit" aria-label="Reject">

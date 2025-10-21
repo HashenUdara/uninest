@@ -44,9 +44,9 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        // Special check for coordinator paths - check subject_coordinators table
-        if (path.startsWith("/coordinator/")) {
-            // Admins can access all coordinator pages
+        // Special check for subject coordinator paths - check subject_coordinators table
+        if (path.startsWith("/subject-coordinator/")) {
+            // Admins can access all subject coordinator pages
             if (user.hasRole("admin")) {
                 chain.doFilter(request, response);
                 return;

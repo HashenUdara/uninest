@@ -5,6 +5,113 @@
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
 <layout:student-dashboard pageTitle="My Resources" activePage="resources">
+   
+        <script>
+            // View toggle functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const toggleButtons = document.querySelectorAll('.js-view-toggle');
+                const gridView = document.querySelector('.js-grid-view');
+                const tableView = document.querySelector('.js-table-view');
+                
+                toggleButtons.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const view = this.getAttribute('data-view');
+                        toggleButtons.forEach(b => b.classList.remove('is-active'));
+                        this.classList.add('is-active');
+                        
+                        if (view === 'grid') {
+                            gridView.style.display = 'grid';
+                            tableView.style.display = 'none';
+                        } else {
+                            gridView.style.display = 'none';
+                            tableView.style.display = 'block';
+                        }
+                    });
+                });
+                
+                // Initialize thumbnails for grid view
+                initResourceThumbnails();
+                
+                // Initialize lucide icons
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            });
+            
+            function initResourceThumbnails() {
+                const cards = document.querySelectorAll('.c-card[data-filetype] .c-card__media.c-thumb');
+                if (!cards.length) return;
+                
+                const iconMap = {
+                    pdf: 'file-text',
+                    doc: 'file-text',
+                    docx: 'file-text',
+                    txt: 'file-text',
+                    ppt: 'file-input',
+                    pptx: 'file-input',
+                    xls: 'table',
+                    xlsx: 'table',
+                    image: 'image',
+                    jpg: 'image',
+                    jpeg: 'image',
+                    png: 'image',
+                    video: 'film',
+                    mp4: 'film',
+                    zip: 'file-archive',
+                    link: 'link'
+                };
+                
+                const palette = [
+                    'hsl(210 100% 97%)',
+                    'hsl(190 95% 95%)',
+                    'hsl(150 60% 94%)',
+                    'hsl(45 100% 95%)',
+                    'hsl(270 80% 96%)',
+                    'hsl(0 85% 96%)'
+                ];
+                
+                cards.forEach((thumb, idx) => {
+                    const article = thumb.closest('.c-card');
+                    const type = (article?.getAttribute('data-filetype') || 'file').toLowerCase();
+                    const icon = iconMap[type] || 'file';
+                    const bg = palette[idx % palette.length];
+                    
+                    thumb.style.background = bg;
+                    thumb.innerHTML = '<i data-lucide="' + icon + '"></i>';
+                });
+                
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            }
+        </script>
+        
+        <style>
+            .c-resources-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: var(--space-4);
+                margin-top: var(--space-4);
+            }
+            
+            .c-thumb {
+                display: grid;
+                place-items: center;
+                width: 100%;
+                height: 200px;
+                border-radius: var(--radius-3);
+                background: var(--surface-2);
+                color: var(--text-muted);
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .c-thumb svg {
+                width: 60px;
+                height: 60px;
+                stroke-width: 1;
+            }
+        </style>
     <header class="c-page__header">
         <nav class="c-breadcrumbs" aria-label="Breadcrumb">
             <a href="${pageContext.request.contextPath}/student/dashboard">Home</a>
@@ -151,112 +258,4 @@
         </c:choose>
     </section>
     
-    <jsp:attribute name="scripts">
-        <script>
-            // View toggle functionality
-            document.addEventListener('DOMContentLoaded', function() {
-                const toggleButtons = document.querySelectorAll('.js-view-toggle');
-                const gridView = document.querySelector('.js-grid-view');
-                const tableView = document.querySelector('.js-table-view');
-                
-                toggleButtons.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const view = this.getAttribute('data-view');
-                        toggleButtons.forEach(b => b.classList.remove('is-active'));
-                        this.classList.add('is-active');
-                        
-                        if (view === 'grid') {
-                            gridView.style.display = 'grid';
-                            tableView.style.display = 'none';
-                        } else {
-                            gridView.style.display = 'none';
-                            tableView.style.display = 'block';
-                        }
-                    });
-                });
-                
-                // Initialize thumbnails for grid view
-                initResourceThumbnails();
-                
-                // Initialize lucide icons
-                if (window.lucide) {
-                    lucide.createIcons();
-                }
-            });
-            
-            function initResourceThumbnails() {
-                const cards = document.querySelectorAll('.c-card[data-filetype] .c-card__media.c-thumb');
-                if (!cards.length) return;
-                
-                const iconMap = {
-                    pdf: 'file-text',
-                    doc: 'file-text',
-                    docx: 'file-text',
-                    txt: 'file-text',
-                    ppt: 'file-input',
-                    pptx: 'file-input',
-                    xls: 'table',
-                    xlsx: 'table',
-                    image: 'image',
-                    jpg: 'image',
-                    jpeg: 'image',
-                    png: 'image',
-                    video: 'film',
-                    mp4: 'film',
-                    zip: 'file-archive',
-                    link: 'link'
-                };
-                
-                const palette = [
-                    'hsl(210 100% 97%)',
-                    'hsl(190 95% 95%)',
-                    'hsl(150 60% 94%)',
-                    'hsl(45 100% 95%)',
-                    'hsl(270 80% 96%)',
-                    'hsl(0 85% 96%)'
-                ];
-                
-                cards.forEach((thumb, idx) => {
-                    const article = thumb.closest('.c-card');
-                    const type = (article?.getAttribute('data-filetype') || 'file').toLowerCase();
-                    const icon = iconMap[type] || 'file';
-                    const bg = palette[idx % palette.length];
-                    
-                    thumb.style.background = bg;
-                    thumb.innerHTML = '<i data-lucide="' + icon + '"></i>';
-                });
-                
-                if (window.lucide) {
-                    lucide.createIcons();
-                }
-            }
-        </script>
-        
-        <style>
-            .c-resources-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                gap: var(--space-4);
-                margin-top: var(--space-4);
-            }
-            
-            .c-thumb {
-                display: grid;
-                place-items: center;
-                width: 100%;
-                height: 200px;
-                border-radius: var(--radius-3);
-                background: var(--surface-2);
-                color: var(--text-muted);
-                position: relative;
-                overflow: hidden;
-            }
-            
-            .c-thumb svg {
-                width: 60px;
-                height: 60px;
-                stroke-width: 1;
-            }
-        </style>
-    </jsp:attribute>
 </layout:student-dashboard>

@@ -36,7 +36,7 @@ public class ResourceDAO {
         // Optional joined fields
         try { resource.setUploaderName(rs.getString("uploader_name")); } catch (SQLException e) {}
         try { resource.setUploaderEmail(rs.getString("uploader_email")); } catch (SQLException e) {}
-        try { resource.setTopicName(rs.getString("topic_name")); } catch (SQLException e) {}
+        try { resource.setTopicName(rs.getString("topic_title")); } catch (SQLException e) {}
         try { resource.setSubjectName(rs.getString("subject_name")); } catch (SQLException e) {}
         try { resource.setSubjectCode(rs.getString("subject_code")); } catch (SQLException e) {}
         try { resource.setCategoryName(rs.getString("category_name")); } catch (SQLException e) {}
@@ -48,7 +48,7 @@ public class ResourceDAO {
     public Optional<Resource> findById(int resourceId) {
         String sql = "SELECT r.*, " +
                 "u.name AS uploader_name, u.email AS uploader_email, " +
-                "t.name AS topic_name, s.name AS subject_name, s.code AS subject_code, " +
+                "t.title AS topic_title, s.name AS subject_name, s.code AS subject_code, " +
                 "rc.category_name, a.name AS approver_name " +
                 "FROM resources r " +
                 "JOIN users u ON r.uploaded_by = u.id " +
@@ -74,7 +74,7 @@ public class ResourceDAO {
     public List<Resource> findByUserId(int userId) {
         String sql = "SELECT r.*, " +
                 "u.name AS uploader_name, u.email AS uploader_email, " +
-                "t.name AS topic_name, s.name AS subject_name, s.code AS subject_code, " +
+                "t.title AS topic_title, s.name AS subject_name, s.code AS subject_code, " +
                 "rc.category_name, a.name AS approver_name " +
                 "FROM resources r " +
                 "JOIN users u ON r.uploaded_by = u.id " +
@@ -102,7 +102,7 @@ public class ResourceDAO {
     public List<Resource> findByUserIdAndCategory(int userId, int categoryId) {
         String sql = "SELECT r.*, " +
                 "u.name AS uploader_name, u.email AS uploader_email, " +
-                "t.name AS topic_name, s.name AS subject_name, s.code AS subject_code, " +
+                "t.title AS topic_title, s.name AS subject_name, s.code AS subject_code, " +
                 "rc.category_name, a.name AS approver_name " +
                 "FROM resources r " +
                 "JOIN users u ON r.uploaded_by = u.id " +
@@ -136,7 +136,7 @@ public class ResourceDAO {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT r.*, ");
         sql.append("u.name AS uploader_name, u.email AS uploader_email, ");
-        sql.append("t.name AS topic_name, s.name AS subject_name, s.code AS subject_code, ");
+        sql.append("t.title AS topic_title, s.name AS subject_name, s.code AS subject_code, ");
         sql.append("rc.category_name, a.name AS approver_name ");
         sql.append("FROM resources r ");
         sql.append("JOIN users u ON r.uploaded_by = u.id ");

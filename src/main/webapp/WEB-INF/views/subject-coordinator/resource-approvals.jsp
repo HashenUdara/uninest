@@ -150,7 +150,6 @@
         </c:choose>
     </section>
     
-    <jsp:attribute name="scripts">
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Initialize lucide icons
@@ -159,5 +158,4 @@
                 }
             });
         </script>
-    </jsp:attribute>
 </layout:student-dashboard>

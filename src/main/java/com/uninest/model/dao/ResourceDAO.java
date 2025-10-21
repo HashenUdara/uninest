@@ -235,4 +235,61 @@ public class ResourceDAO {
             throw new RuntimeException("Error deleting resource", e);
         }
     }
+
+    public List<Resource> findByTopicId(int topicId) {
+        String sql = "SELECT r.*, " +
+                "u.name AS uploader_name, u.email AS uploader_email, " +
+                "t.title AS topic_title, s.name AS subject_name, s.code AS subject_code, " +
+                "rc.category_name, a.name AS approver_name " +
+                "FROM resources r " +
+                "JOIN users u ON r.uploaded_by = u.id " +
+                "JOIN topics t ON r.topic_id = t.topic_id " +
+                "JOIN subjects s ON t.subject_id = s.subject_id " +
+                "JOIN resource_categories rc ON r.category_id = rc.category_id " +
+                "LEFT JOIN users a ON r.approved_by = a.id " +
+                "WHERE r.topic_id = ? AND r.status = 'approved' AND r.visibility = 'public' " +
+                "ORDER BY r.upload_date DESC";
+        List<Resource> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, topicId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching resources by topic", e);
+        }
+        return list;
+    }
+
+    public List<Resource> findByTopicIdAndCategory(int topicId, int categoryId) {
+        String sql = "SELECT r.*, " +
+                "u.name AS uploader_name, u.email AS uploader_email, " +
+                "t.title AS topic_title, s.name AS subject_name, s.code AS subject_code, " +
+                "rc.category_name, a.name AS approver_name " +
+                "FROM resources r " +
+                "JOIN users u ON r.uploaded_by = u.id " +
+                "JOIN topics t ON r.topic_id = t.topic_id " +
+                "JOIN subjects s ON t.subject_id = s.subject_id " +
+                "JOIN resource_categories rc ON r.category_id = rc.category_id " +
+                "LEFT JOIN users a ON r.approved_by = a.id " +
+                "WHERE r.topic_id = ? AND r.category_id = ? AND r.status = 'approved' AND r.visibility = 'public' " +
+                "ORDER BY r.upload_date DESC";
+        List<Resource> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, topicId);
+            ps.setInt(2, categoryId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching resources by topic and category", e);
+        }
+        return list;
+    }
 }

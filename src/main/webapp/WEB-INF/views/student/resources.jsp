@@ -4,7 +4,7 @@
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-<layout:student-dashboard pageTitle="My Resources" activePage="resources">
+<layout:student-dashboard pageTitle="${topic != null ? topic.title : 'My Resources'}" activePage="${topic != null ? 'subjects' : 'resources'}">
    
         <script>
             // View toggle functionality
@@ -12,6 +12,10 @@
                 const toggleButtons = document.querySelectorAll('.js-view-toggle');
                 const gridView = document.querySelector('.js-grid-view');
                 const tableView = document.querySelector('.js-table-view');
+                
+                // Determine default view based on page type
+                const isTopicView = ${topic != null};
+                const defaultView = isTopicView ? 'grid' : 'table';
                 
                 toggleButtons.forEach(btn => {
                     btn.addEventListener('click', function() {
@@ -28,6 +32,14 @@
                         }
                     });
                 });
+                
+                // Set default view
+                if (defaultView === 'grid') {
+                    const gridBtn = document.querySelector('.js-view-toggle[data-view="grid"]');
+                    if (gridBtn) {
+                        gridBtn.click();
+                    }
+                }
                 
                 // Initialize thumbnails for grid view
                 initResourceThumbnails();
@@ -73,6 +85,18 @@
                 cards.forEach((thumb, idx) => {
                     const article = thumb.closest('.c-card');
                     const type = (article?.getAttribute('data-filetype') || 'file').toLowerCase();
+                    const fileUrl = article?.getAttribute('data-fileurl') || '';
+                    
+                    // Check if it's a YouTube link
+                    if (type === 'link' && (fileUrl.includes('youtube.com') || fileUrl.includes('youtu.be'))) {
+                        const videoId = extractYouTubeId(fileUrl);
+                        if (videoId) {
+                            thumb.style.background = 'transparent';
+                            thumb.innerHTML = '<img src="https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" alt="Video thumbnail" />';
+                            return;
+                        }
+                    }
+                    
                     const icon = iconMap[type] || 'file';
                     const bg = palette[idx % palette.length];
                     
@@ -83,6 +107,12 @@
                 if (window.lucide) {
                     lucide.createIcons();
                 }
+            }
+            
+            function extractYouTubeId(url) {
+                const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+                const match = url.match(regExp);
+                return (match && match[7].length === 11) ? match[7] : null;
             }
         </script>
         
@@ -111,34 +141,83 @@
                 height: 60px;
                 stroke-width: 1;
             }
+            
+            .c-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
         </style>
     <header class="c-page__header">
         <nav class="c-breadcrumbs" aria-label="Breadcrumb">
             <a href="${pageContext.request.contextPath}/student/dashboard">Home</a>
             <span class="c-breadcrumbs__sep">/</span>
-            <span aria-current="page">My Resources</span>
+            <c:choose>
+                <c:when test="${topic != null}">
+                    <a href="${pageContext.request.contextPath}/student/subjects">My Subjects</a>
+                    <span class="c-breadcrumbs__sep">/</span>
+                    <a href="${pageContext.request.contextPath}/student/topics?subjectId=${topic.subjectId}">${topic.subjectName}</a>
+                    <span class="c-breadcrumbs__sep">/</span>
+                    <span aria-current="page">${topic.title}</span>
+                </c:when>
+                <c:otherwise>
+                    <span aria-current="page">My Resources</span>
+                </c:otherwise>
+            </c:choose>
         </nav>
         <div class="c-page__titlebar">
             <div>
-                <h1 class="c-page__title">My Resources</h1>
-                <p class="c-page__subtitle u-text-muted">
-                    Manage and track your uploaded study materials
-                </p>
+                <c:choose>
+                    <c:when test="${topic != null}">
+                        <h1 class="c-page__title">${topic.title} - Resources</h1>
+                        <p class="c-page__subtitle u-text-muted">
+                            Browse all approved resources for this topic
+                        </p>
+                    </c:when>
+                    <c:otherwise>
+                        <h1 class="c-page__title">My Resources</h1>
+                        <p class="c-page__subtitle u-text-muted">
+                            Manage and track your uploaded study materials
+                        </p>
+                    </c:otherwise>
+                </c:choose>
             </div>
-            <a href="${pageContext.request.contextPath}/student/resources/upload" class="c-btn c-btn--primary">
-                <i data-lucide="upload"></i> Upload Resource
-            </a>
+            <c:choose>
+                <c:when test="${topic != null}">
+                    <a href="${pageContext.request.contextPath}/student/resources/upload?topicId=${topic.topicId}&subjectId=${topic.subjectId}" class="c-btn c-btn--primary">
+                        <i data-lucide="upload"></i> Upload Resource
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/student/resources/upload" class="c-btn c-btn--primary">
+                        <i data-lucide="upload"></i> Upload Resource
+                    </a>
+                </c:otherwise>
+            </c:choose>
         </div>
         
         <div class="c-tabs" role="tablist" aria-label="Resource categories">
-            <a href="${pageContext.request.contextPath}/student/resources" 
-               class="c-tabs__link ${empty selectedCategoryId ? 'is-active' : ''}" 
-               role="tab">All Categories</a>
-            <c:forEach items="${categories}" var="cat">
-                <a href="${pageContext.request.contextPath}/student/resources?category=${cat.categoryId}" 
-                   class="c-tabs__link ${selectedCategoryId == cat.categoryId ? 'is-active' : ''}" 
-                   role="tab">${cat.categoryName}</a>
-            </c:forEach>
+            <c:choose>
+                <c:when test="${topic != null}">
+                    <a href="${pageContext.request.contextPath}/student/resources?topicId=${topicId}" 
+                       class="c-tabs__link ${empty selectedCategoryId ? 'is-active' : ''}" 
+                       role="tab">All Categories</a>
+                    <c:forEach items="${categories}" var="cat">
+                        <a href="${pageContext.request.contextPath}/student/resources?topicId=${topicId}&category=${cat.categoryId}" 
+                           class="c-tabs__link ${selectedCategoryId == cat.categoryId ? 'is-active' : ''}" 
+                           role="tab">${cat.categoryName}</a>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/student/resources" 
+                       class="c-tabs__link ${empty selectedCategoryId ? 'is-active' : ''}" 
+                       role="tab">All Categories</a>
+                    <c:forEach items="${categories}" var="cat">
+                        <a href="${pageContext.request.contextPath}/student/resources?category=${cat.categoryId}" 
+                           class="c-tabs__link ${selectedCategoryId == cat.categoryId ? 'is-active' : ''}" 
+                           role="tab">${cat.categoryName}</a>
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>
         </div>
     </header>
 
@@ -184,16 +263,20 @@
                 <!-- Grid View -->
                 <div class="c-resources-grid js-grid-view" style="display: none;">
                     <c:forEach items="${resources}" var="res">
-                        <article class="c-card" data-filetype="${res.fileType}">
-                            <div class="c-card__media c-thumb" data-file-type="${res.fileType}"></div>
-                            <div class="c-card__body">
-                                <h3 class="c-card__title">${res.title}</h3>
-                                <p class="c-card__meta">${res.subjectName} - ${res.topicName}</p>
-                                <p class="c-card__meta">${res.categoryName}</p>
-                                <div class="c-badge c-badge--${res.status == 'approved' ? 'success' : res.status == 'rejected' ? 'danger' : 'warning'}">
-                                    ${res.status}
+                        <article class="c-card" data-filetype="${res.fileType}" data-fileurl="${res.fileUrl}">
+                            <a href="${pageContext.request.contextPath}/student/resources/${res.resourceId}" style="text-decoration: none; color: inherit;">
+                                <div class="c-card__media c-thumb" data-file-type="${res.fileType}"></div>
+                                <div class="c-card__body">
+                                    <h3 class="c-card__title">${res.title}</h3>
+                                    <p class="c-card__meta">${res.subjectName} - ${res.topicName}</p>
+                                    <p class="c-card__meta">${res.categoryName}</p>
+                                    <c:if test="${topic == null}">
+                                        <div class="c-badge c-badge--${res.status == 'approved' ? 'success' : res.status == 'rejected' ? 'danger' : 'warning'}">
+                                            ${res.status}
+                                        </div>
+                                    </c:if>
                                 </div>
-                            </div>
+                            </a>
                         </article>
                     </c:forEach>
                 </div>
@@ -208,7 +291,9 @@
                                 <th>Topic</th>
                                 <th>Category</th>
                                 <th>Upload Date</th>
-                                <th>Status</th>
+                                <c:if test="${topic == null}">
+                                    <th>Status</th>
+                                </c:if>
                                 <th class="u-text-right">Actions</th>
                             </tr>
                         </thead>
@@ -221,7 +306,7 @@
                                                 <i data-lucide="file-text"></i>
                                             </span>
                                             <div class="c-comm-cell__meta">
-                                                <span class="c-comm-cell__title">${res.title}</span>
+                                                <a href="${pageContext.request.contextPath}/student/resources/${res.resourceId}" class="c-comm-cell__title">${res.title}</a>
                                                 <c:if test="${not empty res.description}">
                                                     <span class="c-comm-cell__sub u-text-muted">${res.description}</span>
                                                 </c:if>
@@ -232,14 +317,21 @@
                                     <td>${res.topicName}</td>
                                     <td>${res.categoryName}</td>
                                     <td><fmt:formatDate value="${res.uploadDate}" pattern="MMM dd, yyyy" /></td>
-                                    <td>
-                                        <span class="c-badge c-badge--${res.status == 'approved' ? 'success' : res.status == 'rejected' ? 'danger' : 'warning'}">
-                                            ${res.status}
-                                        </span>
-                                    </td>
+                                    <c:if test="${topic == null}">
+                                        <td>
+                                            <span class="c-badge c-badge--${res.status == 'approved' ? 'success' : res.status == 'rejected' ? 'danger' : 'warning'}">
+                                                ${res.status}
+                                            </span>
+                                        </td>
+                                    </c:if>
                                     <td class="u-text-right">
                                         <div class="c-table-actions">
-                                            <c:if test="${res.status == 'approved'}">
+                                            <a href="${pageContext.request.contextPath}/student/resources/${res.resourceId}" 
+                                               class="c-btn c-btn--sm c-btn--ghost" 
+                                               aria-label="View details">
+                                                <i data-lucide="eye"></i>
+                                            </a>
+                                            <c:if test="${res.status == 'approved' || topic != null}">
                                                 <a href="${pageContext.request.contextPath}/${res.fileUrl}" 
                                                    class="c-btn c-btn--sm c-btn--ghost" 
                                                    target="_blank" 

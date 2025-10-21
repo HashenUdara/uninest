@@ -57,6 +57,24 @@ public class TopicDAO {
         return list;
     }
 
+    public List<Topic> findByCommunityId(int communityId) {
+        String sql = "SELECT t.* FROM topics t " +
+                     "INNER JOIN subjects s ON t.subject_id = s.subject_id " +
+                     "WHERE s.community_id = ? " +
+                     "ORDER BY s.subject_id, t.created_at DESC";
+        List<Topic> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, communityId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(map(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error listing topics by community", e);
+        }
+        return list;
+    }
+
     public List<Topic> findBySubjectIdWithProgress(int subjectId, int userId) {
         String sql = "SELECT t.*, COALESCE(tp.progress_percent, 0.00) as progress_percent " +
                      "FROM topics t " +

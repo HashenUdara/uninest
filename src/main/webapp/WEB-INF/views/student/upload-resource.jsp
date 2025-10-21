@@ -4,6 +4,14 @@
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
 <layout:student-dashboard pageTitle="Upload Resource" activePage="resources">
+     
+        <style>
+            .c-form-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: var(--space-4);
+            }
+        </style>
     <header class="c-page__header">
         <nav class="c-breadcrumbs" aria-label="Breadcrumb">
             <a href="${pageContext.request.contextPath}/student/dashboard">Home</a>
@@ -84,7 +92,7 @@
                     <input type="file" id="file-input" name="file" class="c-field__input" 
                            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip" />
                     <p class="c-field__hint u-text-muted">
-                        Supported formats: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, TXT, ZIP (Max 20MB)
+                        Supported formats: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, TXT, ZIP (Max 50MB)
                     </p>
                 </div>
             </div>
@@ -114,9 +122,19 @@
         </form>
     </section>
 
-    <jsp:attribute name="scripts">
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                // Store all topics data
+                const allTopics = [
+                    <c:forEach items="${allTopics}" var="topic" varStatus="status">
+                    {
+                        topicId: ${topic.topicId},
+                        subjectId: ${topic.subjectId},
+                        name: "${topic.title}"
+                    }<c:if test="${!status.last}">,</c:if>
+                    </c:forEach>
+                ];
+                
                 // Tab switching for upload mode
                 const tabs = document.querySelectorAll('.c-tabs__link[data-mode]');
                 const modeFile = document.getElementById('mode-file');
@@ -147,35 +165,32 @@
                     });
                 });
                 
-                // Load topics when subject is selected
+                // Filter topics when subject is selected
                 const subjectSelect = document.getElementById('res-subject');
                 const topicSelect = document.getElementById('res-topic');
                 
                 subjectSelect.addEventListener('change', function() {
-                    const subjectId = this.value;
-                    topicSelect.innerHTML = '<option value="">Loading topics...</option>';
+                    const subjectId = parseInt(this.value);
+                    topicSelect.innerHTML = '<option value="">Choose a topic</option>';
                     
                     if (!subjectId) {
-                        topicSelect.innerHTML = '<option value="">Choose a topic</option>';
                         return;
                     }
                     
-                    // Fetch topics via AJAX
-                    fetch('${pageContext.request.contextPath}/api/subjects/' + subjectId + '/topics')
-                        .then(response => response.json())
-                        .then(topics => {
-                            topicSelect.innerHTML = '<option value="">Choose a topic</option>';
-                            topics.forEach(topic => {
-                                const option = document.createElement('option');
-                                option.value = topic.topicId;
-                                option.textContent = topic.name;
-                                topicSelect.appendChild(option);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error loading topics:', error);
-                            topicSelect.innerHTML = '<option value="">Error loading topics</option>';
-                        });
+                    // Filter topics by selected subject
+                    const filteredTopics = allTopics.filter(topic => topic.subjectId === subjectId);
+                    
+                    if (filteredTopics.length === 0) {
+                        topicSelect.innerHTML = '<option value="">No topics available</option>';
+                        return;
+                    }
+                    
+                    filteredTopics.forEach(topic => {
+                        const option = document.createElement('option');
+                        option.value = topic.topicId;
+                        option.textContent = topic.name;
+                        topicSelect.appendChild(option);
+                    });
                 });
                 
                 // Initialize lucide icons
@@ -184,13 +199,5 @@
                 }
             });
         </script>
-        
-        <style>
-            .c-form-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: var(--space-4);
-            }
-        </style>
-    </jsp:attribute>
+       
 </layout:student-dashboard>

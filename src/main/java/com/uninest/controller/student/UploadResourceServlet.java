@@ -9,6 +9,7 @@ import com.uninest.model.dao.ResourceCategoryDAO;
 import com.uninest.model.dao.ResourceDAO;
 import com.uninest.model.dao.SubjectDAO;
 import com.uninest.model.dao.TopicDAO;
+import com.uninest.util.AppConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,8 +28,8 @@ import java.util.List;
 @WebServlet(name = "uploadResource", urlPatterns = "/student/resources/upload")
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-    maxFileSize = 1024 * 1024 * 20,      // 20MB
-    maxRequestSize = 1024 * 1024 * 25    // 25MB
+    maxFileSize = 1024 * 1024 * 50,      // 50MB - can be overridden in application.properties
+    maxRequestSize = 1024 * 1024 * 60    // 60MB - can be overridden in application.properties
 )
 public class UploadResourceServlet extends HttpServlet {
     private final ResourceDAO resourceDAO = new ResourceDAO();
@@ -36,7 +37,7 @@ public class UploadResourceServlet extends HttpServlet {
     private final SubjectDAO subjectDAO = new SubjectDAO();
     private final TopicDAO topicDAO = new TopicDAO();
     
-    private static final String UPLOAD_DIRECTORY = "uploads/resources";
+    private static final String UPLOAD_DIRECTORY = "resources";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -49,9 +50,13 @@ public class UploadResourceServlet extends HttpServlet {
         // Get subjects for the user's community
         List<Subject> subjects = subjectDAO.findByCommunityId(user.getCommunityId());
         List<ResourceCategory> categories = categoryDAO.findAll();
+        
+        // Get all topics for the user's community subjects
+        List<Topic> allTopics = topicDAO.findByCommunityId(user.getCommunityId());
 
         req.setAttribute("subjects", subjects);
         req.setAttribute("categories", categories);
+        req.setAttribute("allTopics", allTopics);
 
         req.getRequestDispatcher("/WEB-INF/views/student/upload-resource.jsp").forward(req, resp);
     }
@@ -118,7 +123,7 @@ public class UploadResourceServlet extends HttpServlet {
                 fileType = getFileExtension(fileName);
                 
                 // Create upload directory if it doesn't exist
-                String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIRECTORY;
+                String uploadPath = UPLOAD_BASE_PATH + File.separator + UPLOAD_DIRECTORY;
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs();
@@ -131,7 +136,7 @@ public class UploadResourceServlet extends HttpServlet {
                 // Save the file
                 filePart.write(filePath);
                 
-                // Store relative path
+                // Store relative path for database
                 fileUrl = UPLOAD_DIRECTORY + "/" + uniqueFileName;
             }
             

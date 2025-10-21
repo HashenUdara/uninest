@@ -5,7 +5,7 @@ public class User {
     private String email;
     private String name; // User's full name
     private String passwordHash;
-    private String roleName; // Role name as string (student, subject_coordinator, moderator, admin)
+    private String roleName; // Role name as string (student, moderator, admin)
     private Integer communityId; // null until student joins or moderator's community approved
     private String communityName; // Community title for display
     private Integer academicYear; // 1..4
@@ -38,9 +38,14 @@ public class User {
     
     // Helper methods for role checking
     public boolean isStudent() { return hasRole("student"); }
-    public boolean isSubjectCoordinator() { return hasRole("subject_coordinator"); }
     public boolean isModerator() { return hasRole("moderator"); }
     public boolean isAdmin() { return hasRole("admin"); }
+    
+    // Subject coordinator is not a role - check subject_coordinators table using SubjectCoordinatorDAO
+    @Deprecated
+    public boolean isSubjectCoordinator() { 
+        return false; // Always false - use SubjectCoordinatorDAO.isCoordinator(userId) instead
+    }
     
     public boolean hasRole(String r) { 
         return r != null && roleName != null && roleName.equalsIgnoreCase(r); 

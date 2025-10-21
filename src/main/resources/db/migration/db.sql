@@ -21,9 +21,8 @@ CREATE TABLE `roles` (
 -- Default roles
 INSERT INTO `roles` (`id`, `name`, `description`, `inherits_from`) VALUES
 (1, 'student', 'Basic student privileges for accessing learning content', NULL),
-(2, 'subject_coordinator', 'Can manage subjects, resources, and students', 1),
-(3, 'moderator', 'Can review and moderate discussions or uploads', 1),
-(4, 'admin', 'Full administrative privileges across the system', 1);
+(2, 'moderator', 'Can review and moderate discussions or uploads', 1),
+(3, 'admin', 'Full administrative privileges across the system', 1);
 
 -- --------------------------------------------------------
 -- Table: users
@@ -118,7 +117,7 @@ CREATE TABLE `password_reset_tokens` (
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `users` (`id`, `email`, `name`, `password_hash`, `role_id`, `community_id`, `academic_year`, `university_id`, `created_at`) VALUES (NULL, 'a1@abc.com', 'Admin', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', '4', NULL, '1', '19', '2025-10-18 10:01:26');
+INSERT INTO `users` (`id`, `email`, `name`, `password_hash`, `role_id`, `community_id`, `academic_year`, `university_id`, `created_at`) VALUES (NULL, 'a1@abc.com', 'Admin', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', '3', NULL, '1', '19', '2025-10-18 10:01:26');
 
 -- --------------------------------------------------------
 -- Demo Data: Communities (5 communities)
@@ -135,26 +134,26 @@ INSERT INTO `communities` (`title`, `description`, `created_by_user_id`, `status
 -- Password hash is for 'password123' using BCrypt
 -- --------------------------------------------------------
 INSERT INTO `users` (`email`, `name`, `password_hash`, `role_id`, `community_id`, `academic_year`, `university_id`) VALUES
-('m1@abc.com', 'Moderator 1', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 1, 3, 1),
-('m2@abc.com', 'Moderator 2', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 1, 2, 2),
-('m3@abc.com', 'Moderator 3', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 2, 4, 3),
-('m4@abc.com', 'Moderator 4', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 2, 3, 4),
-('m5@abc.com', 'Moderator 5', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 3, 2, 5),
-('m6@abc.com', 'Moderator 6', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 3, 1, 1),
-('m7@abc.com', 'Moderator 7', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 4, 4, 2),
-('m8@abc.com', 'Moderator 8', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 4, 3, 3),
-('m9@abc.com', 'Moderator 9', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 5, 2, 4),
-('m10@abc.com', 'Moderator 10', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 5, 1, 5),
-('m11@abc.com', 'Moderator 11', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 1, 4, 1),
-('m12@abc.com', 'Moderator 12', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 2, 3, 2),
-('m13@abc.com', 'Moderator 13', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 3, 2, 3),
-('m14@abc.com', 'Moderator 14', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 4, 1, 4),
-('m15@abc.com', 'Moderator 15', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 5, 4, 5),
-('m16@abc.com', 'Moderator 16', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 1, 3, 1),
-('m17@abc.com', 'Moderator 17', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 2, 2, 2),
-('m18@abc.com', 'Moderator 18', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 3, 1, 3),
-('m19@abc.com', 'Moderator 19', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 4, 4, 4),
-('m20@abc.com', 'Moderator 20', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 3, 5, 3, 5);
+('m1@abc.com', 'Moderator 1', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 1, 3, 1),
+('m2@abc.com', 'Moderator 2', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 1, 2, 2),
+('m3@abc.com', 'Moderator 3', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 2, 4, 3),
+('m4@abc.com', 'Moderator 4', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 2, 3, 4),
+('m5@abc.com', 'Moderator 5', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 3, 2, 5),
+('m6@abc.com', 'Moderator 6', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 3, 1, 1),
+('m7@abc.com', 'Moderator 7', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 4, 4, 2),
+('m8@abc.com', 'Moderator 8', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 4, 3, 3),
+('m9@abc.com', 'Moderator 9', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 5, 2, 4),
+('m10@abc.com', 'Moderator 10', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 5, 1, 5),
+('m11@abc.com', 'Moderator 11', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 1, 4, 1),
+('m12@abc.com', 'Moderator 12', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 2, 3, 2),
+('m13@abc.com', 'Moderator 13', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 3, 2, 3),
+('m14@abc.com', 'Moderator 14', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 4, 1, 4),
+('m15@abc.com', 'Moderator 15', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 5, 4, 5),
+('m16@abc.com', 'Moderator 16', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 1, 3, 1),
+('m17@abc.com', 'Moderator 17', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 2, 2, 2),
+('m18@abc.com', 'Moderator 18', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 3, 1, 3),
+('m19@abc.com', 'Moderator 19', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 4, 4, 4),
+('m20@abc.com', 'Moderator 20', '$2a$10$9gtBYn1pZB/SbL425T2C9Osm8jUBiZ8Dzw7IFtM1Jq3kws6Ugx1Oy', 2, 5, 3, 5);
 
 -- --------------------------------------------------------
 -- Demo Data: Students (100 students with password: password123)

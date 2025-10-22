@@ -40,10 +40,23 @@ public class ResourceApprovalsServlet extends HttpServlet {
                 .map(SubjectCoordinator::getSubjectId)
                 .collect(Collectors.toList());
 
-        // Get pending resources for these subjects
-        List<Resource> pendingResources = resourceDAO.findPendingBySubjectIds(coordinatedSubjectIds);
+        // Get the active tab (default to "new")
+        String activeTab = req.getParameter("tab");
+        if (activeTab == null || activeTab.isEmpty()) {
+            activeTab = "new";
+        }
 
-        req.setAttribute("resources", pendingResources);
+        List<Resource> resources;
+        if ("edits".equals(activeTab)) {
+            // Get pending edit resources
+            resources = resourceDAO.findPendingEditsBySubjectIds(coordinatedSubjectIds);
+        } else {
+            // Get pending new upload resources
+            resources = resourceDAO.findPendingNewUploadsBySubjectIds(coordinatedSubjectIds);
+        }
+
+        req.setAttribute("resources", resources);
+        req.setAttribute("activeTab", activeTab);
         req.getRequestDispatcher("/WEB-INF/views/subject-coordinator/resource-approvals.jsp").forward(req, resp);
     }
 }

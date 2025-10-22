@@ -50,11 +50,20 @@
     <c:if test="${sessionScope.isCoordinator}">
       <div class="c-nav__divider"></div>
       <div class="c-nav__label">Subject Coordinator</div>
-      <dash:nav-item 
-        href="${pageContext.request.contextPath}/subject-coordinator/resource-approvals" 
+      <dash:nav-group 
         icon="check-square" 
         label="Resource Approvals" 
-        active="${activePage eq 'resource-approvals'}" />
+        groupId="resource-approvals"
+        active="${activePage eq 'resource-approvals'}">
+        <dash:nav-subitem 
+          href="${pageContext.request.contextPath}/subject-coordinator/resource-approvals?tab=new" 
+          label="New Uploads" 
+          active="${activePage eq 'resource-approvals' and (param.tab eq 'new' or empty param.tab)}" />
+        <dash:nav-subitem 
+          href="${pageContext.request.contextPath}/subject-coordinator/resource-approvals?tab=edits" 
+          label="Edit Approvals" 
+          active="${activePage eq 'resource-approvals' and param.tab eq 'edits'}" />
+      </dash:nav-group>
     </c:if>
   </jsp:attribute>
   <jsp:attribute name="alerts">

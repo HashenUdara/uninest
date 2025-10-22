@@ -226,6 +226,38 @@
             <p>Resource uploaded successfully! It will be visible after coordinator approval.</p>
         </div>
     </c:if>
+    
+    <c:if test="${param.edit == 'success'}">
+        <div class="c-alert c-alert--success" role="alert">
+            <p>Resource updated successfully!</p>
+        </div>
+    </c:if>
+    
+    <c:if test="${param.edit == 'pending'}">
+        <div class="c-alert c-alert--info" role="alert">
+            <p>Your changes have been submitted for approval. The current version will remain visible until approved.</p>
+        </div>
+    </c:if>
+    
+    <c:if test="${param.delete == 'success'}">
+        <div class="c-alert c-alert--success" role="alert">
+            <p>Resource deleted successfully.</p>
+        </div>
+    </c:if>
+    
+    <c:if test="${param.error != null}">
+        <div class="c-alert c-alert--danger" role="alert">
+            <p>
+                <c:choose>
+                    <c:when test="${param.error == 'invalid'}">Invalid request.</c:when>
+                    <c:when test="${param.error == 'notfound'}">Resource not found.</c:when>
+                    <c:when test="${param.error == 'unauthorized'}">You are not authorized to perform this action.</c:when>
+                    <c:when test="${param.error == 'cannotdelete'}">This resource cannot be deleted.</c:when>
+                    <c:otherwise>An error occurred. Please try again.</c:otherwise>
+                </c:choose>
+            </p>
+        </div>
+    </c:if>
 
     <section>
         <div class="c-table-toolbar">

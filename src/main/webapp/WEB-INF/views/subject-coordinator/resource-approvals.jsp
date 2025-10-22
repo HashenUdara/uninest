@@ -19,6 +19,19 @@
                 </p>
             </div>
         </div>
+        
+        <div class="c-tabs" role="tablist" aria-label="Approval types">
+            <a href="${pageContext.request.contextPath}/subject-coordinator/resource-approvals?tab=new" 
+               class="c-tabs__link ${activeTab eq 'new' or empty activeTab ? 'is-active' : ''}" 
+               role="tab">
+                <i data-lucide="upload"></i> New Uploads
+            </a>
+            <a href="${pageContext.request.contextPath}/subject-coordinator/resource-approvals?tab=edits" 
+               class="c-tabs__link ${activeTab eq 'edits' ? 'is-active' : ''}" 
+               role="tab">
+                <i data-lucide="edit"></i> Edit Approvals
+            </a>
+        </div>
     </header>
 
     <c:if test="${param.success == 'approved'}">
@@ -43,7 +56,7 @@
         <div class="c-table-toolbar">
             <div class="c-table-toolbar__left">
                 <span class="u-text-muted">
-                    ${resources.size()} pending resource(s)
+                    ${resources.size()} pending ${activeTab eq 'edits' ? 'edit' : 'new upload'} request(s)
                 </span>
             </div>
         </div>
@@ -56,7 +69,7 @@
                     </div>
                     <h3 class="c-empty-state__title">All caught up!</h3>
                     <p class="c-empty-state__message">
-                        No pending resources to review at the moment.
+                        No pending ${activeTab eq 'edits' ? 'edits' : 'uploads'} to review at the moment.
                     </p>
                 </div>
             </c:when>
@@ -70,7 +83,10 @@
                                 <th>Topic</th>
                                 <th>Category</th>
                                 <th>Uploaded By</th>
-                                <th>Upload Date</th>
+                                <th>${activeTab eq 'edits' ? 'Edit' : 'Upload'} Date</th>
+                                <c:if test="${activeTab eq 'edits'}">
+                                    <th>Version</th>
+                                </c:if>
                                 <th class="u-text-right">Actions</th>
                             </tr>
                         </thead>
@@ -105,6 +121,11 @@
                                         </div>
                                     </td>
                                     <td><fmt:formatDate value="${res.uploadDate}" pattern="MMM dd, yyyy HH:mm" /></td>
+                                    <c:if test="${activeTab eq 'edits'}">
+                                        <td>
+                                            <span class="c-badge c-badge--info">v${res.version}</span>
+                                        </td>
+                                    </c:if>
                                     <td class="u-text-right">
                                         <div class="c-table-actions">
                                             <c:if test="${res.fileType != 'link'}">

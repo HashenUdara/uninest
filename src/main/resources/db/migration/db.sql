@@ -456,15 +456,19 @@ CREATE TABLE `resources` (
   `file_url` VARCHAR(500) NOT NULL,
   `file_type` VARCHAR(100) NOT NULL,
   `upload_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  `status` ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+  `status` ENUM('pending', 'approved', 'rejected', 'pending_edit', 'replaced') DEFAULT 'pending',
   `visibility` ENUM('private','public') DEFAULT 'private',
   `approved_by` INT DEFAULT NULL,
   `approval_date` DATETIME DEFAULT NULL,
+  `parent_resource_id` INT DEFAULT NULL,
+  `version` INT DEFAULT 1,
+  `edit_type` ENUM('new', 'edit') DEFAULT 'new',
   PRIMARY KEY (`resource_id`),
   FOREIGN KEY (`topic_id`) REFERENCES `topics`(`topic_id`) ON DELETE CASCADE,
   FOREIGN KEY (`category_id`) REFERENCES `resource_categories`(`category_id`),
   FOREIGN KEY (`uploaded_by`) REFERENCES `users`(`id`),
-  FOREIGN KEY (`approved_by`) REFERENCES `users`(`id`)
+  FOREIGN KEY (`approved_by`) REFERENCES `users`(`id`),
+  FOREIGN KEY (`parent_resource_id`) REFERENCES `resources`(`resource_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 COMMIT;

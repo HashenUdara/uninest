@@ -215,6 +215,11 @@
                 <h1 class="c-page__title">${resource.title}</h1>
                 <p class="c-page__subtitle u-text-muted" style="margin-top: var(--space-2)">
                     Uploaded by ${resource.uploaderName} · <fmt:formatDate value="${resource.uploadDate}" pattern="MMM dd, yyyy" />
+                    <c:if test="${resource.uploadedBy == sessionScope.authUser.id}">
+                        · <span class="c-badge c-badge--${resource.status == 'approved' ? 'success' : resource.status == 'rejected' ? 'danger' : resource.status == 'pending_edit' ? 'info' : 'warning'}">
+                            ${resource.status == 'pending_edit' ? 'Edit Pending Approval' : resource.status}
+                        </span>
+                    </c:if>
                 </p>
             </div>
             <div class="c-media-viewer" aria-label="Preview" 
@@ -224,7 +229,26 @@
             </div>
             <div class="c-actions">
                 <div style="display: flex; gap: var(--space-2)">
-                    <!-- Actions can be added here later -->
+                    <!-- Edit/Delete actions for resource owner -->
+                    <c:if test="${resource.uploadedBy == sessionScope.authUser.id}">
+                        <c:if test="${resource.status == 'pending' || resource.status == 'rejected' || resource.status == 'approved'}">
+                            <a href="${pageContext.request.contextPath}/student/resources/edit?resourceId=${resource.resourceId}" 
+                               class="c-btn c-btn--sm c-btn--ghost">
+                                <i data-lucide="edit"></i> Edit
+                            </a>
+                        </c:if>
+                        <c:if test="${resource.status == 'pending' || resource.status == 'rejected' || resource.status == 'pending_edit'}">
+                            <form method="post" 
+                                  action="${pageContext.request.contextPath}/student/resources/delete" 
+                                  style="display:inline"
+                                  onsubmit="return confirm('Are you sure you want to delete this resource?');">
+                                <input type="hidden" name="resourceId" value="${resource.resourceId}" />
+                                <button class="c-btn c-btn--sm c-btn--danger" type="submit">
+                                    <i data-lucide="trash-2"></i> Delete
+                                </button>
+                            </form>
+                        </c:if>
+                    </c:if>
                 </div>
                 <div style="display: flex; gap: var(--space-2)">
                     <c:choose>

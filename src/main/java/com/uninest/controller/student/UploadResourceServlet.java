@@ -19,9 +19,6 @@ import jakarta.servlet.http.Part;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @WebServlet(name = "uploadResource", urlPatterns = "/student/resources/upload")

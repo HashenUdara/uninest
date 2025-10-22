@@ -21,10 +21,20 @@
         </div>
         
         <div class="c-tabs" role="tablist" aria-label="Approval types">
-            <a href="${pageContext.request.contextPath}/subject-coordinator/resource-approvals?tab=new" 
-               class="c-tabs__link ${activeTab eq 'new' or empty activeTab ? 'is-active' : ''}" 
+            <a href="${pageContext.request.contextPath}/subject-coordinator/resource-approvals?tab=requests" 
+               class="c-tabs__link ${activeTab eq 'requests' or empty activeTab ? 'is-active' : ''}" 
                role="tab">
-                <i data-lucide="upload"></i> New Uploads
+                <i data-lucide="clock"></i> Requests
+            </a>
+            <a href="${pageContext.request.contextPath}/subject-coordinator/resource-approvals?tab=approved" 
+               class="c-tabs__link ${activeTab eq 'approved' ? 'is-active' : ''}" 
+               role="tab">
+                <i data-lucide="check-circle"></i> Approved
+            </a>
+            <a href="${pageContext.request.contextPath}/subject-coordinator/resource-approvals?tab=rejected" 
+               class="c-tabs__link ${activeTab eq 'rejected' ? 'is-active' : ''}" 
+               role="tab">
+                <i data-lucide="x-circle"></i> Rejected
             </a>
             <a href="${pageContext.request.contextPath}/subject-coordinator/resource-approvals?tab=edits" 
                class="c-tabs__link ${activeTab eq 'edits' ? 'is-active' : ''}" 
@@ -46,9 +56,33 @@
         </div>
     </c:if>
     
+    <c:if test="${param.delete == 'success'}">
+        <div class="c-alert c-alert--success" role="alert">
+            <p>Resource deleted successfully!</p>
+        </div>
+    </c:if>
+    
     <c:if test="${param.error == 'failed'}">
         <div class="c-alert c-alert--danger" role="alert">
             <p>Failed to process resource. Please try again.</p>
+        </div>
+    </c:if>
+    
+    <c:if test="${param.error == 'unauthorized'}">
+        <div class="c-alert c-alert--danger" role="alert">
+            <p>You are not authorized to perform this action.</p>
+        </div>
+    </c:if>
+    
+    <c:if test="${param.error == 'notfound'}">
+        <div class="c-alert c-alert--danger" role="alert">
+            <p>Resource not found.</p>
+        </div>
+    </c:if>
+    
+    <c:if test="${param.error == 'invalid'}">
+        <div class="c-alert c-alert--danger" role="alert">
+            <p>Invalid request.</p>
         </div>
     </c:if>
 
@@ -56,7 +90,14 @@
         <div class="c-table-toolbar">
             <div class="c-table-toolbar__left">
                 <span class="u-text-muted">
-                    ${resources.size()} pending ${activeTab eq 'edits' ? 'edit' : 'new upload'} request(s)
+                    ${resources.size()} 
+                    <c:choose>
+                        <c:when test="${activeTab eq 'approved'}">approved</c:when>
+                        <c:when test="${activeTab eq 'rejected'}">rejected</c:when>
+                        <c:when test="${activeTab eq 'edits'}">pending edit</c:when>
+                        <c:otherwise>pending</c:otherwise>
+                    </c:choose>
+                    resource(s)
                 </span>
             </div>
         </div>
@@ -67,15 +108,27 @@
                     <div class="c-empty-state__icon" aria-hidden="true">
                         <i data-lucide="check-circle"></i>
                     </div>
-                    <h3 class="c-empty-state__title">All caught up!</h3>
+                    <h3 class="c-empty-state__title">
+                        <c:choose>
+                            <c:when test="${activeTab eq 'approved'}">No approved resources</c:when>
+                            <c:when test="${activeTab eq 'rejected'}">No rejected resources</c:when>
+                            <c:when test="${activeTab eq 'edits'}">All caught up!</c:when>
+                            <c:otherwise>All caught up!</c:otherwise>
+                        </c:choose>
+                    </h3>
                     <p class="c-empty-state__message">
-                        No pending ${activeTab eq 'edits' ? 'edits' : 'uploads'} to review at the moment.
+                        <c:choose>
+                            <c:when test="${activeTab eq 'approved'}">No resources have been approved yet.</c:when>
+                            <c:when test="${activeTab eq 'rejected'}">No resources have been rejected yet.</c:when>
+                            <c:when test="${activeTab eq 'edits'}">No pending edits to review at the moment.</c:when>
+                            <c:otherwise>No pending requests to review at the moment.</c:otherwise>
+                        </c:choose>
                     </p>
                 </div>
             </c:when>
             <c:otherwise>
                 <div class="c-table-wrap">
-                    <table class="c-table c-table--sticky" aria-label="Pending resources">
+                    <table class="c-table c-table--sticky" aria-label="Resources">
                         <thead>
                             <tr>
                                 <th>Resource</th>
@@ -83,10 +136,18 @@
                                 <th>Topic</th>
                                 <th>Category</th>
                                 <th>Uploaded By</th>
-                                <th>${activeTab eq 'edits' ? 'Edit' : 'Upload'} Date</th>
-                                <c:if test="${activeTab eq 'edits'}">
-                                    <th>Version</th>
-                                </c:if>
+                                <c:choose>
+                                    <c:when test="${activeTab eq 'approved' or activeTab eq 'rejected'}">
+                                        <th>Approval Date</th>
+                                        <th>Approved By</th>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <th>Upload Date</th>
+                                        <c:if test="${activeTab eq 'edits'}">
+                                            <th>Version</th>
+                                        </c:if>
+                                    </c:otherwise>
+                                </c:choose>
                                 <th class="u-text-right">Actions</th>
                             </tr>
                         </thead>
@@ -120,12 +181,20 @@
                                             <div class="u-text-muted">${res.uploaderEmail}</div>
                                         </div>
                                     </td>
-                                    <td><fmt:formatDate value="${res.uploadDate}" pattern="MMM dd, yyyy HH:mm" /></td>
-                                    <c:if test="${activeTab eq 'edits'}">
-                                        <td>
-                                            <span class="c-badge c-badge--info">v${res.version}</span>
-                                        </td>
-                                    </c:if>
+                                    <c:choose>
+                                        <c:when test="${activeTab eq 'approved' or activeTab eq 'rejected'}">
+                                            <td><fmt:formatDate value="${res.approvalDate}" pattern="MMM dd, yyyy HH:mm" /></td>
+                                            <td>${res.approverName}</td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td><fmt:formatDate value="${res.uploadDate}" pattern="MMM dd, yyyy HH:mm" /></td>
+                                            <c:if test="${activeTab eq 'edits'}">
+                                                <td>
+                                                    <span class="c-badge c-badge--info">v${res.version}</span>
+                                                </td>
+                                            </c:if>
+                                        </c:otherwise>
+                                    </c:choose>
                                     <td class="u-text-right">
                                         <div class="c-table-actions">
                                             <c:if test="${res.fileType != 'link'}">
@@ -144,20 +213,31 @@
                                                     <i data-lucide="external-link"></i>
                                                 </a>
                                             </c:if>
+                                            <c:if test="${activeTab eq 'requests' or activeTab eq 'edits'}">
+                                                <form method="post" 
+                                                      action="${pageContext.request.contextPath}/subject-coordinator/resource-approvals/approve" 
+                                                      style="display:inline">
+                                                    <input type="hidden" name="resourceId" value="${res.resourceId}" />
+                                                    <button class="c-btn c-btn--sm c-btn--success" type="submit" aria-label="Approve">
+                                                        <i data-lucide="check"></i> Approve
+                                                    </button>
+                                                </form>
+                                                <form method="post" 
+                                                      action="${pageContext.request.contextPath}/subject-coordinator/resource-approvals/reject" 
+                                                      style="display:inline">
+                                                    <input type="hidden" name="resourceId" value="${res.resourceId}" />
+                                                    <button class="c-btn c-btn--sm c-btn--danger" type="submit" aria-label="Reject">
+                                                        <i data-lucide="x"></i> Reject
+                                                    </button>
+                                                </form>
+                                            </c:if>
                                             <form method="post" 
-                                                  action="${pageContext.request.contextPath}/subject-coordinator/resource-approvals/approve" 
-                                                  style="display:inline">
+                                                  action="${pageContext.request.contextPath}/subject-coordinator/resource-approvals/delete" 
+                                                  style="display:inline"
+                                                  onsubmit="return confirm('Are you sure you want to delete this resource? This action cannot be undone.');">
                                                 <input type="hidden" name="resourceId" value="${res.resourceId}" />
-                                                <button class="c-btn c-btn--sm c-btn--success" type="submit" aria-label="Approve">
-                                                    <i data-lucide="check"></i> Approve
-                                                </button>
-                                            </form>
-                                            <form method="post" 
-                                                  action="${pageContext.request.contextPath}/subject-coordinator/resource-approvals/reject" 
-                                                  style="display:inline">
-                                                <input type="hidden" name="resourceId" value="${res.resourceId}" />
-                                                <button class="c-btn c-btn--sm c-btn--danger" type="submit" aria-label="Reject">
-                                                    <i data-lucide="x"></i> Reject
+                                                <button class="c-btn c-btn--sm c-btn--ghost" type="submit" aria-label="Delete">
+                                                    <i data-lucide="trash-2"></i>
                                                 </button>
                                             </form>
                                         </div>

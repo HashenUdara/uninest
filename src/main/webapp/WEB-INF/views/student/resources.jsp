@@ -371,6 +371,19 @@
                                                     <i data-lucide="download"></i>
                                                 </a>
                                             </c:if>
+                                            <c:if test="${topic == null && res.uploadedBy == sessionScope.authUser.id}">
+                                                <form method="post" 
+                                                      action="${pageContext.request.contextPath}/student/resources/delete" 
+                                                      style="display:inline"
+                                                      onsubmit="return confirm('Are you sure you want to delete this resource? This action cannot be undone.');">
+                                                    <input type="hidden" name="resourceId" value="${res.resourceId}" />
+                                                    <button class="c-btn c-btn--sm c-btn--ghost" 
+                                                            type="submit"
+                                                            aria-label="Delete resource">
+                                                        <i data-lucide="trash-2"></i>
+                                                    </button>
+                                                </form>
+                                            </c:if>
                                         </div>
                                     </td>
                                 </tr>

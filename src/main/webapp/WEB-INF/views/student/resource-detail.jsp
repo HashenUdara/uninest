@@ -237,17 +237,15 @@
                                 <i data-lucide="edit"></i> Edit
                             </a>
                         </c:if>
-                        <c:if test="${resource.status == 'pending' || resource.status == 'rejected' || resource.status == 'pending_edit'}">
-                            <form method="post" 
-                                  action="${pageContext.request.contextPath}/student/resources/delete" 
-                                  style="display:inline"
-                                  onsubmit="return confirm('Are you sure you want to delete this resource?');">
-                                <input type="hidden" name="resourceId" value="${resource.resourceId}" />
-                                <button class="c-btn c-btn--sm c-btn--danger" type="submit">
-                                    <i data-lucide="trash-2"></i> Delete
-                                </button>
-                            </form>
-                        </c:if>
+                        <form method="post" 
+                              action="${pageContext.request.contextPath}/student/resources/delete" 
+                              style="display:inline"
+                              onsubmit="return confirm('Are you sure you want to delete this resource? This action cannot be undone.');">
+                            <input type="hidden" name="resourceId" value="${resource.resourceId}" />
+                            <button class="c-btn c-btn--sm c-btn--danger" type="submit">
+                                <i data-lucide="trash-2"></i> Delete
+                            </button>
+                        </form>
                     </c:if>
                 </div>
                 <div style="display: flex; gap: var(--space-2)">

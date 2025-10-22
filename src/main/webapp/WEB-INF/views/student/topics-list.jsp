@@ -175,7 +175,9 @@
                 <td>
                   <div style="display: flex; align-items: center; gap: var(--space-3);">
                     <div class="c-topic-avatar"></div>
-                    <span>${topic.title}</span>
+                    <a href="${pageContext.request.contextPath}/student/resources?topicId=${topic.topicId}" style="text-decoration: none; color: inherit;">
+                      ${topic.title}
+                    </a>
                   </div>
                 </td>
                 <td>${topic.description != null ? topic.description : '-'}</td>

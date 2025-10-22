@@ -55,9 +55,34 @@ public class UploadResourceServlet extends HttpServlet {
         // Get all topics for the user's community subjects
         List<Topic> allTopics = topicDAO.findByCommunityId(user.getCommunityId());
 
+        // Check if topicId and subjectId are provided for auto-selection
+        String topicIdParam = req.getParameter("topicId");
+        String subjectIdParam = req.getParameter("subjectId");
+        
+        Integer preselectedTopicId = null;
+        Integer preselectedSubjectId = null;
+        
+        if (topicIdParam != null && !topicIdParam.isEmpty()) {
+            try {
+                preselectedTopicId = Integer.parseInt(topicIdParam);
+            } catch (NumberFormatException e) {
+                // Ignore invalid topic ID
+            }
+        }
+        
+        if (subjectIdParam != null && !subjectIdParam.isEmpty()) {
+            try {
+                preselectedSubjectId = Integer.parseInt(subjectIdParam);
+            } catch (NumberFormatException e) {
+                // Ignore invalid subject ID
+            }
+        }
+
         req.setAttribute("subjects", subjects);
         req.setAttribute("categories", categories);
         req.setAttribute("allTopics", allTopics);
+        req.setAttribute("preselectedTopicId", preselectedTopicId);
+        req.setAttribute("preselectedSubjectId", preselectedSubjectId);
 
         req.getRequestDispatcher("/WEB-INF/views/student/upload-resource.jsp").forward(req, resp);
     }

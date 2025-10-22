@@ -135,6 +135,10 @@
                     </c:forEach>
                 ];
                 
+                // Get preselected values
+                const preselectedSubjectId = ${preselectedSubjectId != null ? preselectedSubjectId : 'null'};
+                const preselectedTopicId = ${preselectedTopicId != null ? preselectedTopicId : 'null'};
+                
                 // Tab switching for upload mode
                 const tabs = document.querySelectorAll('.c-tabs__link[data-mode]');
                 const modeFile = document.getElementById('mode-file');
@@ -169,8 +173,7 @@
                 const subjectSelect = document.getElementById('res-subject');
                 const topicSelect = document.getElementById('res-topic');
                 
-                subjectSelect.addEventListener('change', function() {
-                    const subjectId = parseInt(this.value);
+                function updateTopicSelect(subjectId, selectTopicId) {
                     topicSelect.innerHTML = '<option value="">Choose a topic</option>';
                     
                     if (!subjectId) {
@@ -189,9 +192,23 @@
                         const option = document.createElement('option');
                         option.value = topic.topicId;
                         option.textContent = topic.name;
+                        if (selectTopicId && topic.topicId === selectTopicId) {
+                            option.selected = true;
+                        }
                         topicSelect.appendChild(option);
                     });
+                }
+                
+                subjectSelect.addEventListener('change', function() {
+                    const subjectId = parseInt(this.value);
+                    updateTopicSelect(subjectId, null);
                 });
+                
+                // Auto-select if preselected values are available
+                if (preselectedSubjectId) {
+                    subjectSelect.value = preselectedSubjectId;
+                    updateTopicSelect(preselectedSubjectId, preselectedTopicId);
+                }
                 
                 // Initialize lucide icons
                 if (window.lucide) {

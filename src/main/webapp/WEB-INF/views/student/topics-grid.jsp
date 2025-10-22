@@ -133,16 +133,18 @@
 
     <div class="o-grid o-grid--cards">
       <c:forEach items="${topics}" var="topic">
-        <article class="c-card" data-title="${topic.title}" data-description="${topic.description}">
-          <div class="c-card__media c-topic-avatar"></div>
-          <div class="c-card__body">
-            <h3 class="c-card__title">${topic.title}</h3>
-            <p class="c-card__meta">${topic.progressPercent != null ? topic.progressPercent.intValue() : 0}% Completed</p>
-          </div>
-          <div class="c-card__footer">
-            <div class="c-progress" style="--progress: ${topic.progressPercent != null ? topic.progressPercent : 0}%"></div>
-          </div>
-        </article>
+        <a href="${pageContext.request.contextPath}/student/resources?topicId=${topic.topicId}" style="text-decoration: none; color: inherit;">
+          <article class="c-card" data-title="${topic.title}" data-description="${topic.description}">
+            <div class="c-card__media c-topic-avatar"></div>
+            <div class="c-card__body">
+              <h3 class="c-card__title">${topic.title}</h3>
+              <p class="c-card__meta">${topic.progressPercent != null ? topic.progressPercent.intValue() : 0}% Completed</p>
+            </div>
+            <div class="c-card__footer">
+              <div class="c-progress" style="--progress: ${topic.progressPercent != null ? topic.progressPercent : 0}%"></div>
+            </div>
+          </article>
+        </a>
       </c:forEach>
     </div>
   </section>

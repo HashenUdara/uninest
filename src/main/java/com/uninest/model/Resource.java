@@ -16,6 +16,9 @@ public class Resource {
     private String visibility; // private, public
     private Integer approvedBy;
     private Timestamp approvalDate;
+    private Integer parentResourceId;
+    private int version;
+    private String editType; // new, edit
     
     // Additional fields for display (joined from other tables)
     private String uploaderName;
@@ -184,5 +187,29 @@ public class Resource {
 
     public void setApproverName(String approverName) {
         this.approverName = approverName;
+    }
+
+    public Integer getParentResourceId() {
+        return parentResourceId;
+    }
+
+    public void setParentResourceId(Integer parentResourceId) {
+        this.parentResourceId = parentResourceId;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getEditType() {
+        return editType;
+    }
+
+    public void setEditType(String editType) {
+        this.editType = editType;
     }
 }

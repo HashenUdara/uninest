@@ -225,6 +225,27 @@ public class ResourceDAO {
         }
     }
 
+    public boolean update(Resource resource) {
+        String sql = "UPDATE resources SET topic_id = ?, category_id = ?, title = ?, description = ?, " +
+                "file_url = ?, file_type = ?, status = ?, visibility = ? " +
+                "WHERE resource_id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, resource.getTopicId());
+            ps.setInt(2, resource.getCategoryId());
+            ps.setString(3, resource.getTitle());
+            ps.setString(4, resource.getDescription());
+            ps.setString(5, resource.getFileUrl());
+            ps.setString(6, resource.getFileType());
+            ps.setString(7, resource.getStatus() != null ? resource.getStatus() : "pending");
+            ps.setString(8, resource.getVisibility() != null ? resource.getVisibility() : "private");
+            ps.setInt(9, resource.getResourceId());
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating resource", e);
+        }
+    }
+
     public boolean delete(int resourceId) {
         String sql = "DELETE FROM resources WHERE resource_id = ?";
         try (Connection con = DBConnection.getConnection();

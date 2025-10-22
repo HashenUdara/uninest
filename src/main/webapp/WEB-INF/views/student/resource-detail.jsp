@@ -166,6 +166,13 @@
             return null;
         }
         
+        function confirmDelete(resourceId) {
+            if (confirm('Are you sure you want to delete this resource? This action cannot be undone.')) {
+                document.getElementById('deleteResourceId').value = resourceId;
+                document.getElementById('deleteForm').submit();
+            }
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             const viewer = document.querySelector('.c-media-viewer');
             const fileType = viewer?.getAttribute('data-filetype');
@@ -224,7 +231,17 @@
             </div>
             <div class="c-actions">
                 <div style="display: flex; gap: var(--space-2)">
-                    <!-- Actions can be added here later -->
+                    <!-- Show edit and delete buttons if user owns the resource -->
+                    <c:if test="${sessionScope.authUser.id == resource.uploadedBy}">
+                        <a href="${pageContext.request.contextPath}/student/resources/edit?id=${resource.resourceId}" 
+                           class="c-btn c-btn--sm c-btn--ghost">
+                            <i data-lucide="edit"></i> Edit
+                        </a>
+                        <button type="button" onclick="confirmDelete(${resource.resourceId})" 
+                                class="c-btn c-btn--sm c-btn--ghost c-btn--danger">
+                            <i data-lucide="trash-2"></i> Delete
+                        </button>
+                    </c:if>
                 </div>
                 <div style="display: flex; gap: var(--space-2)">
                     <c:choose>
@@ -241,6 +258,11 @@
                     </c:choose>
                 </div>
             </div>
+            
+            <!-- Delete confirmation form (hidden) -->
+            <form id="deleteForm" method="post" action="${pageContext.request.contextPath}/student/resources/delete" style="display: none;">
+                <input type="hidden" name="id" id="deleteResourceId" />
+            </form>
         </header>
 
         <section class="c-section">

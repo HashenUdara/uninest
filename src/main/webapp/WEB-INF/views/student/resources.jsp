@@ -227,6 +227,18 @@
         </div>
     </c:if>
 
+    <c:if test="${param.edit == 'success'}">
+        <div class="c-alert c-alert--success" role="alert">
+            <p>Resource updated successfully! <c:if test="${not empty param.statusReset}">The resource has been set to pending and will require re-approval.</c:if></p>
+        </div>
+    </c:if>
+
+    <c:if test="${param.delete == 'success'}">
+        <div class="c-alert c-alert--success" role="alert">
+            <p>Resource deleted successfully.</p>
+        </div>
+    </c:if>
+
     <section>
         <div class="c-table-toolbar">
             <div class="c-table-toolbar__left">
@@ -331,14 +343,30 @@
                                                aria-label="View details">
                                                 <i data-lucide="eye"></i>
                                             </a>
-                                            <c:if test="${res.status == 'approved' || topic != null}">
-                                                <a href="${pageContext.request.contextPath}/${res.fileUrl}" 
-                                                   class="c-btn c-btn--sm c-btn--ghost" 
-                                                   target="_blank" 
-                                                   aria-label="Download">
-                                                    <i data-lucide="download"></i>
-                                                </a>
-                                            </c:if>
+                                            <c:choose>
+                                                <c:when test="${topic != null}">
+                                                    <!-- Topic view: show download for approved resources -->
+                                                    <a href="${pageContext.request.contextPath}/${res.fileUrl}" 
+                                                       class="c-btn c-btn--sm c-btn--ghost" 
+                                                       target="_blank" 
+                                                       aria-label="Download">
+                                                        <i data-lucide="download"></i>
+                                                    </a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <!-- My Resources view: show edit and delete for owned resources -->
+                                                    <a href="${pageContext.request.contextPath}/student/resources/edit?id=${res.resourceId}" 
+                                                       class="c-btn c-btn--sm c-btn--ghost" 
+                                                       aria-label="Edit resource">
+                                                        <i data-lucide="edit"></i>
+                                                    </a>
+                                                    <button type="button" onclick="confirmDelete(${res.resourceId})" 
+                                                            class="c-btn c-btn--sm c-btn--ghost c-btn--danger"
+                                                            aria-label="Delete resource">
+                                                        <i data-lucide="trash-2"></i>
+                                                    </button>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
                                     </td>
                                 </tr>
@@ -349,5 +377,19 @@
             </c:otherwise>
         </c:choose>
     </section>
+    
+    <!-- Delete confirmation form (hidden) -->
+    <form id="deleteForm" method="post" action="${pageContext.request.contextPath}/student/resources/delete" style="display: none;">
+        <input type="hidden" name="id" id="deleteResourceId" />
+    </form>
+    
+    <script>
+        function confirmDelete(resourceId) {
+            if (confirm('Are you sure you want to delete this resource? This action cannot be undone.')) {
+                document.getElementById('deleteResourceId').value = resourceId;
+                document.getElementById('deleteForm').submit();
+            }
+        }
+    </script>
     
 </layout:student-dashboard>

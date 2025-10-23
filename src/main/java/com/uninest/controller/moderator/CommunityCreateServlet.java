@@ -43,6 +43,7 @@ public class CommunityCreateServlet extends HttpServlet {
         userDAO.assignCommunity(user.getId(), communityId);
         // Update the session user object
         user.setCommunityId(communityId);
+        user.setCommunityName(title.trim());
 
         resp.sendRedirect(req.getContextPath() + "/moderator/community/waiting");
     }

@@ -6,6 +6,11 @@
 <layout:student-dashboard activePage="dashboard">
   <dash:section title="Welcome, ${sessionScope.authUser.name}">
     <p>Access your subjects, resources, and track your learning progress.</p>
+    <c:if test="${not empty community}">
+      <p class="u-text-muted" style="margin-top: var(--space-2);">
+        <strong>Community:</strong> ${community.title}
+      </p>
+    </c:if>
   </dash:section>
   
   <%-- Pending Requests Section --%>

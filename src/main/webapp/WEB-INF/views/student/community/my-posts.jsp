@@ -41,21 +41,26 @@
                 "
               >
                 <div>
-                  <h1 class="c-page__title">Community</h1>
+                 <h1 class="c-page__title">My Posts</h1>
                   <p class="c-page__subtitle u-text-muted">
-                    Stay updated with the latest discussions and resources from
-                    your peers.
+                    View, edit, and manage all your community posts.
                   </p>
                 </div>
-                <a href="${pageContext.request.contextPath}/student/community/new-post" class="c-btn c-btn--secondary"
+                <div style="display: flex; gap: var(--space-2)">
+                  <a href="${pageContext.request.contextPath}/student/community" class="c-btn c-btn--ghost"
+                    ><i data-lucide="arrow-left"></i> All Posts</a
+                  >
+                  <a href="${pageContext.request.contextPath}/student/community/new-post" class="c-btn c-btn--secondary"
                   ><i data-lucide="plus"></i> New Post</a
                 >
+                </div>
               </div>
+
               <nav class="c-tabs-line" aria-label="Filter">
-                <a href="#" class="is-active">Most Upvoted</a>
-                <a href="#">Most Recent</a>
-                <a href="#">Unanswered</a>
-                <a href="${pageContext.request.contextPath}/student/community/my-posts">My Posts</a>
+                <a href="${pageContext.request.contextPath}/student/community"  >Most Upvoted</a>
+                <a href="${pageContext.request.contextPath}/student/community" >Most Recent</a>
+                <a href="${pageContext.request.contextPath}/student/community" >Unanswered</a>
+                <a href="${pageContext.request.contextPath}/student/community/my-posts" class="is-active">My Posts</a>
               </nav>
               <!-- Filters -->
               <div
@@ -78,17 +83,26 @@
               </div>
             </header>
 
-            <section class="u-stack-4">
-              <h3 class="c-section-title" style="margin-top: 0">
-                Pinned Posts
-              </h3>
+          <section class="u-stack-4">
+              <div
+                class="o-inline"
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                "
+              >
+                <h3 class="c-section-title" style="margin-top: 0">
+                  My Posts (<span class="js-post-count">3</span>)
+                </h3>
+              </div>
               <div class="c-posts">
-                <!-- Post 1: text -->
+                <!-- My Post 1: text -->
                 <article
-                  class="c-post c-post--text c-post--pinned"
+                  class="c-post c-post--text c-post--mine"
                   data-type="text"
-                  data-subject="CS123"
-                  data-answered="true"
+                  data-subject="CS204"
+                  data-post-id="1"
                 >
                   <div class="c-post__head">
                     <div class="c-avatar-sm">
@@ -97,117 +111,30 @@
                         src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3ESC%3C/text%3E%3C/svg%3E"
                       />
                     </div>
-                    <div>
-                      <strong>Sophia Clark</strong>
-                      <div class="c-post__meta">2d ago</div>
+                    <div style="flex: 1">
+                      <strong>Sophia Clark (You)</strong>
+                      <div class="c-post__meta">2d ago • CS204</div>
                     </div>
-                  </div>
-                  <p class="u-text-muted">
-                    I'm having trouble understanding recursion in the
-                    programming module. Can anyone explain it in simpler terms?
-                  </p>
-                  <div class="c-post__actions">
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-upvote"
-                      aria-label="Upvote"
-                    >
-                      <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">12</span>
-                    </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
-                      class="c-btn c-btn--ghost c-btn--sm"
-                      aria-label="Comments"
-                    >
-                      <i data-lucide="message-square"></i>3
-                    </a>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-downvote"
-                      aria-label="Downvote"
-                    >
-                      <i data-lucide="thumbs-down"></i>
-                    </button>
-                  </div>
-                </article>
-
-                <!-- Post 2: image -->
-                <article
-                  class="c-post c-post--image c-post--pinned"
-                  data-type="image"
-                  data-subject="CS204"
-                  data-answered="true"
-                >
-                  <div class="c-post__head">
-                    <div class="c-avatar-sm">
-                      <img
-                        alt="Noah Thompson"
-                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E6F7EF'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%2325814b' text-anchor='middle' dominant-baseline='middle'%3ENT%3C/text%3E%3C/svg%3E"
-                      />
-                    </div>
-                    <div>
-                      <strong>Noah Thompson</strong>
-                      <div class="c-post__meta">3d ago</div>
-                    </div>
-                  </div>
-                  <p class="u-text-muted">
-                    Has anyone found a good resource for learning about data
-                    structures? I'm struggling with linked lists.
-                  </p>
-                  <div class="c-post__image">
-                    <img src="${pageContext.request.contextPath}/static/img/1.avif" alt="Shared notes image" />
-                  </div>
-                  <div class="c-post__actions">
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-upvote"
-                      aria-label="Upvote"
-                    >
-                      <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">8</span>
-                    </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
-                      class="c-btn c-btn--ghost c-btn--sm"
-                      aria-label="Comments"
-                    >
-                      <i data-lucide="message-square"></i>2
-                    </a>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-downvote"
-                      aria-label="Downvote"
-                    >
-                      <i data-lucide="thumbs-down"></i>
-                    </button>
-                  </div>
-                </article>
-              </div>
-            </section>
-
-            <!-- Latest posts -->
-            <section class="u-stack-4">
-              <h3 class="c-section-title">Latest Posts</h3>
-              <div class="c-posts">
-                <!-- Post A: text -->
-                <article
-                  class="c-post c-post--text"
-                  data-type="text"
-                  data-subject="CS204"
-                  data-answered="true"
-                >
-                  <div class="c-post__head">
-                    <div class="c-avatar-sm">
-                      <img
-                        alt="Emma Martinez"
-                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3EEM%3C/text%3E%3C/svg%3E"
-                      />
-                    </div>
-                    <div>
-                      <strong>Emma Martinez</strong>
-                      <div class="c-post__meta">1h ago</div>
+                    <div class="c-post__manage">
+                      <a
+                        href="${pageContext.request.contextPath}/student/community/edit-post?id=1"
+                        class="c-btn c-btn--ghost c-btn--sm"
+                        aria-label="Edit post"
+                        ><i data-lucide="edit-2"></i
+                      ></a>
+                      <button
+                        class="c-btn c-btn--ghost c-btn--sm js-delete-post"
+                        aria-label="Delete post"
+                        data-post-id="1"
+                      >
+                        <i data-lucide="trash-2"></i>
+                      </button>
                     </div>
                   </div>
                   <p class="u-text-muted">
                     Anyone has tips for CS204 lab 3? I'm stuck on the stack
-                    implementation edge cases.
+                    implementation edge cases. Would really appreciate some
+                    guidance on handling null pointers!
                   </p>
                   <div class="c-post__actions">
                     <button
@@ -217,13 +144,12 @@
                       <i data-lucide="thumbs-up"></i
                       ><span class="js-score">5</span>
                     </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
+                    <button
                       class="c-btn c-btn--ghost c-btn--sm"
                       aria-label="Comments"
                     >
                       <i data-lucide="message-square"></i>4
-                    </a>
+                    </button>
                     <button
                       class="c-btn c-btn--ghost c-btn--sm js-downvote"
                       aria-label="Downvote"
@@ -233,31 +159,49 @@
                   </div>
                 </article>
 
-                <!-- Post B: image -->
+                <!-- My Post 2: image -->
                 <article
-                  class="c-post c-post--image"
+                  class="c-post c-post--image c-post--mine"
                   data-type="image"
                   data-subject="CS301"
-                  data-answered="true"
+                  data-post-id="2"
                 >
                   <div class="c-post__head">
                     <div class="c-avatar-sm">
                       <img
-                        alt="Liam Torres"
-                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E6F7EF'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%2325814b' text-anchor='middle' dominant-baseline='middle'%3ELT%3C/text%3E%3C/svg%3E"
+                        alt="Sophia Clark"
+                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3ESC%3C/text%3E%3C/svg%3E"
                       />
                     </div>
-                    <div>
-                      <strong>Liam Torres</strong>
-                      <div class="c-post__meta">4h ago</div>
+                    <div style="flex: 1">
+                      <strong>Sophia Clark (You)</strong>
+                      <div class="c-post__meta">1w ago • CS301</div>
+                    </div>
+                    <div class="c-post__manage">
+                      <a
+                        href="${pageContext.request.contextPath}/student/community/edit-post?id=2"
+                        class="c-btn c-btn--ghost c-btn--sm"
+                        aria-label="Edit post"
+                        ><i data-lucide="edit-2"></i
+                      ></a>
+                      <button
+                        class="c-btn c-btn--ghost c-btn--sm js-delete-post"
+                        aria-label="Delete post"
+                        data-post-id="2"
+                      >
+                        <i data-lucide="trash-2"></i>
+                      </button>
                     </div>
                   </div>
                   <p class="u-text-muted">
-                    Sharing my quick cheatsheet for Big-O and common data
-                    structures.
+                    My notes on dynamic programming patterns - hope this helps
+                    someone preparing for the exam!
                   </p>
                   <div class="c-post__image">
-                    <img src="${pageContext.request.contextPath}/static/img/1.avif" alt="Big-O and DS cheatsheet" />
+                    <img
+                      src="${pageContext.request.contextPath}/static/img/1.avif"
+                      alt="DP patterns notes"
+                    />
                   </div>
                   <div class="c-post__actions">
                     <button
@@ -265,15 +209,14 @@
                       aria-label="Upvote"
                     >
                       <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">11</span>
+                      ><span class="js-score">18</span>
                     </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
+                    <button
                       class="c-btn c-btn--ghost c-btn--sm"
                       aria-label="Comments"
                     >
-                      <i data-lucide="message-square"></i>6
-                    </a>
+                      <i data-lucide="message-square"></i>7
+                    </button>
                     <button
                       class="c-btn c-btn--ghost c-btn--sm js-downvote"
                       aria-label="Downvote"
@@ -283,28 +226,43 @@
                   </div>
                 </article>
 
-                <!-- Post C: question -->
+                <!-- My Post 3: text -->
                 <article
-                  class="c-post c-post--text"
+                  class="c-post c-post--text c-post--mine"
                   data-type="text"
-                  data-subject="CS204"
-                  data-answered="true"
+                  data-subject="CS123"
+                  data-post-id="3"
                 >
                   <div class="c-post__head">
                     <div class="c-avatar-sm">
                       <img
-                        alt="Zara Khan"
-                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23EAF8E6'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%23287b2c' text-anchor='middle' dominant-baseline='middle'%3EZK%3C/text%3E%3C/svg%3E"
+                        alt="Sophia Clark"
+                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3ESC%3C/text%3E%3C/svg%3E"
                       />
                     </div>
-                    <div>
-                      <strong>Zara Khan</strong>
-                      <div class="c-post__meta">Yesterday</div>
+                    <div style="flex: 1">
+                      <strong>Sophia Clark (You)</strong>
+                      <div class="c-post__meta">2w ago • CS123</div>
+                    </div>
+                    <div class="c-post__manage">
+                      <a
+                        href="${pageContext.request.contextPath}/student/community/edit-post?id=3"
+                        class="c-btn c-btn--ghost c-btn--sm"
+                        aria-label="Edit post"
+                        ><i data-lucide="edit-2"></i
+                      ></a>
+                      <button
+                        class="c-btn c-btn--ghost c-btn--sm js-delete-post"
+                        aria-label="Delete post"
+                        data-post-id="3"
+                      >
+                        <i data-lucide="trash-2"></i>
+                      </button>
                     </div>
                   </div>
                   <p class="u-text-muted">
-                    Is the worst-case time for BST search O(n) even if it's
-                    balanced? I get confused with degenerate cases.
+                    Looking for study partners for the final project. Anyone
+                    interested in forming a team?
                   </p>
                   <div class="c-post__actions">
                     <button
@@ -312,15 +270,14 @@
                       aria-label="Upvote"
                     >
                       <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">3</span>
+                      ><span class="js-score">9</span>
                     </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
+                    <button
                       class="c-btn c-btn--ghost c-btn--sm"
                       aria-label="Comments"
                     >
-                      <i data-lucide="message-square"></i>1
-                    </a>
+                      <i data-lucide="message-square"></i>12
+                    </button>
                     <button
                       class="c-btn c-btn--ghost c-btn--sm js-downvote"
                       aria-label="Downvote"
@@ -437,5 +394,105 @@
           </aside>
         </div>
 
+          <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="c-modal" hidden>
+      <div class="c-modal__overlay" data-close></div>
+      <div
+        class="c-modal__content"
+        role="dialog"
+        aria-labelledby="delete-title"
+      >
+        <header class="c-modal__header">
+          <h2 id="delete-title">Delete Post</h2>
+          <button class="c-modal__close" data-close aria-label="Close">
+            <i data-lucide="x"></i>
+          </button>
+        </header>
+        <div class="c-modal__body">
+          <p>
+            Are you sure you want to delete this post? This action cannot be
+            undone.
+          </p>
+        </div>
+        <footer class="c-modal__footer">
+          <button class="c-btn c-btn--ghost" data-close>Cancel</button>
+          <button class="c-btn c-btn--danger js-confirm-delete">Delete</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="c-toasts" aria-live="polite"></div>
+
+<script>
+      document.addEventListener("DOMContentLoaded", function () {
+        if (window.lucide) window.lucide.createIcons();
+
+        const modal = document.getElementById("delete-modal");
+        const toasts = document.querySelector(".c-toasts");
+        let pendingDeleteId = null;
+
+        // Delete button click
+        document.addEventListener("click", (e) => {
+          const delBtn = e.target.closest(".js-delete-post");
+          if (!delBtn) return;
+          pendingDeleteId = delBtn.getAttribute("data-post-id");
+          if (modal) {
+            modal.hidden = false;
+            modal.querySelector(".js-confirm-delete")?.focus();
+          }
+        });
+
+        // Close modal
+        if (modal) {
+          modal.addEventListener("click", (e) => {
+            if (e.target.matches("[data-close]")) {
+              modal.hidden = true;
+              pendingDeleteId = null;
+            }
+          });
+          document.addEventListener("keydown", (e) => {
+            if (!modal.hidden && e.key === "Escape") {
+              modal.hidden = true;
+              pendingDeleteId = null;
+            }
+          });
+
+          // Confirm delete
+          const confirmBtn = modal.querySelector(".js-confirm-delete");
+          confirmBtn?.addEventListener("click", () => {
+            if (pendingDeleteId) {
+              const post = document.querySelector(
+                `.c-post[data-post-id="${pendingDeleteId}"]`
+              );
+              if (post) {
+                post.remove();
+                updatePostCount();
+                showToast("Post deleted successfully");
+              }
+              pendingDeleteId = null;
+            }
+            modal.hidden = true;
+          });
+        }
+
+        function updatePostCount() {
+          const count = document.querySelectorAll(".c-post").length;
+          const countEl = document.querySelector(".js-post-count");
+          if (countEl) countEl.textContent = String(count);
+        }
+
+        function showToast(msg) {
+          if (!toasts) return;
+          const item = document.createElement("div");
+          item.className = "c-toast";
+          item.textContent = msg;
+          toasts.appendChild(item);
+          setTimeout(() => {
+            item.remove();
+          }, 2500);
+        }
+      });
+    </script>
        
 </layout:student-dashboard>

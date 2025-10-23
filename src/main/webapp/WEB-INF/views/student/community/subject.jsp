@@ -30,7 +30,6 @@
  <div class="comm-layout">
           <div class="o-feed">
             <header class="c-page__header">
-             
               <div
                 class="o-inline"
                 style="
@@ -41,16 +40,24 @@
                 "
               >
                 <div>
-                  <h1 class="c-page__title">Community</h1>
+                  <h1 class="c-page__title">
+                    <span class="js-subject-name">Subject Community</span>
+                  </h1>
                   <p class="c-page__subtitle u-text-muted">
-                    Stay updated with the latest discussions and resources from
-                    your peers.
+                    Discussions and resources for
+                    <strong class="js-subject-code">this subject</strong>.
                   </p>
                 </div>
-                <a href="${pageContext.request.contextPath}/student/community/new-post" class="c-btn c-btn--secondary"
+                <div style="display: flex; gap: var(--space-2)">
+                  <a href="${pageContext.request.contextPath}/student/community" class="c-btn c-btn--ghost"
+                    ><i data-lucide="arrow-left"></i> All Posts</a
+                  >
+                  <a href="${pageContext.request.contextPath}/student/community/new-post" class="c-btn c-btn--secondary"
                   ><i data-lucide="plus"></i> New Post</a
                 >
+                </div>
               </div>
+              
               <nav class="c-tabs-line" aria-label="Filter">
                 <a href="#" class="is-active">Most Upvoted</a>
                 <a href="#">Most Recent</a>
@@ -78,7 +85,7 @@
               </div>
             </header>
 
-            <section class="u-stack-4">
+             <section class="u-stack-4">
               <h3 class="c-section-title" style="margin-top: 0">
                 Pinned Posts
               </h3>
@@ -114,13 +121,12 @@
                       <i data-lucide="thumbs-up"></i
                       ><span class="js-score">12</span>
                     </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
+                    <button
                       class="c-btn c-btn--ghost c-btn--sm"
                       aria-label="Comments"
                     >
                       <i data-lucide="message-square"></i>3
-                    </a>
+                    </button>
                     <button
                       class="c-btn c-btn--ghost c-btn--sm js-downvote"
                       aria-label="Downvote"
@@ -164,13 +170,12 @@
                       <i data-lucide="thumbs-up"></i
                       ><span class="js-score">8</span>
                     </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
+                    <button
                       class="c-btn c-btn--ghost c-btn--sm"
                       aria-label="Comments"
                     >
                       <i data-lucide="message-square"></i>2
-                    </a>
+                    </button>
                     <button
                       class="c-btn c-btn--ghost c-btn--sm js-downvote"
                       aria-label="Downvote"
@@ -217,13 +222,12 @@
                       <i data-lucide="thumbs-up"></i
                       ><span class="js-score">5</span>
                     </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
+                    <button
                       class="c-btn c-btn--ghost c-btn--sm"
                       aria-label="Comments"
                     >
                       <i data-lucide="message-square"></i>4
-                    </a>
+                    </button>
                     <button
                       class="c-btn c-btn--ghost c-btn--sm js-downvote"
                       aria-label="Downvote"
@@ -267,13 +271,12 @@
                       <i data-lucide="thumbs-up"></i
                       ><span class="js-score">11</span>
                     </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
+                    <button
                       class="c-btn c-btn--ghost c-btn--sm"
                       aria-label="Comments"
                     >
                       <i data-lucide="message-square"></i>6
-                    </a>
+                    </button>
                     <button
                       class="c-btn c-btn--ghost c-btn--sm js-downvote"
                       aria-label="Downvote"
@@ -314,13 +317,12 @@
                       <i data-lucide="thumbs-up"></i
                       ><span class="js-score">3</span>
                     </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
+                    <button
                       class="c-btn c-btn--ghost c-btn--sm"
                       aria-label="Comments"
                     >
                       <i data-lucide="message-square"></i>1
-                    </a>
+                    </button>
                     <button
                       class="c-btn c-btn--ghost c-btn--sm js-downvote"
                       aria-label="Downvote"
@@ -436,6 +438,77 @@
             </section>
           </aside>
         </div>
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        if (window.lucide) window.lucide.createIcons();
 
+        // Read subject from query string
+        const params = new URLSearchParams(window.location.search);
+        const subjectCode = params.get("subject") || "";
+
+        // Subject metadata map (code -> {name, label})
+        const subjectMap = {
+          CS204: { name: "Data Structures", label: "Data Structures" },
+          CS301: { name: "Algorithms", label: "Algorithms" },
+          CS123: {
+            name: "Programming Fundamentals",
+            label: "Programming Fundamentals",
+          },
+          CS205: { name: "Operating Systems", label: "Operating Systems" },
+          MA201: { name: "Calculus II", label: "Calculus II" },
+          ENG101: { name: "English Composition", label: "English Composition" },
+          PHY110: { name: "Physics I", label: "Physics I" },
+        };
+
+        const meta = subjectMap[subjectCode] || {
+          name: subjectCode,
+          label: subjectCode,
+        };
+
+        // Update page title/subtitle
+        document.querySelectorAll(".js-subject-code").forEach((el) => {
+          el.textContent = subjectCode;
+        });
+        document.querySelectorAll(".js-subject-name").forEach((el) => {
+          el.textContent = meta.label;
+        });
+        document.title = `${subjectCode} • UniNest Community`;
+
+        // Filter posts by subject
+        const posts = Array.from(document.querySelectorAll(".c-post"));
+        posts.forEach((post) => {
+          const ds = (post.getAttribute("data-subject") || "").trim();
+          if (ds !== subjectCode) {
+            post.style.display = "none";
+          }
+        });
+
+        // Hide sections if empty
+        const pinnedSection = document.querySelector(
+          ".u-stack-4:first-of-type"
+        );
+        const latestSection = document.querySelector(".u-stack-4:last-of-type");
+        const pinnedContainer = pinnedSection?.querySelector(".c-posts");
+        const latestContainer = latestSection?.querySelector(".c-posts");
+
+        if (pinnedContainer) {
+          const visiblePinned = Array.from(
+            pinnedContainer.querySelectorAll(".c-post")
+          ).filter((p) => p.style.display !== "none");
+          if (visiblePinned.length === 0 && pinnedSection) {
+            pinnedSection.style.display = "none";
+          }
+        }
+
+        if (latestContainer) {
+          const visibleLatest = Array.from(
+            latestContainer.querySelectorAll(".c-post")
+          ).filter((p) => p.style.display !== "none");
+          if (visibleLatest.length === 0 && latestSection) {
+            latestSection.style.display = "none";
+          }
+        }
+      });
+    </script>
        
 </layout:student-dashboard>

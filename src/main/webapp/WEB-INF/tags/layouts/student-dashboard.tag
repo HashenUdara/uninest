@@ -36,7 +36,7 @@
       label="Progress Analysis" 
       active="${activePage eq 'progress'}" />
     <dash:nav-item 
-      href="#" 
+      href="${pageContext.request.contextPath}/student/community"
       icon="message-square" 
       label="Community" 
       active="${activePage eq 'community'}" />

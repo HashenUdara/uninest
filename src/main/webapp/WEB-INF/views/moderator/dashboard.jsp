@@ -5,6 +5,11 @@
 <layout:moderator-dashboard activePage="dashboard">
   <dash:section title="Welcome, ${sessionScope.authUser.email}">
     <p>As a moderator, you can review, edit, or remove inappropriate resources.</p>
+    <c:if test="${not empty community}">
+      <p class="u-text-muted" style="margin-top: var(--space-2);">
+        <strong>Community:</strong> ${community.title} <span style="color: var(--clr-text-muted);">(ID: ${community.id})</span>
+      </p>
+    </c:if>
   </dash:section>
   
   <dash:section title="Moderation Overview">

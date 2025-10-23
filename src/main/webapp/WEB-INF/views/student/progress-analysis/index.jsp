@@ -208,7 +208,7 @@
         <section class="c-panel">
           <div class="c-panel__header">
             <h2 class="c-section-title" style="margin: 0">GPA Progression</h2>
-            <a href="gpa-calculator.html" class="c-btn c-btn--secondary"
+            <a  href="${pageContext.request.contextPath}/student/progress-analysis/gpa-calculator" class="c-btn c-btn--secondary"
               >Open GPA Calculator</a
             >
           </div>

@@ -1,101 +1,200 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>GPA Calculator • UniNest</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles/app.css" />
-    <link rel="stylesheet" href="styles/gpa.css" />
-    <script src="scripts/vendor/lucide.js"></script>
-  </head>
-  <body>
-    <!-- Theme toggle -->
-    <button
-      type="button"
-      class="c-theme-toggle js-theme-toggle"
-      aria-pressed="false"
-      aria-label="Toggle dark mode"
-    >
-      <span class="c-theme-toggle__icon" aria-hidden="true"
-        ><i data-lucide="moon"></i
-      ></span>
-      <span class="c-theme-toggle__label">Dark</span>
-    </button>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
+<%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-    <div class="l-app">
-      <!-- Sidebar -->
-      <aside class="c-sidebar">
-        <div class="c-logo">
-          <img src="img/logo.png" alt="Uninest" class="c-logo__mark" />
-        </div>
-        <div class="c-user-mini">
-          <div class="c-user-mini__avatar" aria-hidden="true"></div>
-          <div class="c-user-mini__meta">
-            <span class="c-user-mini__name">Sophia</span>
-            <span class="c-user-mini__role">Student</span>
-          </div>
-        </div>
-        <nav class="c-nav" aria-label="Main">
-          <a href="dashboard.html" class="c-nav__item"
-            ><span class="c-nav__icon"><i data-lucide="home"></i></span
-            >Dashboard</a
-          >
-          <a href="#" class="c-nav__item"
-            ><span class="c-nav__icon"><i data-lucide="book"></i></span>My
-            Subjects</a
-          >
-          <a href="#" class="c-nav__item"
-            ><span class="c-nav__icon"
-              ><i data-lucide="graduation-cap"></i></span
-            >Kuppi Sessions</a
-          >
-          <a href="resources.html" class="c-nav__item"
-            ><span class="c-nav__icon"><i data-lucide="file-text"></i></span>My
-            Resources</a
-          >
-          <a href="progress-analysis.html" class="c-nav__item is-active"
-            ><span class="c-nav__icon"><i data-lucide="bar-chart-3"></i></span
-            >Progress Analysis</a
-          >
-          <a href="community.html" class="c-nav__item"
-            ><span class="c-nav__icon"
-              ><i data-lucide="message-square"></i></span
-            >Community</a
-          >
-          <a href="#" class="c-nav__item"
-            ><span class="c-nav__icon"><i data-lucide="user"></i></span>Profile
-            Settings</a
-          >
-        </nav>
-        <a href="#" class="c-nav__item c-logout-button"
-          ><span class="c-nav__icon"><i data-lucide="log-out"></i></span
-          >Logout</a
-        >
-      </aside>
+<layout:student-dashboard pageTitle="Progress Analysis" activePage="progress">
+    <jsp:body> 
+         <link rel="stylesheet" href="${pageContext.request.contextPath}/static/app.css" />
+         <style>
 
-      <!-- Content -->
-      <main class="c-page">
-        <header class="c-page__header">
-          <nav class="c-breadcrumbs" aria-label="Breadcrumb">
-            <a href="#">Home</a>
+         /* Minimal, scoped tweaks for GPA Calculator */
+
+/* Soft table variant inside panel */
+.c-table--soft thead th {
+  font-weight: var(--fw-medium);
+  color: var(--color-text-muted);
+}
+.c-table--soft td,
+.c-table--soft th {
+  padding: 10px 12px;
+}
+
+/* Inline inputs within table */
+.c-input--table {
+  height: 34px;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+}
+
+/* Summary GPA boxes */
+.c-gpa-box {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  font-size: 1.75rem;
+  font-weight: var(--fw-semibold);
+}
+
+/* Actions */
+.c-actions {
+  margin-top: var(--space-6);
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* Panel table wrapper spacing */
+.c-table-wrap {
+  margin-top: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Make chips used in milestones usable here if needed */
+.c-chip.is-active {
+  background: var(--color-brand-soft);
+  color: var(--color-text);
+}
+
+/* Split layout: table left, summary right */
+.gpa-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-6);
+}
+@media (max-width: 1000px) {
+  .gpa-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Definition list compact rows */
+.c-definition {
+  display: grid;
+  gap: var(--space-2);
+}
+.c-definition__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.c-definition__row:last-child {
+  border-bottom: 0;
+}
+.c-definition dt {
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+.c-definition dd {
+  margin: 0;
+  font-weight: var(--fw-medium);
+}
+
+/* Donut gauge using conic gradient */
+.c-gauge {
+  --gpa-pct: 0%;
+  width: 180px;
+  height: 180px;
+  margin-inline: auto;
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.c-gauge__ring {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--color-brand) var(--gpa-pct),
+    var(--color-border) 0
+  );
+  -webkit-mask: radial-gradient(
+    circle 64px at 50% 50%,
+    transparent 65px,
+    black 66px
+  );
+  mask: radial-gradient(circle 64px at 50% 50%, transparent 65px, black 66px);
+}
+.c-gauge__value {
+  position: absolute;
+  font-size: 1.75rem;
+  font-weight: var(--fw-semibold);
+}
+
+.c-guide {
+  margin-top: var(--space-6);
+}
+
+.c-guide .c-list {
+  list-style: none;
+  padding: 0;
+  padding-left: 0;
+  margin-left: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+.c-list li {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: var(--space-2);
+  align-items: start;
+}
+.c-guide .c-list i {
+  color: var(--color-brand);
+}
+
+/* Conversion table styling inside guide */
+.c-guide table {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+.c-guide thead th {
+  background: var(--color-surface);
+  font-weight: var(--fw-medium);
+}
+.c-guide tbody tr + tr td {
+  border-top: 1px solid var(--color-border);
+}
+
+
+    </style>
+   
+    <header class="c-page__header">
+        <nav class="c-breadcrumbs" aria-label="Breadcrumb">
+            <a href="${pageContext.request.contextPath}/student/dashboard">Home</a>
             <span class="c-breadcrumbs__sep">/</span>
-            <span aria-current="page">Progress &amp; GPA</span>
-          </nav>
-          <div>
+            <a href="${pageContext.request.contextPath}/student/progress-analysis">Progress Analysis</a>
+             <span class="c-breadcrumbs__sep">/</span>
+            <a href="${pageContext.request.contextPath}/student/progress-analysis">GPA Calculator</a>
+          
+        </nav>
+    </header>
+
+    <c:if test="${not empty error}">
+        <div class="c-alert c-alert--danger" role="alert">
+            <p>${error}</p>
+        </div>
+    </c:if>
+
+ <div class="comm-layout">
+            <div class="c-page">
+            <header class="c-page__header">
+             
+                <div>
             <h1 class="c-page__title">GPA Calculator</h1>
             <p class="c-page__subtitle u-text-muted">
               Track your academic performance and stay on top of your goals.
             </p>
           </div>
-        </header>
+            </header>
 
-        <div class="gpa-layout">
+                  <div class="gpa-layout">
           <!-- Left: Subjects table -->
           <section class="c-panel">
             <div class="c-panel__header">
@@ -210,16 +309,20 @@
             </div>
           </div>
         </section>
-      </main>
-    </div>
+          </div>
 
-    <script src="scripts/app.js"></script>
-    <script>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+ <script>
       document.addEventListener("DOMContentLoaded", function () {
         if (window.lucide) window.lucide.createIcons();
         if (window.UniNest && window.UniNest.gpa)
           window.UniNest.gpa.initGpaCalculator();
       });
     </script>
-  </body>
-</html>
+
+       
+
+    </jsp:body>
+    
+    </layout:student-dashboard>

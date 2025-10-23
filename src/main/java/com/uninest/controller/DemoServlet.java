@@ -23,6 +23,7 @@ import java.util.Map;
     "/student/community/edit-post",
 
     "/student/progress-analysis",
+    "/student/progress-analysis/gpa-calculator",
     
 })
 public class DemoServlet extends HttpServlet {
@@ -39,6 +40,7 @@ public class DemoServlet extends HttpServlet {
         ROUTE_MAP.put("/student/community/my-posts", "/WEB-INF/views/student/community/my-posts.jsp");
         ROUTE_MAP.put("/student/community/edit-post", "/WEB-INF/views/student/community/edit-post.jsp");
         ROUTE_MAP.put("/student/progress-analysis", "/WEB-INF/views/student/progress-analysis/index.jsp");
+        ROUTE_MAP.put("/student/progress-analysis/gpa-calculator", "/WEB-INF/views/student/progress-analysis/gpa-calculator.jsp");
     }
     
     @Override

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GPA Calculator • UniNest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/app.css" />
+    <link rel="stylesheet" href="styles/gpa.css" />
+    <script src="scripts/vendor/lucide.js"></script>
+  </head>
+  <body>
+    <!-- Theme toggle -->
+    <button
+      type="button"
+      class="c-theme-toggle js-theme-toggle"
+      aria-pressed="false"
+      aria-label="Toggle dark mode"
+    >
+      <span class="c-theme-toggle__icon" aria-hidden="true"
+        ><i data-lucide="moon"></i
+      ></span>
+      <span class="c-theme-toggle__label">Dark</span>
+    </button>
+
+    <div class="l-app">
+      <!-- Sidebar -->
+      <aside class="c-sidebar">
+        <div class="c-logo">
+          <img src="img/logo.png" alt="Uninest" class="c-logo__mark" />
+        </div>
+        <div class="c-user-mini">
+          <div class="c-user-mini__avatar" aria-hidden="true"></div>
+          <div class="c-user-mini__meta">
+            <span class="c-user-mini__name">Sophia</span>
+            <span class="c-user-mini__role">Student</span>
+          </div>
+        </div>
+        <nav class="c-nav" aria-label="Main">
+          <a href="dashboard.html" class="c-nav__item"
+            ><span class="c-nav__icon"><i data-lucide="home"></i></span
+            >Dashboard</a
+          >
+          <a href="#" class="c-nav__item"
+            ><span class="c-nav__icon"><i data-lucide="book"></i></span>My
+            Subjects</a
+          >
+          <a href="#" class="c-nav__item"
+            ><span class="c-nav__icon"
+              ><i data-lucide="graduation-cap"></i></span
+            >Kuppi Sessions</a
+          >
+          <a href="resources.html" class="c-nav__item"
+            ><span class="c-nav__icon"><i data-lucide="file-text"></i></span>My
+            Resources</a
+          >
+          <a href="progress-analysis.html" class="c-nav__item is-active"
+            ><span class="c-nav__icon"><i data-lucide="bar-chart-3"></i></span
+            >Progress Analysis</a
+          >
+          <a href="community.html" class="c-nav__item"
+            ><span class="c-nav__icon"
+              ><i data-lucide="message-square"></i></span
+            >Community</a
+          >
+          <a href="#" class="c-nav__item"
+            ><span class="c-nav__icon"><i data-lucide="user"></i></span>Profile
+            Settings</a
+          >
+        </nav>
+        <a href="#" class="c-nav__item c-logout-button"
+          ><span class="c-nav__icon"><i data-lucide="log-out"></i></span
+          >Logout</a
+        >
+      </aside>
+
+      <!-- Content -->
+      <main class="c-page">
+        <header class="c-page__header">
+          <nav class="c-breadcrumbs" aria-label="Breadcrumb">
+            <a href="#">Home</a>
+            <span class="c-breadcrumbs__sep">/</span>
+            <span aria-current="page">Progress &amp; GPA</span>
+          </nav>
+          <div>
+            <h1 class="c-page__title">GPA Calculator</h1>
+            <p class="c-page__subtitle u-text-muted">
+              Track your academic performance and stay on top of your goals.
+            </p>
+          </div>
+        </header>
+
+        <div class="gpa-layout">
+          <!-- Left: Subjects table -->
+          <section class="c-panel">
+            <div class="c-panel__header">
+              <div class="o-inline o-inline--gap-3">
+                <div class="c-field" style="margin: 0">
+                  <label class="c-field__label">Year</label>
+                  <select class="c-input js-gpa-year"></select>
+                </div>
+                <div class="c-field" style="margin: 0">
+                  <label class="c-field__label">Semester</label>
+                  <select class="c-input js-gpa-semester"></select>
+                </div>
+              </div>
+            </div>
+
+            <div class="c-table-wrap">
+              <table class="c-table c-table--soft" id="gpa-table">
+                <thead>
+                  <tr>
+                    <th style="width: 48px">#</th>
+                    <th>Course Name</th>
+                    <th>Grade</th>
+                    <th>Credits</th>
+                    <th>Course Type</th>
+                  </tr>
+                </thead>
+                <tbody id="gpa-rows">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="c-actions">
+              <button class="c-btn js-save-gpa">
+                <i data-lucide="save"></i> Save GPA Record
+              </button>
+            </div>
+          </section>
+
+          <!-- Right: Summary + gauge -->
+          <aside class="c-panel" style="height: fit-content">
+            <div class="c-panel__header">
+              <h3 class="c-section-title" style="margin: 0">
+                Current GPA (optional)
+              </h3>
+            </div>
+            <div class="u-stack-4">
+              <dl class="c-definition">
+                <div class="c-definition__row">
+                  <dt>Cumulative</dt>
+                  <dd><span class="js-cum-gpa">0.00</span></dd>
+                </div>
+                <div class="c-definition__row">
+                  <dt>Semester 1</dt>
+                  <dd>
+                    <span class="js-term-gpa" data-term="Semester 1">0.00</span>
+                  </dd>
+                </div>
+                <div class="c-definition__row">
+                  <dt>Semester 2</dt>
+                  <dd>
+                    <span class="js-term-gpa" data-term="Semester 2">0.00</span>
+                  </dd>
+                </div>
+              </dl>
+              <div class="c-gauge" role="img" aria-label="Cumulative GPA">
+                <div class="c-gauge__ring"></div>
+                <div class="c-gauge__value">
+                  <span class="js-cum-gpa">0.00</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <!-- How to use + Letter grade conversion -->
+        <section class="c-panel c-guide">
+          <h2 class="c-section-title" style="margin-top: 0">
+            How to use the GPA Calculator
+          </h2>
+          <div class="o-grid" style="--grid-cols: 2">
+            <div class="u-stack-3">
+              <ul class="c-list">
+                <li>
+                  <i data-lucide="check-circle-2" aria-hidden="true"></i>
+                  Choose a Year and Semester, then select your letter grade for
+                  each subject.
+                </li>
+                <li>
+                  <i data-lucide="check-circle-2" aria-hidden="true"></i>
+                  Your GPA updates automatically; your selections are saved
+                  locally on this device.
+                </li>
+                <li>
+                  <i data-lucide="check-circle-2" aria-hidden="true"></i>
+                  The conversion table uses your institution’s scale.
+                </li>
+              </ul>
+            </div>
+            <div>
+              <table class="c-table c-table--soft">
+                <thead>
+                  <tr>
+                    <th>Letter Grade</th>
+                    <th>Grade Point</th>
+                  </tr>
+                </thead>
+                <tbody id="gpa-scale-body">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="scripts/app.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        if (window.lucide) window.lucide.createIcons();
+        if (window.UniNest && window.UniNest.gpa)
+          window.UniNest.gpa.initGpaCalculator();
+      });
+    </script>
+  </body>
+</html>

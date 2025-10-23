@@ -31,7 +31,7 @@
       label="My Resources" 
       active="${activePage eq 'resources'}" />
     <dash:nav-item 
-      href="#" 
+      href="${pageContext.request.contextPath}/student/progress-analysis" 
       icon="bar-chart-3" 
       label="Progress Analysis" 
       active="${activePage eq 'progress'}" />

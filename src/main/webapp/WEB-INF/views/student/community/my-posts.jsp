@@ -75,10 +75,24 @@
                   <input
                     type="search"
                     class="c-input c-input--soft js-post-search"
-                    placeholder="Search posts"
+                    placeholder="Search my posts"
                     aria-label="Search posts"
                     style="min-width: 220px"
                   />
+                  <select
+                    class="c-input c-input--soft js-post-subject"
+                    aria-label="Filter by subject"
+                  >
+                    <option value="">All subjects</option>
+                  </select>
+                  <select
+                    class="c-input c-input--soft js-post-type"
+                    aria-label="Filter by type"
+                  >
+                    <option value="">All types</option>
+                    <option value="text">Text</option>
+                    <option value="image">Image</option>
+                  </select>
                 </div>
               </div>
             </header>

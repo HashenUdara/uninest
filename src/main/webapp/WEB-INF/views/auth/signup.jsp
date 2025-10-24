@@ -157,7 +157,7 @@
 
     <div class="c-field">
       <label for="university" class="c-field__label">University (Sri Lanka)</label>
-      <select id="university" name="universityId" class="c-field__input">
+      <select id="university" style="width: 100%;" name="universityId" class="c-field__input">
         <option value="">Select...</option>
         <c:forEach items="${universities}" var="uni">
           <option value="${uni.id}" ${param.universityId == uni.id ? 'selected' : ''}>${uni.name}</option>

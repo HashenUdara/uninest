@@ -1,9 +1,18 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
-<%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
-<layout:moderator-dashboard activePage="dashboard">
- <style>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Moderator Dashboard • UniNest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/app.css" />
+    <script src="scripts/vendor/lucide.js"></script>
+    <style>
       .dashboard-container {
         max-width: 1400px;
         margin: 0 auto;
@@ -655,14 +664,80 @@
         }
       }
     </style>
+  </head>
+  <body>
+    <button
+      type="button"
+      class="c-theme-toggle js-theme-toggle"
+      aria-pressed="false"
+      aria-label="Toggle dark mode"
+    >
+      <span class="c-theme-toggle__icon" aria-hidden="true">
+        <i data-lucide="moon"></i>
+      </span>
+      <span class="c-theme-toggle__label">Dark</span>
+    </button>
 
+    <div class="l-app">
+      <aside class="c-sidebar">
+        <div class="c-logo">
+          <img src="img/logo.png" alt="Uninest" class="c-logo__mark" />
+        </div>
+        <div class="c-user-mini">
+          <div class="c-user-mini__avatar" aria-hidden="true"></div>
+          <div class="c-user-mini__meta">
+            <span class="c-user-mini__name">Kavindu Perera</span>
+            <span class="c-user-mini__role">Moderator</span>
+          </div>
+        </div>
+        <nav class="c-nav" aria-label="Main">
+          <a href="moderator-dashboard.html" class="c-nav__item is-active">
+            <span class="c-nav__icon"
+              ><i data-lucide="layout-dashboard"></i
+            ></span>
+            Dashboard
+          </a>
+          <a href="moderator-subjects.html" class="c-nav__item">
+            <span class="c-nav__icon"><i data-lucide="book"></i></span>
+            Subjects
+          </a>
+          <a href="admin-quiz-approval.html" class="c-nav__item">
+            <span class="c-nav__icon"
+              ><i data-lucide="clipboard-check"></i
+            ></span>
+            Quiz Approval
+          </a>
+          <a href="resources.html" class="c-nav__item">
+            <span class="c-nav__icon"><i data-lucide="file-text"></i></span>
+            Resources
+          </a>
+          <a href="community.html" class="c-nav__item">
+            <span class="c-nav__icon"
+              ><i data-lucide="message-square"></i
+            ></span>
+            Community
+          </a>
+          <a href="organizations-pending.html" class="c-nav__item">
+            <span class="c-nav__icon"><i data-lucide="users"></i></span>
+            Organizations
+          </a>
+          <a href="profile-settings.html" class="c-nav__item">
+            <span class="c-nav__icon"><i data-lucide="settings"></i></span>
+            Settings
+          </a>
+        </nav>
+        <a href="#" class="c-nav__item c-logout-button">
+          <span class="c-nav__icon"><i data-lucide="log-out"></i></span>
+          Logout
+        </a>
+      </aside>
 
-
-<div class="dashboard-container">
+      <main class="c-page">
+        <div class="dashboard-container">
           <!-- Welcome Section -->
           <div class="welcome-section">
             <div class="welcome-content">
-              <h1 class="welcome-greetin">Welcome back, ${sessionScope.authUser.email}! 👋</h1>
+              <h1 class="welcome-greeting">Welcome back, Kavindu! 👋</h1>
               <p class="welcome-message">
                 Here's your moderation overview for today. Keep up the great
                 work maintaining our community!
@@ -674,10 +749,10 @@
           <div class="community-card">
             <div class="community-info">
               <div class="community-label">Moderating Community</div>
-              <h2 class="community-name">${community.title}</h2>
+              <h2 class="community-name">Computer Science & Engineering</h2>
               <div class="community-id">
                 <i data-lucide="hash"></i>
-                <span>${community.id}</span>
+                <span>CSE-2024-MORATUWA</span>
               </div>
             </div>
             <div class="community-icon">
@@ -985,7 +1060,11 @@
             </div>
           </div>
         </div>
-<script>
+      </main>
+    </div>
+
+    <script src="scripts/app.js"></script>
+    <script>
       document.addEventListener("DOMContentLoaded", function () {
         if (window.lucide) window.lucide.createIcons();
 
@@ -1030,4 +1109,5 @@
         });
       });
     </script>
-</layout:moderator-dashboard>
+  </body>
+</html>

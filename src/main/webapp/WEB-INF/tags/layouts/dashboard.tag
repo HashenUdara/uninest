@@ -74,7 +74,9 @@
         <img src="${pageContext.request.contextPath}/static/img/logo.png" alt="Uninest" class="c-logo__mark" />
       </div>
       <div class="c-user-mini">
-        <div class="c-user-mini__avatar" aria-hidden="true"></div>
+        <div class="c-user-mini__avata" style="width: 40px; height: 40px; overflow: hidden; border-radius: 50%;" aria-hidden="true">
+          <img src="${pageContext.request.contextPath}/static/img/pp.png" alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />
+        </div>
         <div class="c-user-mini__meta">
           <span class="c-user-mini__name">${sessionScope.authUser.email}</span>
           <span class="c-user-mini__role">${sessionScope.authUser.role}</span>

@@ -41,10 +41,10 @@
     </dash:nav-group>
     
     <dash:nav-item 
-      href="#" 
+      href="${pageContext.request.contextPath}/moderator/profile-settings"
       icon="settings" 
       label="Settings" 
-      active="${activePage eq 'settings'}" />
+      active="${activePage eq 'profile-settings'}" />
   </jsp:attribute>
   <jsp:attribute name="alerts">
     <c:if test="${not empty alerts}">

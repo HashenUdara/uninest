@@ -32,7 +32,11 @@ import java.util.Map;
     "/student/kuppi-sessions/kuppi-apply-conductor",
     "/student/kuppi-sessions/request",
     "/student/kuppi-sessions/my-sessions",
-    "/student/profile-settings"
+    "/student/profile-settings",
+
+    "/admin/profile-settings",
+    "/moderator/profile-settings"
+
     
 })
 public class DemoServlet extends HttpServlet {
@@ -57,6 +61,8 @@ public class DemoServlet extends HttpServlet {
         ROUTE_MAP.put("/student/kuppi-sessions/request", "/WEB-INF/views/student/kuppi-sessions/kuppi-request.jsp");
         ROUTE_MAP.put("/student/kuppi-sessions/my-sessions", "/WEB-INF/views/student/kuppi-sessions/my-sessions.jsp");
         ROUTE_MAP.put("/student/profile-settings", "/WEB-INF/views/student/profile-settings.jsp");
+        ROUTE_MAP.put("/admin/profile-settings", "/WEB-INF/views/admin/profile-settings.jsp");
+        ROUTE_MAP.put("/moderator/profile-settings", "/WEB-INF/views/moderator/profile-settings.jsp");
     }
     
 

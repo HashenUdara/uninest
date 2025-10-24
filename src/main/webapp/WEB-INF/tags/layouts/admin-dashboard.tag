@@ -26,15 +26,15 @@
       label="Communities" 
       active="${activePage eq 'communities'}" />
     <dash:nav-item 
-      href="#" 
-      icon="settings" 
-      label="Settings" 
-      active="${activePage eq 'settings'}" />
-    <dash:nav-item 
       href="${pageContext.request.contextPath}/admin/moderators" 
       icon="shield" 
       label="Moderators" 
       active="${activePage eq 'moderators'}" />
+      <dash:nav-item 
+      href="${pageContext.request.contextPath}/admin/profile-settings"
+      icon="settings" 
+      label="Settings" 
+      active="${activePage eq 'profile-settings'}" />
   </jsp:attribute>
   <jsp:attribute name="alerts">
     <c:if test="${not empty alerts}">

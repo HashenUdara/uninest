@@ -651,7 +651,7 @@
 
           <!-- Stats Grid -->
           <div class="stats-grid">
-            <a href="users.html" class="stat-card">
+            <a href="${pageContext.request.contextPath}/admin/students" class="stat-card">
               <div class="stat-icon stat-icon--students">
                 <i data-lucide="users"></i>
               </div>
@@ -665,7 +665,7 @@
               </div>
             </a>
 
-            <a href="moderator-subjects-list.html" class="stat-card">
+            <a href="${pageContext.request.contextPath}/admin/communities" class="stat-card">
               <div class="stat-icon stat-icon--communities">
                 <i data-lucide="building"></i>
               </div>
@@ -679,7 +679,7 @@
               </div>
             </a>
 
-            <a href="#" class="stat-card">
+            <a href="${pageContext.request.contextPath}/admin/moderators" class="stat-card">
               <div class="stat-icon stat-icon--moderators">
                 <i data-lucide="shield"></i>
               </div>
@@ -693,7 +693,7 @@
               </div>
             </a>
 
-            <a href="profile-settings.html" class="stat-card">
+            <a href="${pageContext.request.contextPath}/profile-settings" class="stat-card">
               <div class="stat-icon stat-icon--settings">
                 <i data-lucide="activity"></i>
               </div>
@@ -710,7 +710,7 @@
 
           <!-- Quick Access -->
           <div class="quick-access">
-            <a href="users.html" class="access-card access-card--students">
+            <a href="${pageContext.request.contextPath}/admin/students" class="access-card access-card--students">
               <div class="access-icon access-icon--students">
                 <i data-lucide="users"></i>
               </div>
@@ -719,7 +719,7 @@
             </a>
 
             <a
-              href="moderator-subjects-list.html"
+              href="${pageContext.request.contextPath}/admin/communities"
               class="access-card access-card--communities"
             >
               <div class="access-icon access-icon--communities">
@@ -729,7 +729,7 @@
               <p>Manage all communities</p>
             </a>
 
-            <a href="#" class="access-card access-card--moderators">
+            <a href="${pageContext.request.contextPath}/admin/moderators" class="access-card access-card--moderators">
               <div class="access-icon access-icon--moderators">
                 <i data-lucide="shield"></i>
               </div>
@@ -738,7 +738,7 @@
             </a>
 
             <a
-              href="profile-settings.html"
+              href="${pageContext.request.contextPath}/profile-settings"
               class="access-card access-card--settings"
             >
               <div class="access-icon access-icon--settings">
@@ -831,7 +831,7 @@
                   <i data-lucide="users"></i>
                   Recent Students
                 </h2>
-                <a href="users.html" class="section-link">
+                <a href="${pageContext.request.contextPath}/admin/students" class="section-link">
                   View All
                   <i data-lucide="arrow-right"></i>
                 </a>
@@ -882,7 +882,7 @@
                   <i data-lucide="building"></i>
                   Top Communities
                 </h2>
-                <a href="moderator-subjects-list.html" class="section-link">
+                <a href="${pageContext.request.contextPath}/admin/communities" class="section-link">
                   View All
                   <i data-lucide="arrow-right"></i>
                 </a>

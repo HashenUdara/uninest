@@ -7,6 +7,7 @@ import com.uninest.model.Topic;
 import com.uninest.model.User;
 import com.uninest.model.dao.ResourceCategoryDAO;
 import com.uninest.model.dao.ResourceDAO;
+import com.uninest.model.dao.SubjectCoordinatorDAO;
 import com.uninest.model.dao.SubjectDAO;
 import com.uninest.model.dao.TopicDAO;
 import jakarta.servlet.ServletException;
@@ -24,6 +25,7 @@ public class StudentResourcesServlet extends HttpServlet {
     private final ResourceCategoryDAO categoryDAO = new ResourceCategoryDAO();
     private final TopicDAO topicDAO = new TopicDAO();
     private final SubjectDAO subjectDAO = new SubjectDAO();
+    private final SubjectCoordinatorDAO coordinatorDAO = new SubjectCoordinatorDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -88,12 +90,19 @@ public class StudentResourcesServlet extends HttpServlet {
         // Get all categories for the filter tabs
         List<ResourceCategory> categories = categoryDAO.findAll();
 
+        // Check if user is coordinator for this subject (if topic view)
+        boolean isCoordinatorForSubject = false;
+        if (subject != null) {
+            isCoordinatorForSubject = coordinatorDAO.isCoordinatorForSubject(user.getId(), subject.getSubjectId());
+        }
+
         req.setAttribute("resources", resources);
         req.setAttribute("categories", categories);
         req.setAttribute("selectedCategoryId", categoryId);
         req.setAttribute("topic", topic);
         req.setAttribute("topicId", topicId);
         req.setAttribute("subject", subject);
+        req.setAttribute("isCoordinatorForSubject", isCoordinatorForSubject);
 
         req.getRequestDispatcher("/WEB-INF/views/student/resources.jsp").forward(req, resp);
     }

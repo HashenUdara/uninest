@@ -40,18 +40,24 @@ public class ResourceApprovalsServlet extends HttpServlet {
                 .map(SubjectCoordinator::getSubjectId)
                 .collect(Collectors.toList());
 
-        // Get the active tab (default to "new")
+        // Get the active tab (default to "requests")
         String activeTab = req.getParameter("tab");
         if (activeTab == null || activeTab.isEmpty()) {
-            activeTab = "new";
+            activeTab = "requests";
         }
 
         List<Resource> resources;
-        if ("edits".equals(activeTab)) {
+        if ("approved".equals(activeTab)) {
+            // Get approved resources
+            resources = resourceDAO.findApprovedBySubjectIds(coordinatedSubjectIds);
+        } else if ("rejected".equals(activeTab)) {
+            // Get rejected resources
+            resources = resourceDAO.findRejectedBySubjectIds(coordinatedSubjectIds);
+        } else if ("edits".equals(activeTab)) {
             // Get pending edit resources
             resources = resourceDAO.findPendingEditsBySubjectIds(coordinatedSubjectIds);
         } else {
-            // Get pending new upload resources
+            // Get pending new upload resources (requests)
             resources = resourceDAO.findPendingNewUploadsBySubjectIds(coordinatedSubjectIds);
         }
 

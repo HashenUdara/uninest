@@ -47,15 +47,8 @@ public class DeleteResourceServlet extends HttpServlet {
                 return;
             }
             
-            // Only allow deletion of pending, rejected, or pending_edit resources
-            if (!resource.getStatus().equals("pending") && 
-                !resource.getStatus().equals("rejected") && 
-                !resource.getStatus().equals("pending_edit")) {
-                resp.sendRedirect(req.getContextPath() + "/student/resources?error=cannotdelete");
-                return;
-            }
-            
-            // Delete the resource
+            // Students can delete their own resources at any time
+            // Delete the resource permanently
             boolean deleted = resourceDAO.delete(resourceId);
             
             if (deleted) {

@@ -502,4 +502,90 @@ public class ResourceDAO {
             throw new RuntimeException("Error updating resource", e);
         }
     }
+
+    public List<Resource> findApprovedBySubjectIds(List<Integer> subjectIds) {
+        if (subjectIds == null || subjectIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT r.*, ");
+        sql.append("u.name AS uploader_name, u.email AS uploader_email, ");
+        sql.append("t.title AS topic_title, s.name AS subject_name, s.code AS subject_code, ");
+        sql.append("rc.category_name, a.name AS approver_name ");
+        sql.append("FROM resources r ");
+        sql.append("JOIN users u ON r.uploaded_by = u.id ");
+        sql.append("JOIN topics t ON r.topic_id = t.topic_id ");
+        sql.append("JOIN subjects s ON t.subject_id = s.subject_id ");
+        sql.append("JOIN resource_categories rc ON r.category_id = rc.category_id ");
+        sql.append("LEFT JOIN users a ON r.approved_by = a.id ");
+        sql.append("WHERE r.status = 'approved' AND s.subject_id IN (");
+        
+        for (int i = 0; i < subjectIds.size(); i++) {
+            sql.append("?");
+            if (i < subjectIds.size() - 1) {
+                sql.append(",");
+            }
+        }
+        sql.append(") ORDER BY r.approval_date DESC");
+        
+        List<Resource> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+            for (int i = 0; i < subjectIds.size(); i++) {
+                ps.setInt(i + 1, subjectIds.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching approved resources", e);
+        }
+        return list;
+    }
+
+    public List<Resource> findRejectedBySubjectIds(List<Integer> subjectIds) {
+        if (subjectIds == null || subjectIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT r.*, ");
+        sql.append("u.name AS uploader_name, u.email AS uploader_email, ");
+        sql.append("t.title AS topic_title, s.name AS subject_name, s.code AS subject_code, ");
+        sql.append("rc.category_name, a.name AS approver_name ");
+        sql.append("FROM resources r ");
+        sql.append("JOIN users u ON r.uploaded_by = u.id ");
+        sql.append("JOIN topics t ON r.topic_id = t.topic_id ");
+        sql.append("JOIN subjects s ON t.subject_id = s.subject_id ");
+        sql.append("JOIN resource_categories rc ON r.category_id = rc.category_id ");
+        sql.append("LEFT JOIN users a ON r.approved_by = a.id ");
+        sql.append("WHERE r.status = 'rejected' AND s.subject_id IN (");
+        
+        for (int i = 0; i < subjectIds.size(); i++) {
+            sql.append("?");
+            if (i < subjectIds.size() - 1) {
+                sql.append(",");
+            }
+        }
+        sql.append(") ORDER BY r.approval_date DESC");
+        
+        List<Resource> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+            for (int i = 0; i < subjectIds.size(); i++) {
+                ps.setInt(i + 1, subjectIds.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching rejected resources", e);
+        }
+        return list;
+    }
 }

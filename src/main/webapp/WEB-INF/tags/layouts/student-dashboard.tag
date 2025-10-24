@@ -41,10 +41,10 @@
       label="Community" 
       active="${activePage eq 'community'}" />
     <dash:nav-item 
-      href="#" 
+      href="${pageContext.request.contextPath}/student/profile-settings" 
       icon="user" 
       label="Profile Settings" 
-      active="${activePage eq 'profile'}" />
+      active="${activePage eq 'profile-settings'}" />
     
     <%-- Subject Coordinator section - only show if user is a coordinator --%>
     <c:if test="${sessionScope.isCoordinator}">

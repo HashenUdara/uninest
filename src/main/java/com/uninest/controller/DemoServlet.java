@@ -31,7 +31,8 @@ import java.util.Map;
     "/student/kuppi-sessions/requested-session-details",
     "/student/kuppi-sessions/kuppi-apply-conductor",
     "/student/kuppi-sessions/request",
-    "/student/kuppi-sessions/my-sessions"
+    "/student/kuppi-sessions/my-sessions",
+    "/student/profile-settings"
     
 })
 public class DemoServlet extends HttpServlet {
@@ -55,6 +56,7 @@ public class DemoServlet extends HttpServlet {
         ROUTE_MAP.put("/student/kuppi-sessions/kuppi-apply-conductor", "/WEB-INF/views/student/kuppi-sessions/kuppi-apply-conductor.jsp");
         ROUTE_MAP.put("/student/kuppi-sessions/request", "/WEB-INF/views/student/kuppi-sessions/kuppi-request.jsp");
         ROUTE_MAP.put("/student/kuppi-sessions/my-sessions", "/WEB-INF/views/student/kuppi-sessions/my-sessions.jsp");
+        ROUTE_MAP.put("/student/profile-settings", "/WEB-INF/views/student/profile-settings.jsp");
     }
     
 

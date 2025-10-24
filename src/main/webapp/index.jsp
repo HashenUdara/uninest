@@ -195,7 +195,7 @@
 
         <div class="cta-buttons">
             <a href="${pageContext.request.contextPath}/login" class="btn btn-primary">Login</a>
-            <a href="${pageContext.request.contextPath}/register" class="btn btn-secondary">Sign Up</a>
+            <a href="${pageContext.request.contextPath}/signup" class="btn btn-secondary">Sign Up</a>
         </div>
     </div>
 </body>

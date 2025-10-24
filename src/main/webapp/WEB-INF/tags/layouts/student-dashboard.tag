@@ -21,10 +21,10 @@
       label="My Subjects" 
       active="${activePage eq 'subjects'}" />
     <dash:nav-item 
-      href="#" 
+      href="${pageContext.request.contextPath}/student/kuppi-sessions" 
       icon="graduation-cap" 
       label="Kuppi Sessions" 
-      active="${activePage eq 'kuppi'}" />
+      active="${activePage eq 'kuppi-sessions'}" />
     <dash:nav-item 
       href="${pageContext.request.contextPath}/student/resources" 
       icon="file-text" 

@@ -3,7 +3,7 @@
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-<layout:student-dashboard pageTitle="Edit Resource" activePage="resources">
+<layout:student-dashboard pageTitle="Community" activePage="community">
          <link rel="stylesheet" href="${pageContext.request.contextPath}/static/community.css" />
         <style>
             .c-form-grid {

@@ -24,6 +24,14 @@ import java.util.Map;
 
     "/student/progress-analysis",
     "/student/progress-analysis/gpa-calculator",
+
+    "/student/kuppi-sessions",
+    "/student/kuppi-sessions/session-details",
+    "/student/kuppi-sessions/requested-list",
+    "/student/kuppi-sessions/requested-session-details",
+    "/student/kuppi-sessions/kuppi-apply-conductor",
+    "/student/kuppi-sessions/request",
+    "/student/kuppi-sessions/my-sessions"
     
 })
 public class DemoServlet extends HttpServlet {
@@ -34,15 +42,22 @@ public class DemoServlet extends HttpServlet {
         // Community routes
         ROUTE_MAP.put("/student/community", "/WEB-INF/views/student/community/index.jsp");
         ROUTE_MAP.put("/student/community/new-post", "/WEB-INF/views/student/community/new-post.jsp");
-        ROUTE_MAP.put("/student/profile-settings", "/WEB-INF/views/general-user/demo/profile-settings.jsp");
         ROUTE_MAP.put("/student/community/post-details", "/WEB-INF/views/student/community/post-details.jsp");
         ROUTE_MAP.put("/student/community/subject", "/WEB-INF/views/student/community/subject.jsp");
         ROUTE_MAP.put("/student/community/my-posts", "/WEB-INF/views/student/community/my-posts.jsp");
         ROUTE_MAP.put("/student/community/edit-post", "/WEB-INF/views/student/community/edit-post.jsp");
         ROUTE_MAP.put("/student/progress-analysis", "/WEB-INF/views/student/progress-analysis/index.jsp");
         ROUTE_MAP.put("/student/progress-analysis/gpa-calculator", "/WEB-INF/views/student/progress-analysis/gpa-calculator.jsp");
+        ROUTE_MAP.put("/student/kuppi-sessions", "/WEB-INF/views/student/kuppi-sessions/index.jsp");
+        ROUTE_MAP.put("/student/kuppi-sessions/session-details", "/WEB-INF/views/student/kuppi-sessions/session-details.jsp");
+        ROUTE_MAP.put("/student/kuppi-sessions/requested-list", "/WEB-INF/views/student/kuppi-sessions/requested-list.jsp");
+        ROUTE_MAP.put("/student/kuppi-sessions/requested-session-details", "/WEB-INF/views/student/kuppi-sessions/requested-session-details.jsp");
+        ROUTE_MAP.put("/student/kuppi-sessions/kuppi-apply-conductor", "/WEB-INF/views/student/kuppi-sessions/kuppi-apply-conductor.jsp");
+        ROUTE_MAP.put("/student/kuppi-sessions/request", "/WEB-INF/views/student/kuppi-sessions/kuppi-request.jsp");
+        ROUTE_MAP.put("/student/kuppi-sessions/my-sessions", "/WEB-INF/views/student/kuppi-sessions/my-sessions.jsp");
     }
     
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath();

@@ -30,6 +30,11 @@
       icon="file-text" 
       label="My Resources" 
       active="${activePage eq 'resources'}" />
+       <dash:nav-item 
+      href="${pageContext.request.contextPath}/student/quizzes" 
+      icon="check-circle" 
+      label="My Quizzes" 
+      active="${activePage eq 'quizzes'}" />
     <dash:nav-item 
       href="${pageContext.request.contextPath}/student/progress-analysis" 
       icon="bar-chart-3" 

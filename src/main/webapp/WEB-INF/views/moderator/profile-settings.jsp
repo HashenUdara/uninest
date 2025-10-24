@@ -3,7 +3,7 @@
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
-<layout:student-dashboard pageTitle="Profile Settings" activePage="profile-settings">
+<layout:moderator-dashboard pageTitle="Profile Settings" activePage="profile-settings">
          <link rel="stylesheet" href="${pageContext.request.contextPath}/static/community.css" />
      
       <style>
@@ -787,5 +787,5 @@
         }, 3000);
       }
     </script>
-       
-</layout:student-dashboard>
+
+</layout:moderator-dashboard>

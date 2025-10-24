@@ -746,36 +746,36 @@
 
           <!-- Quick Actions -->
           <div class="quick-actions">
-            <a href="admin-quiz-approval.html" class="action-card">
+            <a href="${pageContext.request.contextPath}/moderator/subjects" class="action-card">
               <div class="action-icon">
                 <i data-lucide="clipboard-check"></i>
               </div>
-              <h3>Review Quizzes</h3>
-              <p>Approve pending quizzes</p>
+              <h3>Manage Subjects</h3>
+              <p>View and manage subjects</p>
             </a>
 
-            <a href="resources.html" class="action-card">
+            <a href="${pageContext.request.contextPath}/moderator/students" class="action-card">
               <div class="action-icon">
                 <i data-lucide="file-text"></i>
               </div>
-              <h3>Review Resources</h3>
-              <p>Check uploaded materials</p>
+              <h3>Manage Students</h3>
+              <p>View and manage students</p>
             </a>
 
-            <a href="community.html" class="action-card">
+            <a href="${pageContext.request.contextPath}/moderator/join-requests" class="action-card">
               <div class="action-icon">
                 <i data-lucide="message-square"></i>
               </div>
-              <h3>Moderate Posts</h3>
-              <p>Review community posts</p>
+              <h3>Join Requests</h3>
+              <p>Review pending requests</p>
             </a>
 
-            <a href="organizations-pending.html" class="action-card">
+            <a href="${pageContext.request.contextPath}/moderator/subjects/create" class="action-card">
               <div class="action-icon">
                 <i data-lucide="users"></i>
               </div>
-              <h3>Organizations</h3>
-              <p>Approve new organizations</p>
+              <h3>Create Subject</h3>
+              <p>Add new subject</p>
             </a>
           </div>
 
@@ -786,9 +786,9 @@
               <div class="section-header">
                 <h2 class="section-title">
                   <i data-lucide="clipboard-list"></i>
-                  Pending Quizzes
+                  Pending Join Requests
                 </h2>
-                <a href="admin-quiz-approval.html" class="section-link">
+                <a href="${pageContext.request.contextPath}/moderator/join-requests" class="section-link">
                   View All
                   <i data-lucide="arrow-right"></i>
                 </a>
@@ -800,11 +800,11 @@
                       <i data-lucide="help-circle"></i>
                     </div>
                     <div class="pending-details">
-                      <h4>React Hooks Fundamentals</h4>
+                      <h4>Student Join Request</h4>
                       <p>Submitted by Tharindu Fernando • 2 hours ago</p>
                     </div>
                   </div>
-                  <button class="pending-action">Review</button>
+                  <a href="${pageContext.request.contextPath}/moderator/join-requests" class="pending-action" style="text-decoration: none;">Review</a>
                 </div>
 
                 <div class="pending-item">
@@ -813,11 +813,11 @@
                       <i data-lucide="help-circle"></i>
                     </div>
                     <div class="pending-details">
-                      <h4>Database Normalization</h4>
+                      <h4>Student Join Request</h4>
                       <p>Submitted by Nuwan Silva • 4 hours ago</p>
                     </div>
                   </div>
-                  <button class="pending-action">Review</button>
+                  <a href="${pageContext.request.contextPath}/moderator/join-requests" class="pending-action" style="text-decoration: none;">Review</a>
                 </div>
 
                 <div class="pending-item">
@@ -826,11 +826,11 @@
                       <i data-lucide="help-circle"></i>
                     </div>
                     <div class="pending-details">
-                      <h4>Python Advanced Topics</h4>
+                      <h4>Student Join Request</h4>
                       <p>Submitted by Hashen Udara • 6 hours ago</p>
                     </div>
                   </div>
-                  <button class="pending-action">Review</button>
+                  <a href="${pageContext.request.contextPath}/moderator/join-requests" class="pending-action" style="text-decoration: none;">Review</a>
                 </div>
               </div>
             </div>
@@ -1008,12 +1008,10 @@
           greetingElement.textContent = `${greeting}, ${userName}! 👋`;
         }
 
-        // Handle pending action buttons
+        // Handle pending action buttons (now they are links, so this is optional)
         const reviewButtons = document.querySelectorAll(".pending-action");
         reviewButtons.forEach((button) => {
-          button.addEventListener("click", function () {
-            window.location.href = "admin-quiz-approval.html";
-          });
+          // Already handled by href attribute
         });
 
         // Handle report action buttons

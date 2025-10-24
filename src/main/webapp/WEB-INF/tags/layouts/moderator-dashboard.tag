@@ -39,21 +39,7 @@
         label="Students" 
         active="${activePage eq 'students'}" />
     </dash:nav-group>
-    <dash:nav-item 
-      href="#" 
-      icon="shield" 
-      label="Content Review" 
-      active="${activePage eq 'review'}" />
-    <dash:nav-item 
-      href="#" 
-      icon="flag" 
-      label="Reported Content" 
-      active="${activePage eq 'reported'}" />
-    <dash:nav-item 
-      href="#" 
-      icon="activity" 
-      label="Activity Logs" 
-      active="${activePage eq 'logs'}" />
+    
     <dash:nav-item 
       href="#" 
       icon="settings" 

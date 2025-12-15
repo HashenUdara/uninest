@@ -121,7 +121,9 @@ uninest/
 4. **Deploy to Tomcat**: Use `redeploy.sh` or copy WAR file
 5. **Access the application**: `http://localhost:8080/uninest/`
 
-## 🔐 Default Credentials
+## 🔐 Default Credentials (Development Only)
+
+> ⚠️ **WARNING**: These are for **development and testing only**. Do not use in production.
 
 | Role | Email | Password |
 |------|-------|----------|

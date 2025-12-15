@@ -175,13 +175,18 @@ Open your browser and navigate to:
 http://localhost:8080/uninest/
 ```
 
-### Default Credentials
+### Default Credentials (Development Only)
+
+> ⚠️ **WARNING**: These credentials are for **development and testing only**. 
+> Never use these in production. Always create new users with strong passwords for production environments.
 
 | Role | Email | Password |
 |------|-------|----------|
 | Admin | a1@abc.com | password123 |
 | Moderator | m1@abc.com | password123 |
 | Student | s1@abc.com | password123 |
+
+For production, create new admin users with secure passwords and remove or disable the demo accounts.
 
 ---
 

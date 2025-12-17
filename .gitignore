@@ -20,3 +20,6 @@ application.properties
 
 # intelliJ
 .idea/
+
+# smart tomcat
+.smart-tomcat/

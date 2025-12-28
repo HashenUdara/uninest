@@ -1,9 +1,11 @@
 package com.uninest.controller.student;
 
 import com.uninest.model.Community;
+import com.uninest.model.CommunityPost;
 import com.uninest.model.Resource;
 import com.uninest.model.User;
 import com.uninest.model.dao.CommunityDAO;
+import com.uninest.model.dao.CommunityPostDAO;
 import com.uninest.model.dao.ResourceDAO;
 import com.uninest.model.dao.SubjectCoordinatorDAO;
 import jakarta.servlet.ServletException;
@@ -21,6 +23,7 @@ public class StudentDashboardServlet extends HttpServlet {
     private final SubjectCoordinatorDAO coordinatorDAO = new SubjectCoordinatorDAO();
     private final ResourceDAO resourceDAO = new ResourceDAO();
     private final CommunityDAO communityDAO = new CommunityDAO();
+    private final CommunityPostDAO communityPostDAO = new CommunityPostDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -56,6 +59,31 @@ public class StudentDashboardServlet extends HttpServlet {
         req.setAttribute("pendingNewUploads", pendingNewUploads);
         req.setAttribute("pendingEdits", pendingEdits);
         
+        // Fetch community posts for Community Highlights section
+        List<CommunityPost> communityPosts = communityPostDAO.findAll();
+        req.setAttribute("communityPosts", communityPosts);
+        
         req.getRequestDispatcher("/WEB-INF/views/student/dashboard.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = (User) req.getSession().getAttribute("authUser");
+        if (user == null || user.getCommunityId() == null) {
+            resp.sendRedirect(req.getContextPath() + "/student/join-community");
+            return;
+        }
+        
+        String content = req.getParameter("postContent");
+        
+        // Validate content
+        if (content != null && !content.trim().isEmpty()) {
+            // Create new community post
+            CommunityPost newPost = new CommunityPost(user.getId(), content.trim());
+            communityPostDAO.create(newPost);
+        }
+        
+        // Redirect back to dashboard to show updated posts
+        resp.sendRedirect(req.getContextPath() + "/student/dashboard");
     }
 }

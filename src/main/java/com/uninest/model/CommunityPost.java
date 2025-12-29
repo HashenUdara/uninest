@@ -9,18 +9,26 @@ import java.sql.Timestamp;
 public class CommunityPost {
     private int id;
     private int userId;
+    private int communityId;
+    private String title;
     private String content;
+    private String imageUrl;
     private Timestamp createdAt;
+    private Timestamp updatedAt;
     
     // Display fields (populated via JOIN)
     private String userName;
+    private String communityName;
     private int likeCount;
     private int commentCount;
+    private boolean likedByCurrentUser;
     
     public CommunityPost() {}
     
-    public CommunityPost(int userId, String content) {
+    public CommunityPost(int userId, int communityId, String title, String content) {
         this.userId = userId;
+        this.communityId = communityId;
+        this.title = title;
         this.content = content;
     }
     

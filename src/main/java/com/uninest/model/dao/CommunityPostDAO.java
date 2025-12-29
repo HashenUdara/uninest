@@ -24,13 +24,19 @@ public class CommunityPostDAO {
             SELECT 
                 p.id,
                 p.user_id,
+                p.community_id,
+                p.title,
                 p.content,
+                p.image_url,
                 p.created_at,
+                p.updated_at,
                 u.name AS user_name,
+                c.title AS community_name,
                 (SELECT COUNT(*) FROM post_likes l WHERE l.post_id = p.id) AS like_count,
-                (SELECT COUNT(*) FROM post_comments c WHERE c.post_id = p.id) AS comment_count
+                (SELECT COUNT(*) FROM post_comments cm WHERE cm.post_id = p.id) AS comment_count
             FROM community_posts p
             JOIN users u ON p.user_id = u.id
+            JOIN communities c ON p.community_id = c.id
             ORDER BY p.created_at DESC
             LIMIT 20
             """;
@@ -44,7 +50,6 @@ public class CommunityPostDAO {
                 posts.add(mapResultSet(rs));
             }
         } catch (SQLException e) {
-            // If table doesn't exist yet, return empty list instead of crashing
             if (e.getMessage().contains("doesn't exist") || e.getMessage().contains("Unknown column")) {
                 System.err.println("Community posts tables not migrated yet. Run community_posts_migration.sql");
                 return posts;
@@ -55,19 +60,114 @@ public class CommunityPostDAO {
     }
 
     /**
+     * Fetches posts for a specific community.
+     * 
+     * @param communityId The community ID
+     * @return List of CommunityPost objects for the community
+     */
+    public List<CommunityPost> findByCommunityId(int communityId) {
+        String sql = """
+            SELECT 
+                p.id,
+                p.user_id,
+                p.community_id,
+                p.title,
+                p.content,
+                p.image_url,
+                p.created_at,
+                p.updated_at,
+                u.name AS user_name,
+                c.title AS community_name,
+                (SELECT COUNT(*) FROM post_likes l WHERE l.post_id = p.id) AS like_count,
+                (SELECT COUNT(*) FROM post_comments cm WHERE cm.post_id = p.id) AS comment_count
+            FROM community_posts p
+            JOIN users u ON p.user_id = u.id
+            JOIN communities c ON p.community_id = c.id
+            WHERE p.community_id = ?
+            ORDER BY p.created_at DESC
+            LIMIT 50
+            """;
+        
+        List<CommunityPost> posts = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            ps.setInt(1, communityId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    posts.add(mapResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching posts by community", e);
+        }
+        return posts;
+    }
+
+    /**
+     * Fetches posts by a specific user.
+     * 
+     * @param userId The user ID
+     * @return List of CommunityPost objects by the user
+     */
+    public List<CommunityPost> findByUserId(int userId) {
+        String sql = """
+            SELECT 
+                p.id,
+                p.user_id,
+                p.community_id,
+                p.title,
+                p.content,
+                p.image_url,
+                p.created_at,
+                p.updated_at,
+                u.name AS user_name,
+                c.title AS community_name,
+                (SELECT COUNT(*) FROM post_likes l WHERE l.post_id = p.id) AS like_count,
+                (SELECT COUNT(*) FROM post_comments cm WHERE cm.post_id = p.id) AS comment_count
+            FROM community_posts p
+            JOIN users u ON p.user_id = u.id
+            JOIN communities c ON p.community_id = c.id
+            WHERE p.user_id = ?
+            ORDER BY p.created_at DESC
+            """;
+        
+        List<CommunityPost> posts = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    posts.add(mapResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching posts by user", e);
+        }
+        return posts;
+    }
+
+    /**
      * Creates a new community post.
      * 
-     * @param post CommunityPost object with userId and content set
+     * @param post CommunityPost object with required fields set
      * @return The created post with generated ID
      */
     public CommunityPost create(CommunityPost post) {
-        String sql = "INSERT INTO community_posts (user_id, content) VALUES (?, ?)";
+        String sql = """
+            INSERT INTO community_posts (user_id, community_id, title, content, image_url) 
+            VALUES (?, ?, ?, ?, ?)
+            """;
         
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             ps.setInt(1, post.getUserId());
-            ps.setString(2, post.getContent());
+            ps.setInt(2, post.getCommunityId());
+            ps.setString(3, post.getTitle());
+            ps.setString(4, post.getContent());
+            ps.setString(5, post.getImageUrl()); // Can be null
             ps.executeUpdate();
             
             try (ResultSet keys = ps.getGeneratedKeys()) {
@@ -82,6 +182,33 @@ public class CommunityPostDAO {
     }
 
     /**
+     * Updates an existing community post.
+     * 
+     * @param post The post to update
+     * @return true if updated, false otherwise
+     */
+    public boolean update(CommunityPost post) {
+        String sql = """
+            UPDATE community_posts 
+            SET title = ?, content = ?, image_url = ?
+            WHERE id = ? AND user_id = ?
+            """;
+        
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            ps.setString(1, post.getTitle());
+            ps.setString(2, post.getContent());
+            ps.setString(3, post.getImageUrl());
+            ps.setInt(4, post.getId());
+            ps.setInt(5, post.getUserId());
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating community post", e);
+        }
+    }
+
+    /**
      * Finds a community post by its ID.
      * 
      * @param id The post ID
@@ -92,13 +219,19 @@ public class CommunityPostDAO {
             SELECT 
                 p.id,
                 p.user_id,
+                p.community_id,
+                p.title,
                 p.content,
+                p.image_url,
                 p.created_at,
+                p.updated_at,
                 u.name AS user_name,
+                c.title AS community_name,
                 (SELECT COUNT(*) FROM post_likes l WHERE l.post_id = p.id) AS like_count,
-                (SELECT COUNT(*) FROM post_comments c WHERE c.post_id = p.id) AS comment_count
+                (SELECT COUNT(*) FROM post_comments cm WHERE cm.post_id = p.id) AS comment_count
             FROM community_posts p
             JOIN users u ON p.user_id = u.id
+            JOIN communities c ON p.community_id = c.id
             WHERE p.id = ?
             """;
         
@@ -143,9 +276,14 @@ public class CommunityPostDAO {
         CommunityPost post = new CommunityPost();
         post.setId(rs.getInt("id"));
         post.setUserId(rs.getInt("user_id"));
+        post.setCommunityId(rs.getInt("community_id"));
+        post.setTitle(rs.getString("title"));
         post.setContent(rs.getString("content"));
+        post.setImageUrl(rs.getString("image_url"));
         post.setCreatedAt(rs.getTimestamp("created_at"));
+        post.setUpdatedAt(rs.getTimestamp("updated_at"));
         post.setUserName(rs.getString("user_name"));
+        post.setCommunityName(rs.getString("community_name"));
         post.setLikeCount(rs.getInt("like_count"));
         post.setCommentCount(rs.getInt("comment_count"));
         return post;

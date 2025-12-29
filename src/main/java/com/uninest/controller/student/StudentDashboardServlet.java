@@ -78,8 +78,12 @@ public class StudentDashboardServlet extends HttpServlet {
         
         // Validate content
         if (content != null && !content.trim().isEmpty()) {
-            // Create new community post
-            CommunityPost newPost = new CommunityPost(user.getId(), content.trim());
+            // Create new community post (quick post from dashboard - no title)
+            CommunityPost newPost = new CommunityPost();
+            newPost.setUserId(user.getId());
+            newPost.setCommunityId(user.getCommunityId());
+            newPost.setTitle("Quick Post"); // Default title for dashboard posts
+            newPost.setContent(content.trim());
             communityPostDAO.create(newPost);
         }
         

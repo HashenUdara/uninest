@@ -39,20 +39,38 @@ public class CommunityPost {
     public int getUserId() { return userId; }
     public void setUserId(int userId) { this.userId = userId; }
     
+    public int getCommunityId() { return communityId; }
+    public void setCommunityId(int communityId) { this.communityId = communityId; }
+    
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
+    
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
     
+    public Timestamp getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
+    
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
+    
+    public String getCommunityName() { return communityName; }
+    public void setCommunityName(String communityName) { this.communityName = communityName; }
     
     public int getLikeCount() { return likeCount; }
     public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
     
     public int getCommentCount() { return commentCount; }
     public void setCommentCount(int commentCount) { this.commentCount = commentCount; }
+    
+    public boolean isLikedByCurrentUser() { return likedByCurrentUser; }
+    public void setLikedByCurrentUser(boolean likedByCurrentUser) { this.likedByCurrentUser = likedByCurrentUser; }
     
     /**
      * Gets the user's initials for avatar display.

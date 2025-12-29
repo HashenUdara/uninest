@@ -15,6 +15,11 @@ public class CommunityPost {
     private String imageUrl;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    
+    // Display fields (populated via JOIN queries)
+    private String authorName;
+    private int likeCount;
+    private int commentCount;
 
     // Getters and Setters
     public int getId() { return id; }
@@ -40,4 +45,14 @@ public class CommunityPost {
 
     public Timestamp getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
+
+    // Display field getters/setters
+    public String getAuthorName() { return authorName; }
+    public void setAuthorName(String authorName) { this.authorName = authorName; }
+
+    public int getLikeCount() { return likeCount; }
+    public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
+
+    public int getCommentCount() { return commentCount; }
+    public void setCommentCount(int commentCount) { this.commentCount = commentCount; }
 }

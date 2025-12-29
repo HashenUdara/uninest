@@ -30,7 +30,7 @@ public class CreatePostServlet extends HttpServlet {
     
     private final CommunityPostDAO postDAO = new CommunityPostDAO();
     
-    // Store uploads outside the webapp to survive redeployments
+    // Store uploads OUTSIDE webapp to survive redeployments
     private static final String UPLOAD_BASE_PATH = System.getProperty("user.home") + "/uninest-uploads";
     private static final String UPLOAD_DIRECTORY = "community-posts";
     
@@ -115,7 +115,7 @@ public class CreatePostServlet extends HttpServlet {
                 // Save the file
                 filePart.write(filePath);
                 
-                // Store relative path for database
+                // Store relative path for database (served via /uploads/* FileServlet)
                 imageUrl = UPLOAD_DIRECTORY + "/" + uniqueFileName;
             }
             

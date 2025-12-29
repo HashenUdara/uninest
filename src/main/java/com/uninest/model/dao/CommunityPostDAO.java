@@ -110,4 +110,38 @@ public class CommunityPostDAO {
         }
         return list;
     }
+
+    /**
+     * Finds all posts for a community with author info.
+     * Includes author name, like count, and comment count via JOINs and subqueries.
+     */
+    public List<CommunityPost> findByCommunityIdWithAuthor(int communityId) {
+        String sql = """
+            SELECT p.*, 
+                   u.name AS author_name,
+                   (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS like_count,
+                   (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
+            FROM community_posts p
+            JOIN users u ON p.user_id = u.id
+            WHERE p.community_id = ?
+            ORDER BY p.created_at DESC
+            """;
+        List<CommunityPost> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, communityId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CommunityPost post = map(rs);
+                    post.setAuthorName(rs.getString("author_name"));
+                    post.setLikeCount(rs.getInt("like_count"));
+                    post.setCommentCount(rs.getInt("comment_count"));
+                    list.add(post);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching posts with author", e);
+        }
+        return list;
+    }
 }

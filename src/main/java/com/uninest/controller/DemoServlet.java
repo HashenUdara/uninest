@@ -15,7 +15,6 @@ import java.util.Map;
  * No business logic - just routing to views.
  */
 @WebServlet(urlPatterns = {
-    "/student/community",
     "/student/community/post-details",
     "/student/community/subject",
     "/student/community/my-posts",
@@ -46,7 +45,6 @@ public class DemoServlet extends HttpServlet {
     
     static {
         // Community routes
-        ROUTE_MAP.put("/student/community", "/WEB-INF/views/student/community/index.jsp");
         ROUTE_MAP.put("/student/community/post-details", "/WEB-INF/views/student/community/post-details.jsp");
         ROUTE_MAP.put("/student/community/subject", "/WEB-INF/views/student/community/subject.jsp");
         ROUTE_MAP.put("/student/community/my-posts", "/WEB-INF/views/student/community/my-posts.jsp");

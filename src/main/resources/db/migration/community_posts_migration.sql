@@ -11,12 +11,19 @@ SET time_zone = "+00:00";
 CREATE TABLE `community_posts` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
+  `community_id` INT NOT NULL,
+  `title` VARCHAR(255) NOT NULL,
   `content` TEXT NOT NULL,
+  `image_url` VARCHAR(500) DEFAULT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `idx_post_user` (`user_id`),
+  INDEX `idx_post_community` (`community_id`),
   INDEX `idx_post_created` (`created_at`),
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+  FULLTEXT INDEX `idx_post_search` (`title`, `content`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`community_id`) REFERENCES `communities`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -54,12 +61,13 @@ CREATE TABLE `post_comments` (
 -- --------------------------------------------------------
 -- Demo Data: Sample community posts
 -- --------------------------------------------------------
-INSERT INTO `community_posts` (`user_id`, `content`, `created_at`) VALUES
-(22, 'Just finished the Data Structures quiz! The questions on binary trees were really helpful for understanding the concepts. Thanks to everyone who contributed! 🎉', DATE_SUB(NOW(), INTERVAL 2 HOUR)),
-(23, 'Looking for study partners for the upcoming Database exam. Anyone interested in forming a study group? Let''s ace this together! 📚', DATE_SUB(NOW(), INTERVAL 5 HOUR)),
-(24, 'Uploaded new notes on React Hooks! Check out the Resources section. Hope it helps with your assignments. Feel free to share your feedback! 💻', DATE_SUB(NOW(), INTERVAL 1 DAY)),
-(25, 'Great Kuppi session today on Algorithms! Big thanks to the coordinator for the clear explanations. 🙌', DATE_SUB(NOW(), INTERVAL 2 DAY)),
-(26, 'Anyone have tips for the upcoming midterm? Looking for effective study strategies! 📖', DATE_SUB(NOW(), INTERVAL 3 DAY));
+-- Users 22-26 belong to community 1 (Computer Science Society)
+INSERT INTO `community_posts` (`user_id`, `community_id`, `title`, `content`, `image_url`, `created_at`) VALUES
+(22, 1, 'Data Structures Quiz Completed!', 'Just finished the Data Structures quiz! The questions on binary trees were really helpful for understanding the concepts. Thanks to everyone who contributed! 🎉', NULL, DATE_SUB(NOW(), INTERVAL 2 HOUR)),
+(23, 1, 'Study Group for Database Exam', 'Looking for study partners for the upcoming Database exam. Anyone interested in forming a study group? Let''s ace this together! 📚', NULL, DATE_SUB(NOW(), INTERVAL 5 HOUR)),
+(24, 1, 'React Hooks Notes Available', 'Uploaded new notes on React Hooks! Check out the Resources section. Hope it helps with your assignments. Feel free to share your feedback! 💻', NULL, DATE_SUB(NOW(), INTERVAL 1 DAY)),
+(25, 2, 'Algorithms Kuppi Session Review', 'Great Kuppi session today on Algorithms! Big thanks to the coordinator for the clear explanations. 🙌', NULL, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+(26, 2, 'Midterm Study Tips Needed', 'Anyone have tips for the upcoming midterm? Looking for effective study strategies! 📖', NULL, DATE_SUB(NOW(), INTERVAL 3 DAY));
 
 -- Demo Data: Sample likes
 INSERT INTO `post_likes` (`post_id`, `user_id`) VALUES

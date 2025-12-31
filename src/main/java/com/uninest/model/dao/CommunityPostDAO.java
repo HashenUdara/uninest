@@ -115,7 +115,14 @@ public class CommunityPostDAO {
      * Includes author name, like count, and comment count via JOINs and subqueries.
      * @param sort The sort order ("recent" or "upvoted")
      */
-    public List<CommunityPost> findByCommunityIdWithAuthor(int communityId, String sort) {
+    /**
+     * Finds all posts for a community with author info.
+     * Includes author name, total vote score, and comment count.
+     * Also checks if the current user has voted on each post.
+     * @param userId The ID of the currently logged-in user (to check their vote)
+     * @param sort The sort order ("recent" or "upvoted")
+     */
+    public List<CommunityPost> findByCommunityIdWithAuthor(int communityId, int userId, String sort) {
         String orderBy = "p.created_at DESC";
         if ("upvoted".equals(sort)) {
             orderBy = "like_count DESC, p.created_at DESC";
@@ -124,8 +131,9 @@ public class CommunityPostDAO {
         String sql = """
             SELECT p.*, 
                    u.name AS author_name,
-                   (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS like_count,
-                   (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
+                   COALESCE((SELECT SUM(vote_type) FROM post_likes WHERE post_id = p.id), 0) AS like_count,
+                   (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count,
+                   (SELECT vote_type FROM post_likes WHERE post_id = p.id AND user_id = ?) AS user_vote
             FROM community_posts p
             JOIN users u ON p.user_id = u.id
             WHERE p.community_id = ?
@@ -134,13 +142,16 @@ public class CommunityPostDAO {
         List<CommunityPost> list = new ArrayList<>();
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, communityId);
+            ps.setInt(1, userId);
+            ps.setInt(2, communityId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     CommunityPost post = map(rs);
                     post.setAuthorName(rs.getString("author_name"));
                     post.setLikeCount(rs.getInt("like_count"));
                     post.setCommentCount(rs.getInt("comment_count"));
+                    int userVote = rs.getObject("user_vote") != null ? rs.getInt("user_vote") : 0;
+                    post.setUserVote(userVote); 
                     list.add(post);
                 }
             }
@@ -148,6 +159,68 @@ public class CommunityPostDAO {
             throw new RuntimeException("Error fetching posts with author", e);
         }
         return list;
+    }
+
+    /**
+     * Handles voting logic (Upvote/Downvote/Toggle).
+     * @param userId The user casting the vote.
+     * @param postId The ID of the post.
+     * @param type 1 for Upvote, -1 for Downvote.
+     * @return The new vote type of the user (1, -1, or 0 if removed).
+     */
+    public int vote(int userId, int postId, int type) {
+        String checkSql = "SELECT vote_type FROM post_likes WHERE user_id = ? AND post_id = ?";
+        int currentType = 0;
+        boolean hasVote = false;
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(checkSql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, postId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    hasVote = true;
+                    currentType = rs.getInt("vote_type");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking vote status", e);
+        }
+
+        try (Connection con = DBConnection.getConnection()) {
+            if (!hasVote) {
+                // Insert new vote
+                String insertSql = "INSERT INTO post_likes (user_id, post_id, vote_type) VALUES (?, ?, ?)";
+                try (PreparedStatement ps = con.prepareStatement(insertSql)) {
+                    ps.setInt(1, userId);
+                    ps.setInt(2, postId);
+                    ps.setInt(3, type);
+                    ps.executeUpdate();
+                    return type;
+                }
+            } else if (currentType == type) {
+                // Toggle OFF (delete vote)
+                String deleteSql = "DELETE FROM post_likes WHERE user_id = ? AND post_id = ?";
+                try (PreparedStatement ps = con.prepareStatement(deleteSql)) {
+                    ps.setInt(1, userId);
+                    ps.setInt(2, postId);
+                    ps.executeUpdate();
+                    return 0; // Vote removed
+                }
+            } else {
+                // Switch vote (e.g., Up -> Down)
+                String updateSql = "UPDATE post_likes SET vote_type = ? WHERE user_id = ? AND post_id = ?";
+                try (PreparedStatement ps = con.prepareStatement(updateSql)) {
+                    ps.setInt(1, type);
+                    ps.setInt(2, userId);
+                    ps.setInt(3, postId);
+                    ps.executeUpdate();
+                    return type;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating vote", e);
+        }
     }
 
     /**

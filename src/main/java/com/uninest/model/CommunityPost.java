@@ -21,6 +21,7 @@ public class CommunityPost {
     private String authorName;
     private int likeCount;
     private int commentCount;
+    private int userVote;
 
     // Getters and Setters
     public int getId() { return id; }
@@ -56,4 +57,7 @@ public class CommunityPost {
 
     public int getCommentCount() { return commentCount; }
     public void setCommentCount(int commentCount) { this.commentCount = commentCount; }
+
+    public int getUserVote() { return userVote; }
+    public void setUserVote(int userVote) { this.userVote = userVote; }
 }

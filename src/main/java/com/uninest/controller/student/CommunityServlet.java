@@ -42,7 +42,7 @@ public class CommunityServlet extends HttpServlet {
         }
         
         // Fetch posts for the user's community
-        List<CommunityPost> posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId(), sort);
+        List<CommunityPost> posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId(), user.getId(), sort);
         req.setAttribute("posts", posts);
         req.setAttribute("currentSort", sort);
         

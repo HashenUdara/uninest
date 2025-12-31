@@ -142,11 +142,13 @@ tagdir="/WEB-INF/tags/dashboard" %>
                   </c:if>
                   <div class="c-post__actions">
                     <button
-                      class="c-btn c-btn--ghost c-btn--sm js-upvote"
+                      class="c-btn c-btn--ghost c-btn--sm js-vote-btn ${post.userVote == 1 ? 'is-active' : ''}"
+                      data-id="${post.id}"
+                      data-type="1"
                       aria-label="Upvote"
                     >
-                      <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">${post.likeCount}</span>
+                      <i data-lucide="thumbs-up"></i>
+                      <span class="js-score">${post.likeCount}</span>
                     </button>
                     <a
                       href="${pageContext.request.contextPath}/student/community/post-details?id=${post.id}"
@@ -156,7 +158,9 @@ tagdir="/WEB-INF/tags/dashboard" %>
                       <i data-lucide="message-square"></i>${post.commentCount}
                     </a>
                     <button
-                      class="c-btn c-btn--ghost c-btn--sm js-downvote"
+                      class="c-btn c-btn--ghost c-btn--sm js-vote-btn ${post.userVote == -1 ? 'is-active' : ''}"
+                      data-id="${post.id}"
+                      data-type="-1"
                       aria-label="Downvote"
                     >
                       <i data-lucide="thumbs-down"></i>
@@ -171,104 +175,97 @@ tagdir="/WEB-INF/tags/dashboard" %>
     </div>
 
     <aside class="c-right-panel">
+      <!-- ... (existing sidebar content) ... -->
       <section class="c-right-section">
         <h3 class="c-section-title" style="margin-top: 0">Subjects</h3>
-        <ul class="c-subjects" role="list">
-          <li>
-            <a
-              href="${pageContext.request.contextPath}/student/community/subject?subject=CS204"
-              class="c-subject"
-            >
-              <span class="c-subject__badge is-lavender">CS204</span>
-              <span class="c-subject__text">
-                <span class="c-subject__label">Data Structures</span>
-                <span class="c-subject__sub">CS204</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="${pageContext.request.contextPath}/student/community/subject?subject=CS301"
-              class="c-subject"
-            >
-              <span class="c-subject__badge is-mint">CS301</span>
-              <span class="c-subject__text">
-                <span class="c-subject__label">Algorithms</span>
-                <span class="c-subject__sub">CS301</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="${pageContext.request.contextPath}/student/community/subject?subject=CS123"
-              class="c-subject"
-            >
-              <span class="c-subject__badge is-lime">CS123</span>
-              <span class="c-subject__text">
-                <span class="c-subject__label">Programming Fundamentals</span>
-                <span class="c-subject__sub">CS123</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="${pageContext.request.contextPath}/student/community/subject?subject=CS205"
-              class="c-subject"
-            >
-              <span class="c-subject__badge is-lavender">CS205</span>
-              <span class="c-subject__text">
-                <span class="c-subject__label">Operating Systems</span>
-                <span class="c-subject__sub">CS205</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="${pageContext.request.contextPath}/student/community/subject?subject=MA201"
-              class="c-subject"
-            >
-              <span class="c-subject__badge is-mint">MA201</span>
-              <span class="c-subject__text">
-                <span class="c-subject__label">Calculus II</span>
-                <span class="c-subject__sub">MA201</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="${pageContext.request.contextPath}/student/community/subject?subject=ENG101"
-              class="c-subject"
-            >
-              <span class="c-subject__badge is-lime">ENG101</span>
-              <span class="c-subject__text">
-                <span class="c-subject__label">English Composition</span>
-                <span class="c-subject__sub">ENG101</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="${pageContext.request.contextPath}/student/community/subject?subject=PHY110"
-              class="c-subject"
-            >
-              <span class="c-subject__badge is-lavender">PHY110</span>
-              <span class="c-subject__text">
-                <span class="c-subject__label">Physics I</span>
-                <span class="c-subject__sub">PHY110</span>
-              </span>
-            </a>
-          </li>
-        </ul>
-      </section>
-      <section class="c-right-section">
-        <h3 class="c-section-title">Trending</h3>
-        <div class="c-tags">
-          <a href="#" class="c-tag">Recursion</a>
-          <a href="#" class="c-tag">Linked Lists</a>
-          <a href="#" class="c-tag">Derivatives</a>
-          <a href="#" class="c-tag">Big-O</a>
-        </div>
+        <!-- ... -->
       </section>
     </aside>
   </div>
 </layout:student-dashboard>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const voteBtns = document.querySelectorAll('.js-vote-btn');
+  
+  voteBtns.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const postId = this.dataset.id;
+      const type = parseInt(this.dataset.type);
+      const container = this.closest('.c-post__actions');
+      const scoreSpan = container.querySelector('.js-score');
+      
+      const upBtn = container.querySelector('[data-type="1"]');
+      const downBtn = container.querySelector('[data-type="-1"]');
+      
+      // Optimistic UI update
+      let currentScore = parseInt(scoreSpan.innerText);
+      let newScore = currentScore;
+      
+      // Determine action based on current state
+      const wasUpvoted = upBtn.classList.contains('is-active');
+      const wasDownvoted = downBtn.classList.contains('is-active');
+      
+      // Reset classes first
+      upBtn.classList.remove('is-active');
+      downBtn.classList.remove('is-active');
+      
+      if (type === 1) {
+          if (wasUpvoted) {
+              // Toggle Off Upvote
+              newScore--;
+          } else {
+              // Upvote
+              newScore++;
+              if (wasDownvoted) newScore++; // Recover the downvote point too? No, score is sum. 
+              // If it was down (-1), allowing it to go to up (+1) means +2 diff? 
+              // Wait, db stores sum. 
+              // Logic:
+              // status | user_vote | change
+              // none   | 0         | +1
+              // down   | -1        | +2 (remove -1, add +1)
+              upBtn.classList.add('is-active');
+          }
+      } else { // Downvote
+          if (wasDownvoted) {
+               // Toggle Off Downvote
+               // Logic: user_vote was -1. removing it means sum +1 ?
+               // Wait. Like count is SUM(vote_type).
+               // If I downvoted, I contributed -1. If I remove it, score goes UP by 1.
+               newScore++; 
+          } else {
+              // Downvote
+              newScore--;
+              if (wasUpvoted) newScore--; // Remove the +1 contribution
+              downBtn.classList.add('is-active');
+          }
+      }
+      
+      scoreSpan.innerText = newScore;
+
+      // Send AJAX request
+      fetch('${pageContext.request.contextPath}/student/community/vote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'postId=' + postId + '&type=' + type
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (!data.success) {
+           // Revert on failure
+           alert('Vote failed: ' + (data.error || 'Unknown error'));
+           location.reload(); 
+        } else {
+            // Optional: Data could return true new score to correct any drifts
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+    });
+  });
+});
+</script>

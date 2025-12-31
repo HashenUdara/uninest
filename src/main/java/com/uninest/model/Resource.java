@@ -29,9 +29,12 @@ public class Resource {
     private String categoryName;
     private String approverName;
 
+<<<<<<< HEAD
 
     //comment
 
+=======
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
     public int getResourceId() {
         return resourceId;
     }

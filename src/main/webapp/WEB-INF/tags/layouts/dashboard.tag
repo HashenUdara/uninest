@@ -22,7 +22,7 @@
   />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/static/dashboard.css" />
   <script src="${pageContext.request.contextPath}/static/vendor/lucide.js"></script>
-  <script src="${pageContext.request.contextPath}/static/app.js"></script>
+  <script src="${pageContext.request.contextPath}/static/app.js?v=2"></script>
 </head>
 <body>
   <button

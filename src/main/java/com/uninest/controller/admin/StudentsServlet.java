@@ -18,14 +18,14 @@ public class StudentsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String searchTerm = req.getParameter("search");
         List<User> students;
-        
+
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
             students = userDAO.searchUsers("student", searchTerm.trim());
             req.setAttribute("searchTerm", searchTerm);
         } else {
             students = userDAO.findByRole("student");
         }
-        
+
         req.setAttribute("students", students);
         req.getRequestDispatcher("/WEB-INF/views/admin/students.jsp").forward(req, resp);
     }

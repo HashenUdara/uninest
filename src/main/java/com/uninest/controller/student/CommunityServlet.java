@@ -16,7 +16,7 @@ import java.util.List;
  * Servlet for displaying the community feed.
  * Fetches posts from database and forwards to index.jsp.
  */
-@WebServlet(name = "community", urlPatterns = "/student/community")
+@WebServlet(name = "community", urlPatterns = "/student/communityFeed")
 public class CommunityServlet extends HttpServlet {
     
     private final CommunityPostDAO postDAO = new CommunityPostDAO();

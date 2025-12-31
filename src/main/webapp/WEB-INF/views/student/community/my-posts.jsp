@@ -304,91 +304,73 @@
         </div>
 
           <!-- Delete Confirmation Modal -->
-    <div id="delete-modal" class="c-modal" hidden>
-      <div class="c-modal__overlay" data-close></div>
+    <div id="delete-modal" class="c-modal" hidden style="z-index: 9999;">
+      <div class="c-modal__overlay" data-close style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 9998;"></div>
       <div
         class="c-modal__content"
         role="dialog"
         aria-labelledby="delete-title"
+        style="position: relative; z-index: 9999; width: min(520px, 92vw); background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;"
       >
-        <header class="c-modal__header">
-          <h2 id="delete-title">Delete Post</h2>
-          <button class="c-modal__close" data-close aria-label="Close">
-            <i data-lucide="x"></i>
-          </button>
-        </header>
-        <div class="c-modal__body">
-          <p>
-            Are you sure you want to delete this post? This action cannot be
-            undone.
-          </p>
-        </div>
-        <footer class="c-modal__footer">
-          <button class="c-btn c-btn--ghost" data-close>Cancel</button>
-          <button class="c-btn c-btn--danger js-confirm-delete">Delete</button>
-        </footer>
+        <form id="delete-form" action="${pageContext.request.contextPath}/student/community/delete-post" method="post">
+          <input type="hidden" name="id" id="delete-post-id" value="" />
+          <header class="c-modal__header" style="padding: var(--space-5); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center;">
+            <h2 id="delete-title" style="margin: 0;">Delete Post</h2>
+            <button class="c-modal__close" type="button" data-close aria-label="Close" style="background: transparent; border: none; cursor: pointer; padding: var(--space-2); display: flex; align-items: center; justify-content: center;">
+              <i data-lucide="x"></i>
+            </button>
+          </header>
+          <div class="c-modal__body" style="padding: var(--space-5);">
+            <p>
+              Are you sure you want to delete this post? This action cannot be
+              undone.
+            </p>
+          </div>
+          <footer class="c-modal__footer" style="padding: var(--space-5); display: flex; justify-content: flex-end; gap: var(--space-3); border-top: 1px solid var(--color-border);">
+            <button class="c-btn c-btn--ghost" type="button" data-close>Cancel</button>
+            <button class="c-btn c-btn--danger" type="submit">Delete</button>
+          </footer>
+        </form>
       </div>
     </div>
 
     <!-- Toast Container -->
     <div class="c-toasts" aria-live="polite"></div>
 
-<script>
+  <script>
       document.addEventListener("DOMContentLoaded", function () {
         if (window.lucide) window.lucide.createIcons();
 
         const modal = document.getElementById("delete-modal");
         const toasts = document.querySelector(".c-toasts");
-        let pendingDeleteId = null;
+        const deletePostIdInput = document.getElementById("delete-post-id");
 
-        // Delete button click
+        // Delete button click - show modal and set post ID
         document.addEventListener("click", (e) => {
           const delBtn = e.target.closest(".js-delete-post");
           if (!delBtn) return;
-          pendingDeleteId = delBtn.getAttribute("data-post-id");
+          const postId = delBtn.getAttribute("data-post-id");
+          if (deletePostIdInput) deletePostIdInput.value = postId;
           if (modal) {
             modal.hidden = false;
-            modal.querySelector(".js-confirm-delete")?.focus();
+            modal.querySelector('button[type="submit"]')?.focus();
           }
         });
 
         // Close modal
         if (modal) {
           modal.addEventListener("click", (e) => {
-            if (e.target.matches("[data-close]")) {
+            if (e.target.closest("[data-close]")) {
               modal.hidden = true;
-              pendingDeleteId = null;
+              if (deletePostIdInput) deletePostIdInput.value = "";
             }
           });
           document.addEventListener("keydown", (e) => {
             if (!modal.hidden && e.key === "Escape") {
               modal.hidden = true;
-              pendingDeleteId = null;
+              if (deletePostIdInput) deletePostIdInput.value = "";
             }
           });
-
-          // Confirm delete
-          const confirmBtn = modal.querySelector(".js-confirm-delete");
-          confirmBtn?.addEventListener("click", () => {
-            if (pendingDeleteId) {
-              const post = document.querySelector(
-                `.c-post[data-post-id="${pendingDeleteId}"]`
-              );
-              if (post) {
-                post.remove();
-                updatePostCount();
-                showToast("Post deleted successfully");
-              }
-              pendingDeleteId = null;
-            }
-            modal.hidden = true;
-          });
-        }
-
-        function updatePostCount() {
-          const count = document.querySelectorAll(".c-post").length;
-          const countEl = document.querySelector(".js-post-count");
-          if (countEl) countEl.textContent = String(count);
         }
 
         function showToast(msg) {
@@ -400,6 +382,18 @@
           setTimeout(() => {
             item.remove();
           }, 2500);
+        }
+
+        // Show success/error messages based on URL params
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("delete") === "success") {
+          showToast("Post deleted successfully");
+        } else if (params.get("error") === "unauthorized") {
+          showToast("You can only delete your own posts");
+        } else if (params.get("error") === "notfound") {
+          showToast("Post not found");
+        } else if (params.get("error") === "failed") {
+          showToast("Failed to delete post");
         }
       });
     </script>

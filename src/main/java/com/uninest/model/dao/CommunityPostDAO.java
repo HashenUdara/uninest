@@ -113,8 +113,14 @@ public class CommunityPostDAO {
     /**
      * Finds all posts for a community with author info.
      * Includes author name, like count, and comment count via JOINs and subqueries.
+     * @param sort The sort order ("recent" or "upvoted")
      */
-    public List<CommunityPost> findByCommunityIdWithAuthor(int communityId) {
+    public List<CommunityPost> findByCommunityIdWithAuthor(int communityId, String sort) {
+        String orderBy = "p.created_at DESC";
+        if ("upvoted".equals(sort)) {
+            orderBy = "like_count DESC, p.created_at DESC";
+        }
+
         String sql = """
             SELECT p.*, 
                    u.name AS author_name,
@@ -123,8 +129,8 @@ public class CommunityPostDAO {
             FROM community_posts p
             JOIN users u ON p.user_id = u.id
             WHERE p.community_id = ?
-            ORDER BY p.created_at DESC
-            """;
+            ORDER BY\s""" + orderBy;
+            
         List<CommunityPost> list = new ArrayList<>();
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {

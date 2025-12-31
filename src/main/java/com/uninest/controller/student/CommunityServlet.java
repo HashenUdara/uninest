@@ -16,7 +16,7 @@ import java.util.List;
  * Servlet for displaying the community feed.
  * Fetches posts from database and forwards to index.jsp.
  */
-@WebServlet(name = "community", urlPatterns = "/student/communityFeed")
+@WebServlet(name = "StudentCommunityServlet", urlPatterns = "/student/community")
 public class CommunityServlet extends HttpServlet {
     
     private final CommunityPostDAO postDAO = new CommunityPostDAO();
@@ -35,9 +35,16 @@ public class CommunityServlet extends HttpServlet {
             return;
         }
         
+        // Get sort parameter
+        String sort = req.getParameter("sort");
+        if (sort == null || sort.isEmpty()) {
+            sort = "recent"; // Default to recent
+        }
+        
         // Fetch posts for the user's community
-        List<CommunityPost> posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId());
+        List<CommunityPost> posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId(), sort);
         req.setAttribute("posts", posts);
+        req.setAttribute("currentSort", sort);
         
         // Check for success message from post creation
         String postStatus = req.getParameter("post");

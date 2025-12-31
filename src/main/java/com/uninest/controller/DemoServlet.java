@@ -15,6 +15,7 @@ import java.util.Map;
  * No business logic - just routing to views.
  */
 @WebServlet(urlPatterns = {
+<<<<<<< HEAD
         "/student/community",
         "/student/community/new-post",
         "/student/community/post-details",
@@ -42,6 +43,7 @@ public class DemoServlet extends HttpServlet {
 
     private static final Map<String, String> ROUTE_MAP = new HashMap<>();
 
+=======
     "/student/community",
     "/student/community/new-post",
     "/student/community/post-details",
@@ -71,7 +73,8 @@ public class DemoServlet extends HttpServlet {
 public class DemoServlet extends HttpServlet {
     
     private static final Map<String, String> ROUTE_MAP = new HashMap<>();
-
+    
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
     static {
         // Community routes
         ROUTE_MAP.put("/student/community", "/WEB-INF/views/student/community/index.jsp");

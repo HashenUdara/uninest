@@ -51,7 +51,7 @@
                   <a href="${pageContext.request.contextPath}/student/community" class="c-btn c-btn--ghost"
                     ><i data-lucide="arrow-left"></i> All Posts</a
                   >
-                  <a href="${pageContext.request.contextPath}/student/community/new-post" class="c-btn c-btn--secondary"
+                  <a href="${pageContext.request.contextPath}/student/community/posts/create" class="c-btn c-btn--secondary"
                   ><i data-lucide="plus"></i> New Post</a
                 >
                 </div>
@@ -315,15 +315,15 @@
         <form id="delete-form" action="${pageContext.request.contextPath}/student/community/delete-post" method="post">
           <input type="hidden" name="id" id="delete-post-id" value="" />
           <header class="c-modal__header" style="padding: var(--space-5); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center;">
-            <h2 id="delete-title" style="margin: 0;">Delete Post</h2>
+            <h2 id="delete-title" style="margin: 0;">Delete The Post</h2>
             <button class="c-modal__close" type="button" data-close aria-label="Close" style="background: transparent; border: none; cursor: pointer; padding: var(--space-2); display: flex; align-items: center; justify-content: center;">
               <i data-lucide="x"></i>
             </button>
           </header>
           <div class="c-modal__body" style="padding: var(--space-5);">
             <p>
-              Are you sure you want to delete this post? This action cannot be
-              undone.
+              Are you sure you want to delete this post? 
+              This action cannot be undone.
             </p>
           </div>
           <footer class="c-modal__footer" style="padding: var(--space-5); display: flex; justify-content: flex-end; gap: var(--space-3); border-top: 1px solid var(--color-border);">

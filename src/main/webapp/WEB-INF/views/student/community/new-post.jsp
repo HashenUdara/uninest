@@ -112,7 +112,7 @@ tagdir="/WEB-INF/tags/dashboard" %>
                 required
               ></textarea>
             </div>
-
+<!-- forum -->
             <div class="c-field">
               <div class="c-dropzone" id="dropzone">
                 <input

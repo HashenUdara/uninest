@@ -15,7 +15,8 @@ public class CommunityPost {
     private String imageUrl;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    
+
+
     // Display fields (populated via JOIN queries)
     private String authorName;
     private int likeCount;

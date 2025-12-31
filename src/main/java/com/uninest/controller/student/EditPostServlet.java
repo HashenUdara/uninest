@@ -15,18 +15,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Servlet for creating new community posts.
- * Handles both displaying the form (GET) and processing submissions (POST).
+ * Servlet for editing community posts.
+ * Handles GET/POST for /student/community/edit-post
  */
-@WebServlet(name = "createPost", urlPatterns = "/student/community/posts/create")
+@WebServlet(name = "editPost", urlPatterns = "/student/community/edit-post")
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2,  // 2MB threshold
     maxFileSize = 1024 * 1024 * 10,        // 10MB max
     maxRequestSize = 1024 * 1024 * 15      // 15MB total
 )
-public class CreatePostServlet extends HttpServlet {
+public class EditPostServlet extends HttpServlet {
     
     private final CommunityPostDAO postDAO = new CommunityPostDAO();
     
@@ -45,13 +46,40 @@ public class CreatePostServlet extends HttpServlet {
             return;
         }
         
-        // Check if user has a community
-        if (user.getCommunityId() == null) {
-            resp.sendRedirect(req.getContextPath() + "/student/join-community");
+        // Get post ID from request parameter
+        String postIdParam = req.getParameter("id");
+        if (postIdParam == null || postIdParam.isEmpty()) {
+            resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
             return;
         }
-
-        req.getRequestDispatcher("/WEB-INF/views/student/community/new-post.jsp").forward(req, resp);
+        
+        int postId;
+        try {
+            postId = Integer.parseInt(postIdParam);
+        } catch (NumberFormatException e) {
+            resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
+            return;
+        }
+        
+        // Fetch post by ID
+        Optional<CommunityPost> postOpt = postDAO.findById(postId);
+        if (postOpt.isEmpty()) {
+            req.setAttribute("error", "Post not found");
+            resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
+            return;
+        }
+        
+        CommunityPost post = postOpt.get();
+        
+        // Check if the current user is the owner of this post
+        if (post.getUserId() != user.getId()) {
+            req.setAttribute("error", "You can only edit your own posts");
+            resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
+            return;
+        }
+        
+        req.setAttribute("post", post);
+        req.getRequestDispatcher("/WEB-INF/views/student/community/edit-post.jsp").forward(req, resp);
     }
 
     @Override
@@ -61,14 +89,32 @@ public class CreatePostServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
             return;
         }
-        
-        // Check if user has a community
-        if (user.getCommunityId() == null) {
-            resp.sendRedirect(req.getContextPath() + "/student/join-community");
-            return;
-        }
 
         try {
+            // Get post ID
+            String postIdParam = req.getParameter("id");
+            if (postIdParam == null || postIdParam.isEmpty()) {
+                resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
+                return;
+            }
+            
+            int postId = Integer.parseInt(postIdParam);
+            
+            // Fetch existing post
+            Optional<CommunityPost> postOpt = postDAO.findById(postId);
+            if (postOpt.isEmpty()) {
+                resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
+                return;
+            }
+            
+            CommunityPost post = postOpt.get();
+            
+            // Verify ownership
+            if (post.getUserId() != user.getId()) {
+                resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
+                return;
+            }
+            
             // Get form parameters
             String title = req.getParameter("title");
             String content = req.getParameter("content");
@@ -76,18 +122,19 @@ public class CreatePostServlet extends HttpServlet {
             // Validate required fields
             if (title == null || title.trim().isEmpty()) {
                 req.setAttribute("error", "Title is required");
-                doGet(req, resp);
+                req.setAttribute("post", post);
+                req.getRequestDispatcher("/WEB-INF/views/student/community/edit-post.jsp").forward(req, resp);
                 return;
             }
             
             if (content == null || content.trim().isEmpty()) {
                 req.setAttribute("error", "Content is required");
-                doGet(req, resp);
+                req.setAttribute("post", post);
+                req.getRequestDispatcher("/WEB-INF/views/student/community/edit-post.jsp").forward(req, resp);
                 return;
             }
 
             // Handle optional image upload
-            String imageUrl = null;
             Part filePart = req.getPart("image");
             
             if (filePart != null && filePart.getSize() > 0) {
@@ -97,7 +144,8 @@ public class CreatePostServlet extends HttpServlet {
                 // Validate file extension
                 if (!ALLOWED_EXTENSIONS.contains(extension)) {
                     req.setAttribute("error", "Invalid image type. Allowed: JPG, PNG, GIF");
-                    doGet(req, resp);
+                    req.setAttribute("post", post);
+                    req.getRequestDispatcher("/WEB-INF/views/student/community/edit-post.jsp").forward(req, resp);
                     return;
                 }
                 
@@ -115,27 +163,23 @@ public class CreatePostServlet extends HttpServlet {
                 // Save the file
                 filePart.write(filePath);
                 
-                // Store relative path for database (served via /uploads/* FileServlet)
-                imageUrl = UPLOAD_DIRECTORY + "/" + uniqueFileName;
+                // Update image URL
+                post.setImageUrl(UPLOAD_DIRECTORY + "/" + uniqueFileName);
             }
             
-            // Create post object
-            CommunityPost post = new CommunityPost();
-            post.setUserId(user.getId());
-            post.setCommunityId(user.getCommunityId());
-            post.setTitle(title.trim()); //.trim() removes leading/trailing spaces from the input string
+            // Update post fields
+            post.setTitle(title.trim());
             post.setContent(content.trim());
-            post.setImageUrl(imageUrl);
             
             // Save to database
-            postDAO.create(post);
+            postDAO.update(post);
             
-            // Redirect to community page with success message
-            resp.sendRedirect(req.getContextPath() + "/student/community?post=success");
+            // Redirect to my posts with success message
+            resp.sendRedirect(req.getContextPath() + "/student/community/my-posts?update=success");
             
         } catch (Exception e) {
             e.printStackTrace();
-            req.setAttribute("error", "Failed to create post: " + e.getMessage());
+            req.setAttribute("error", "Failed to update post: " + e.getMessage());
             doGet(req, resp);
         }
     }

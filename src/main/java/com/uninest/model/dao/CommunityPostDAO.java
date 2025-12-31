@@ -13,7 +13,6 @@ import java.util.Optional;
  * Handles CRUD operations for the community_posts table.
  */
 public class CommunityPostDAO {
-
     /**
      * Maps a ResultSet row to a CommunityPost object.
      */
@@ -143,5 +142,26 @@ public class CommunityPostDAO {
             throw new RuntimeException("Error fetching posts with author", e);
         }
         return list;
+    }
+
+    /**
+     * Updates an existing community post.
+     * Updates title, content, image_url, and sets updated_at to current timestamp.
+     * @param post The post with updated values (must have valid id)
+     * @return true if update was successful, false otherwise
+     */
+    public boolean update(CommunityPost post) {
+        String sql = "UPDATE community_posts SET title = ?, content = ?, image_url = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, post.getTitle());
+            ps.setString(2, post.getContent());
+            ps.setString(3, post.getImageUrl());
+            ps.setInt(4, post.getId());
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating community post", e);
+        }
     }
 }

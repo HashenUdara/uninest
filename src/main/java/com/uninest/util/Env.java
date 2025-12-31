@@ -29,7 +29,4 @@ public class Env {
         return props.getProperty(key);
     }
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44

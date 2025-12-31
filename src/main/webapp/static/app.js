@@ -464,8 +464,13 @@ function initOrgConfirm() {
     const titleText = approve
       ? "Approve organization"
       : reject
+<<<<<<< HEAD
         ? "Reject organization"
         : "Delete organization";
+=======
+      ? "Reject organization"
+      : "Delete organization";
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
     const title = modal.querySelector("#confirm-title");
     if (title) title.textContent = titleText;
     modal.hidden = false;
@@ -891,6 +896,7 @@ function initCommunityFilters() {
     },
   };
 
+<<<<<<< HEAD
   // const cfg = window.UniNest.gpaData || demoData; // Moved to getCfg()
   // const SCALE = cfg.scale || demoData.scale;
   // const YEARS = cfg.years || demoData.years;
@@ -904,6 +910,11 @@ function initCommunityFilters() {
   function getYears() {
     return getCfg().years || demoData.years;
   }
+=======
+  const cfg = window.UniNest.gpaData || demoData;
+  const SCALE = cfg.scale || demoData.scale;
+  const YEARS = cfg.years || demoData.years;
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
 
   const STORAGE_KEY = "uninest-gpa-grades"; // {year:{semester:{subject:"A"}}}
 
@@ -919,13 +930,21 @@ function initCommunityFilters() {
   }
 
   function gradeOptions() {
+<<<<<<< HEAD
     return Object.keys(getScale())
+=======
+    return Object.keys(SCALE)
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
       .map((g) => `<option value="${g}">${g}</option>`)
       .join("");
   }
 
   function getSubjects(year, semester) {
+<<<<<<< HEAD
     return getYears()?.[year]?.[semester] || [];
+=======
+    return YEARS?.[year]?.[semester] || [];
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
   }
 
   function calcGpaForList(list, selectedGrades) {
@@ -934,7 +953,11 @@ function initCommunityFilters() {
     for (const subj of list) {
       const letter = selectedGrades?.[subj.name];
       if (!letter) continue; // not graded yet
+<<<<<<< HEAD
       const pts = getScale()[letter] ?? 0;
+=======
+      const pts = SCALE[letter] ?? 0;
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
       const c = Number(subj.credits) || 0;
       qp += pts * c;
       cr += c;
@@ -947,11 +970,19 @@ function initCommunityFilters() {
     const semSel = root.querySelector(".js-gpa-semester");
     if (!yearSel || !semSel) return { yearSel, semSel };
     // Populate years
+<<<<<<< HEAD
     yearSel.innerHTML = Object.keys(getYears())
       .sort()
       .map((y) => `<option value="${y}">${y}</option>`)
       .join("");
     const defaultYear = yearSel.value || Object.keys(getYears())[0];
+=======
+    yearSel.innerHTML = Object.keys(YEARS)
+      .sort()
+      .map((y) => `<option value="${y}">${y}</option>`)
+      .join("");
+    const defaultYear = yearSel.value || Object.keys(YEARS)[0];
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
     populateSemesters(defaultYear);
 
     yearSel.addEventListener("change", () => {
@@ -965,7 +996,11 @@ function initCommunityFilters() {
     });
 
     function populateSemesters(year) {
+<<<<<<< HEAD
       const terms = Object.keys(getYears()[year] || {});
+=======
+      const terms = Object.keys(YEARS[year] || {});
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
       semSel.innerHTML = terms
         .map((t) => `<option value="${t}">${t}</option>`)
         .join("");
@@ -993,9 +1028,15 @@ function initCommunityFilters() {
             <select class="c-input c-input--table js-letter" aria-label="Grade letter">
               <option value="" ${value === "" ? "selected" : ""}>–</option>
               ${gradeOptions().replace(
+<<<<<<< HEAD
           `value="${value}"`,
           `value="${value}" selected`
         )}
+=======
+                `value="${value}"`,
+                `value="${value}" selected`
+              )}
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
             </select>
           </td>
           <td>${s.credits}</td>
@@ -1037,7 +1078,11 @@ function initCommunityFilters() {
     const store = loadGrades();
     const current = store?.[year] || {};
 
+<<<<<<< HEAD
     const terms = Object.keys(getYears()?.[year] || {});
+=======
+    const terms = Object.keys(YEARS?.[year] || {});
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
     let cumQP = 0,
       cumCR = 0;
     terms.forEach((t) => {
@@ -1049,7 +1094,11 @@ function initCommunityFilters() {
       list.forEach((subj) => {
         const letter = current[t]?.[subj.name];
         if (!letter) return;
+<<<<<<< HEAD
         const pts = getScale()[letter] ?? 0;
+=======
+        const pts = SCALE[letter] ?? 0;
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
         const c = Number(subj.credits) || 0;
         cumQP += pts * c;
         cumCR += c;
@@ -1071,7 +1120,11 @@ function initCommunityFilters() {
   function renderScaleTable(root) {
     const body = root.querySelector("#gpa-scale-body");
     if (!body) return;
+<<<<<<< HEAD
     const entries = Object.entries(getScale()).sort((a, b) => {
+=======
+    const entries = Object.entries(SCALE).sort((a, b) => {
+>>>>>>> 14826574bbb572d2e8d81f6e278c85dbbf966f44
       // Sort by points desc; for equal points, shorter label (A+ before A-) first
       if (b[1] !== a[1]) return b[1] - a[1];
       return a[0].length - b[0].length;

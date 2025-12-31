@@ -1,0 +1,112 @@
+<%@ tag description="Modern dashboard layout with sidebar and navigation" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ attribute name="title" required="false" %>
+<%@ attribute name="pageTitle" required="false" %>
+<%@ attribute name="breadcrumb" required="false" %>
+<%@ attribute name="active" required="false" %>
+<%@ attribute name="alerts" fragment="true" required="false" %>
+<%@ attribute name="scripts" fragment="true" required="false" %>
+<%@ attribute name="navigation" fragment="true" required="false" %>
+<%@ attribute name="searchPlaceholder" required="false" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>${not empty title ? title : 'Dashboard'} • Uninest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/dashboard.css" />
+  <script src="${pageContext.request.contextPath}/static/vendor/lucide.js"></script>
+  <script src="${pageContext.request.contextPath}/static/app.js"></script>
+</head>
+<body>
+  <button
+    type="button"
+    class="c-theme-toggle js-theme-toggle"
+    aria-pressed="false"
+    aria-label="Toggle dark mode"
+  >
+    <span class="c-theme-toggle__icon" aria-hidden="true"
+      ><i data-lucide="moon"></i
+    ></span>
+    <span class="c-theme-toggle__label">Dark</span>
+  </button>
+  <div class="l-app">
+    <!-- Sidebar -->
+    <aside class="c-sidebar">
+
+        <span
+          aria-hidden="true"
+          style="
+            position: absolute;
+            bottom: -150px;
+            left: -80px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: rgba(255, 99, 174, 0.5);
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: -1;
+          "
+        ></span>
+        <span
+          aria-hidden="true"
+          style="
+            position: absolute;
+            bottom: -160px;
+            right: -100px;
+            width: 250px;
+            height: 400px;
+            border-radius: 50%;
+            background: rgba(84, 44, 245, 0.35);
+            filter: blur(140px);
+            pointer-events: none;
+            z-index: -1;
+          "
+        ></span>
+      <div class="c-logo">
+        <img src="${pageContext.request.contextPath}/static/img/logo.png" alt="Uninest" class="c-logo__mark" />
+      </div>
+      <div class="c-user-mini">
+        <div class="c-user-mini__avata" style="width: 40px; height: 40px; overflow: hidden; border-radius: 50%;" aria-hidden="true">
+          <img src="${pageContext.request.contextPath}/static/img/pp.png" alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />
+        </div>
+        <div class="c-user-mini__meta">
+          <span class="c-user-mini__name">${sessionScope.authUser.email}</span>
+          <span class="c-user-mini__role">${sessionScope.authUser.role}</span>
+        </div>
+      </div>
+      <nav class="c-nav" aria-label="Main">
+        <jsp:invoke fragment="navigation" />
+      </nav>
+
+      <form method="post" action="${pageContext.request.contextPath}/logout" style="margin-top: auto;">
+        <button type="submit" class="c-nav__item c-logout-button" style="width: 100%; border: none; background: none; cursor: pointer; text-align: left;">
+          <span class="c-nav__icon"><i data-lucide="log-out"></i></span>Logout
+        </button>
+      </form>
+    </aside>
+
+    <!-- Content -->
+    <main class="c-page">
+      <c:if test="${not empty alerts}">
+        <div class="dash-alerts" style="margin-bottom: var(--space-6);">
+          <jsp:invoke fragment="alerts" />
+        </div>
+      </c:if>
+      
+
+      <!-- Page content injected here -->
+      <jsp:doBody />
+    </main>
+  </div>
+  <script src="${pageContext.request.contextPath}/static/dashboard.js"></script>
+  <c:if test="${not empty scripts}"><jsp:invoke fragment="scripts" /></c:if>
+</body>
+</html>

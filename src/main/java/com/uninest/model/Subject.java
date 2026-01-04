@@ -8,6 +8,7 @@ public class Subject {
     private String name;
     private String description;
     private String code;
+    private int credits;
     private int academicYear;
     private int semester;
     private String status; // upcoming, ongoing, completed
@@ -21,6 +22,13 @@ public class Subject {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public int getCredits() {
+        return credits;
+    }
+
+    public void setCredits(int credits) { this.credits = credits;
+    }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }

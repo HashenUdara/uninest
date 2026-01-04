@@ -73,12 +73,13 @@ public class SubjectEditServlet extends HttpServlet {
             String name = req.getParameter("name");
             String description = req.getParameter("description");
             String code = req.getParameter("code");
+            String credits = req.getParameter("credits");
             String academicYearStr = req.getParameter("academicYear");
             String semesterStr = req.getParameter("semester");
             String status = req.getParameter("status");
 
             if (name == null || name.trim().isEmpty() || 
-                academicYearStr == null || semesterStr == null) {
+                academicYearStr == null || semesterStr == null || credits == null || credits.trim().isEmpty()) {
                 req.setAttribute("error", "Please fill in all required fields");
                 req.setAttribute("subject", subjectOpt.get());
                 req.getRequestDispatcher("/WEB-INF/views/moderator/subject-form.jsp").forward(req, resp);
@@ -89,6 +90,7 @@ public class SubjectEditServlet extends HttpServlet {
             subject.setName(name.trim());
             subject.setDescription(description != null ? description.trim() : null);
             subject.setCode(code != null ? code.trim() : null);
+            subject.setCredits(Integer.parseInt(credits));
             subject.setAcademicYear(Integer.parseInt(academicYearStr));
             subject.setSemester(Integer.parseInt(semesterStr));
             subject.setStatus(status != null ? status : "upcoming");

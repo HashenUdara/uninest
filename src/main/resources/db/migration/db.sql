@@ -290,6 +290,7 @@ CREATE TABLE `subjects` (
   `name` VARCHAR(100) NOT NULL,
   `description` TEXT,
   `code` VARCHAR(50),
+  `credits` INT DEFAULT 3, --credits
   `academic_year` TINYINT NOT NULL,
   `semester` TINYINT NOT NULL,
   `status` ENUM('upcoming', 'ongoing', 'completed') DEFAULT 'upcoming',

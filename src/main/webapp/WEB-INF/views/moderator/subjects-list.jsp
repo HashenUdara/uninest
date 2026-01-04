@@ -195,7 +195,7 @@
                 <td>${subject.name}</td>
                 <td>${subject.description != null ? subject.description : '-'}</td>
                 <td>${subject.code}</td>
-                <td>${subject.credits}</td>  <!-- credits-->
+                <td>${subject.credits} Credits</td>  <!-- credits-->
                 <td>Year ${subject.academicYear}</td>
                 <td>Semester ${subject.semester}</td>
                 <td><span class="c-status is-${subject.status}">${subject.status}</span></td>

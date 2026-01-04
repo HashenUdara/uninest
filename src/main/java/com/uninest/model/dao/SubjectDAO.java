@@ -87,8 +87,8 @@ public class SubjectDAO {
             ps.setString(1, subject.getName());
             ps.setString(2, subject.getDescription());
             ps.setString(3, subject.getCode());
-            ps.setInt(4, subject.getAcademicYear());
-            ps.setInt(5, subject.getCredits()); //credits
+            ps.setInt(4, subject.getCredits()); //credits
+            ps.setInt(5, subject.getAcademicYear());
             ps.setInt(6, subject.getSemester());
             ps.setString(7, subject.getStatus());
             ps.setInt(8, subject.getSubjectId());

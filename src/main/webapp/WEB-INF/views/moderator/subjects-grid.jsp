@@ -21,12 +21,17 @@
               thumbs.forEach((el) => {
                 const card = el.closest(".c-card");
                 const code = (card?.getAttribute("data-code") || "").trim() || "SUBJ";
+                const name = (card?.getAttribute("data-name") || "").trim();
                 const hue = hueFromCode(code);
                 const bg = "hsl(" + hue + " 85% 95%)";
                 const fg = "hsl(" + hue + " 50% 28%)";
                 el.style.background = bg;
                 el.style.color = fg;
-                el.innerHTML = '<span class="c-subj-thumb__code">' + code + '</span>';
+                el.style.flexDirection = "column";
+                el.style.justifyContent = "center";
+                el.style.textAlign = "center";
+                el.innerHTML = '<span class="c-subj-thumb__code" style="line-height:1.1; margin-bottom:4px;">' + code + '</span>' +
+                  '<span class="c-subj-thumb__name" style="display:block; font-size:1.25em; font-weight:700; line-height:1.1; padding:0 8px;">' + name + '</span>';
               });
             }
             document.addEventListener("DOMContentLoaded", initSubjectThumbnails);

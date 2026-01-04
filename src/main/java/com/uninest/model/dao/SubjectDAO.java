@@ -108,4 +108,20 @@ public class SubjectDAO {
             throw new RuntimeException("Error deleting subject", e);
         }
     }
+    public List<Subject> findByCommunityAndYearAndSemester(int communityId, int year, int semester) {
+        String sql = "SELECT * FROM subjects WHERE community_id = ? AND academic_year = ? AND semester = ? ORDER BY code";
+        List<Subject> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, communityId);
+            ps.setInt(2, year);
+            ps.setInt(3, semester);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(map(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching subjects for GPA calculator", e);
+        }
+        return list;
+    }
 }

@@ -17,6 +17,7 @@ public class SubjectDAO {
         subject.setName(rs.getString("name"));
         subject.setDescription(rs.getString("description"));
         subject.setCode(rs.getString("code"));
+        subject.setCredits(rs.getInt("credits")); //credits
         subject.setAcademicYear(rs.getInt("academic_year"));
         subject.setSemester(rs.getInt("semester"));
         subject.setStatus(rs.getString("status"));
@@ -54,16 +55,17 @@ public class SubjectDAO {
     }
 
     public int create(Subject subject) {
-        String sql = "INSERT INTO subjects(community_id, name, description, code, academic_year, semester, status) VALUES(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO subjects(community_id, name, description, code, credits, academic_year, semester, status) VALUES(?,?,?,?,?,?,?,?)";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, subject.getCommunityId());
             ps.setString(2, subject.getName());
             ps.setString(3, subject.getDescription());
             ps.setString(4, subject.getCode());
-            ps.setInt(5, subject.getAcademicYear());
-            ps.setInt(6, subject.getSemester());
-            ps.setString(7, subject.getStatus() != null ? subject.getStatus() : "upcoming");
+            ps.setInt(5, subject.getCredits()); //credits
+            ps.setInt(6, subject.getAcademicYear());
+            ps.setInt(7, subject.getSemester());
+            ps.setString(8, subject.getStatus() != null ? subject.getStatus() : "upcoming");
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
@@ -79,16 +81,17 @@ public class SubjectDAO {
     }
 
     public boolean update(Subject subject) {
-        String sql = "UPDATE subjects SET name = ?, description = ?, code = ?, academic_year = ?, semester = ?, status = ? WHERE subject_id = ?";
+        String sql = "UPDATE subjects SET name = ?, description = ?, code = ?, credits = ?, academic_year = ?, semester = ?, status = ? WHERE subject_id = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, subject.getName());
             ps.setString(2, subject.getDescription());
             ps.setString(3, subject.getCode());
-            ps.setInt(4, subject.getAcademicYear());
-            ps.setInt(5, subject.getSemester());
-            ps.setString(6, subject.getStatus());
-            ps.setInt(7, subject.getSubjectId());
+            ps.setInt(4, subject.getCredits()); //credits
+            ps.setInt(5, subject.getAcademicYear());
+            ps.setInt(6, subject.getSemester());
+            ps.setString(7, subject.getStatus());
+            ps.setInt(8, subject.getSubjectId());
             return ps.executeUpdate() == 1;
         } catch (SQLException e) {
             throw new RuntimeException("Error updating subject", e);

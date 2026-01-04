@@ -16,6 +16,58 @@ tagdir="/WEB-INF/tags/dashboard" %>
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: var(--space-4);
     }
+    
+    /* Vote Pill Styles */
+    .c-vote-pill {
+      display: inline-flex;
+      align-items: center;
+      background-color: #27272a; /* Zinc-800 */
+      border-radius: 9999px;
+      padding: 0;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .c-vote-pill .c-btn {
+      background: transparent !important; /* Override default ghost btn bg */
+      border: none !important;
+      color: #a1a1aa; /* Zinc-400 */
+      padding: 6px 12px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      transition: all 0.2s ease;
+    }
+
+    .c-vote-pill .c-btn:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+      color: #fff;
+    }
+
+    .c-vote-pill .c-btn.is-active {
+      color: #fff;
+      font-weight: 500;
+    }
+
+    /* Fill the icon when active */
+    .c-vote-pill .c-btn.is-active svg {
+      fill: currentColor;
+      stroke: currentColor;
+    }
+
+    .c-vote-divider {
+      width: 1px;
+      height: 20px;
+      background-color: #3f3f46; /* Zinc-700 */
+    }
+    
+    /* Adjust actions container to align items */
+    .c-post__actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+    }
   </style>
   <header class="c-page__header">
     <nav class="c-breadcrumbs" aria-label="Breadcrumb">
@@ -141,15 +193,31 @@ tagdir="/WEB-INF/tags/dashboard" %>
                     </div>
                   </c:if>
                   <div class="c-post__actions">
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-vote-btn ${post.userVote == 1 ? 'is-active' : ''}"
-                      data-id="${post.id}"
-                      data-type="1"
-                      aria-label="Upvote"
-                    >
-                      <i data-lucide="thumbs-up"></i>
-                      <span class="js-count-up">${post.upvoteCount}</span>
-                    </button>
+                    <!-- Vote Pill -->
+                    <div class="c-vote-pill">
+                        <button
+                          class="c-btn js-vote-btn ${post.userVote == 1 ? 'is-active' : ''}"
+                          data-id="${post.id}"
+                          data-type="1"
+                          aria-label="Upvote"
+                        >
+                          <i data-lucide="thumbs-up"></i>
+                          <span class="js-count-up">${post.upvoteCount}</span>
+                        </button>
+                        
+                        <div class="c-vote-divider"></div>
+                        
+                        <button
+                          class="c-btn js-vote-btn ${post.userVote == -1 ? 'is-active' : ''}"
+                          data-id="${post.id}"
+                          data-type="-1"
+                          aria-label="Downvote"
+                        >
+                          <i data-lucide="thumbs-down"></i>
+                          <span class="js-count-down">${post.downvoteCount}</span>
+                        </button>
+                    </div>
+
                     <a
                       href="${pageContext.request.contextPath}/student/community/post-details?id=${post.id}"
                       class="c-btn c-btn--ghost c-btn--sm"
@@ -157,15 +225,6 @@ tagdir="/WEB-INF/tags/dashboard" %>
                     >
                       <i data-lucide="message-square"></i>${post.commentCount}
                     </a>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-vote-btn ${post.userVote == -1 ? 'is-active' : ''}"
-                      data-id="${post.id}"
-                      data-type="-1"
-                      aria-label="Downvote"
-                    >
-                      <i data-lucide="thumbs-down"></i>
-                      <span class="js-count-down">${post.downvoteCount}</span>
-                    </button>
                   </div>
                 </article>
               </c:forEach>

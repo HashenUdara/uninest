@@ -19,7 +19,8 @@ public class CommunityPost {
 
     // Display fields (populated via JOIN queries)
     private String authorName;
-    private int likeCount;
+    private int upvoteCount;
+    private int downvoteCount;
     private int commentCount;
     private int userVote;
 
@@ -52,8 +53,11 @@ public class CommunityPost {
     public String getAuthorName() { return authorName; }
     public void setAuthorName(String authorName) { this.authorName = authorName; }
 
-    public int getLikeCount() { return likeCount; }
-    public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
+    public int getUpvoteCount() { return upvoteCount; }
+    public void setUpvoteCount(int upvoteCount) { this.upvoteCount = upvoteCount; }
+
+    public int getDownvoteCount() { return downvoteCount; }
+    public void setDownvoteCount(int downvoteCount) { this.downvoteCount = downvoteCount; }
 
     public int getCommentCount() { return commentCount; }
     public void setCommentCount(int commentCount) { this.commentCount = commentCount; }

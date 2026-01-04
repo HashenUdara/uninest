@@ -51,15 +51,29 @@ public class PostVoteServlet extends HttpServlet {
 
             // 3. Process vote
             int newUserVote = postDAO.vote(user.getId(), postId, type);
+            
+            // 3.1 Fetch new counts
+            int[] counts = postDAO.getVoteCounts(postId);
+            int newUp = counts[0];
+            int newDown = counts[1];
 
             // 4. Send success response
-            out.print("{\"success\": true, \"userVote\": " + newUserVote + "}");
+            out.print("{\"success\": true, \"userVote\": " + newUserVote + 
+                      ", \"newUpvoteCount\": " + newUp + 
+                      ", \"newDownvoteCount\": " + newDown + "}");
 
         } catch (Exception e) {
             e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            // Simple escaping for error message
-            String errorMsg = e.getMessage().replace("\"", "'");
+            
+            // Extract root cause message for better debugging
+            String errorMsg = e.getMessage();
+            if (e.getCause() != null) {
+                errorMsg += " -> " + e.getCause().getMessage();
+            }
+            // Sanitize quotes
+            errorMsg = errorMsg != null ? errorMsg.replace("\"", "'") : "Unknown Error";
+            
             out.print("{\"error\": \"" + errorMsg + "\", \"success\": false}");
         }
     }

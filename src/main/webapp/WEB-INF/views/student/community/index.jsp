@@ -148,7 +148,7 @@ tagdir="/WEB-INF/tags/dashboard" %>
                       aria-label="Upvote"
                     >
                       <i data-lucide="thumbs-up"></i>
-                      <span class="js-score">${post.likeCount}</span>
+                      <span class="js-count-up">${post.upvoteCount}</span>
                     </button>
                     <a
                       href="${pageContext.request.contextPath}/student/community/post-details?id=${post.id}"
@@ -164,6 +164,7 @@ tagdir="/WEB-INF/tags/dashboard" %>
                       aria-label="Downvote"
                     >
                       <i data-lucide="thumbs-down"></i>
+                      <span class="js-count-down">${post.downvoteCount}</span>
                     </button>
                   </div>
                 </article>
@@ -193,56 +194,16 @@ document.addEventListener('DOMContentLoaded', function() {
       e.preventDefault();
       const postId = this.dataset.id;
       const type = parseInt(this.dataset.type);
+      
       const container = this.closest('.c-post__actions');
-      const scoreSpan = container.querySelector('.js-score');
-      
-      const upBtn = container.querySelector('[data-type="1"]');
-      const downBtn = container.querySelector('[data-type="-1"]');
-      
-      // Optimistic UI update
-      let currentScore = parseInt(scoreSpan.innerText);
-      let newScore = currentScore;
-      
-      // Determine action based on current state
-      const wasUpvoted = upBtn.classList.contains('is-active');
-      const wasDownvoted = downBtn.classList.contains('is-active');
-      
-      // Reset classes first
-      upBtn.classList.remove('is-active');
-      downBtn.classList.remove('is-active');
-      
-      if (type === 1) {
-          if (wasUpvoted) {
-              // Toggle Off Upvote
-              newScore--;
-          } else {
-              // Upvote
-              newScore++;
-              if (wasDownvoted) newScore++; // Recover the downvote point too? No, score is sum. 
-              // If it was down (-1), allowing it to go to up (+1) means +2 diff? 
-              // Wait, db stores sum. 
-              // Logic:
-              // status | user_vote | change
-              // none   | 0         | +1
-              // down   | -1        | +2 (remove -1, add +1)
-              upBtn.classList.add('is-active');
-          }
-      } else { // Downvote
-          if (wasDownvoted) {
-               // Toggle Off Downvote
-               // Logic: user_vote was -1. removing it means sum +1 ?
-               // Wait. Like count is SUM(vote_type).
-               // If I downvoted, I contributed -1. If I remove it, score goes UP by 1.
-               newScore++; 
-          } else {
-              // Downvote
-              newScore--;
-              if (wasUpvoted) newScore--; // Remove the +1 contribution
-              downBtn.classList.add('is-active');
-          }
-      }
-      
-      scoreSpan.innerText = newScore;
+      const upSpan = container.querySelector('.js-count-up');
+      const downSpan = container.querySelector('.js-count-down');
+
+      if (!upSpan || !downSpan) return;
+
+      // Prevent multiple clicks
+      const allBtns = container.querySelectorAll('.js-vote-btn');
+      allBtns.forEach(b => b.disabled = true);
 
       // Send AJAX request
       fetch('${pageContext.request.contextPath}/student/community/vote', {
@@ -255,15 +216,33 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(response => response.json())
       .then(data => {
         if (!data.success) {
-           // Revert on failure
            alert('Vote failed: ' + (data.error || 'Unknown error'));
-           location.reload(); 
         } else {
-            // Optional: Data could return true new score to correct any drifts
+            // Update counts from server source of truth
+            upSpan.innerText = data.newUpvoteCount;
+            downSpan.innerText = data.newDownvoteCount;
+
+            // Update Active State
+            const upBtn = container.querySelector('[data-type="1"]');
+            const downBtn = container.querySelector('[data-type="-1"]');
+            
+            upBtn.classList.remove('is-active');
+            downBtn.classList.remove('is-active');
+
+            if (data.userVote === 1) {
+                upBtn.classList.add('is-active');
+            } else if (data.userVote === -1) {
+                downBtn.classList.add('is-active');
+            }
         }
       })
       .catch(err => {
-        console.error(err);
+        console.error('Fetch error:', err);
+        alert('Network error. Check console.');
+      })
+      .finally(() => {
+          // Re-enable buttons
+          allBtns.forEach(b => b.disabled = false);
       });
     });
   });

@@ -117,7 +117,7 @@ public class CommunityPostDAO {
      */
     /**
      * Finds all posts for a community with author info.
-     * Includes author name, total vote score, and comment count.
+     * Includes author name, separate up/down vote counts, and comment count.
      * Also checks if the current user has voted on each post.
      * @param userId The ID of the currently logged-in user (to check their vote)
      * @param sort The sort order ("recent" or "upvoted")
@@ -125,13 +125,14 @@ public class CommunityPostDAO {
     public List<CommunityPost> findByCommunityIdWithAuthor(int communityId, int userId, String sort) {
         String orderBy = "p.created_at DESC";
         if ("upvoted".equals(sort)) {
-            orderBy = "like_count DESC, p.created_at DESC";
+            orderBy = "upvote_count DESC, p.created_at DESC";
         }
 
         String sql = """
             SELECT p.*, 
                    u.name AS author_name,
-                   COALESCE((SELECT SUM(vote_type) FROM post_likes WHERE post_id = p.id), 0) AS like_count,
+                   (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id AND vote_type = 1) AS upvote_count,
+                   (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id AND vote_type = -1) AS downvote_count,
                    (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count,
                    (SELECT vote_type FROM post_likes WHERE post_id = p.id AND user_id = ?) AS user_vote
             FROM community_posts p
@@ -148,7 +149,8 @@ public class CommunityPostDAO {
                 while (rs.next()) {
                     CommunityPost post = map(rs);
                     post.setAuthorName(rs.getString("author_name"));
-                    post.setLikeCount(rs.getInt("like_count"));
+                    post.setUpvoteCount(rs.getInt("upvote_count"));
+                    post.setDownvoteCount(rs.getInt("downvote_count"));
                     post.setCommentCount(rs.getInt("comment_count"));
                     int userVote = rs.getObject("user_vote") != null ? rs.getInt("user_vote") : 0;
                     post.setUserVote(userVote); 
@@ -221,6 +223,31 @@ public class CommunityPostDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Error updating vote", e);
         }
+    }
+
+    /**
+     * Helper to get latest vote counts for a post.
+     * @return int array [upvotes, downvotes]
+     */
+    public int[] getVoteCounts(int postId) {
+        String sql = """
+            SELECT 
+                (SELECT COUNT(*) FROM post_likes WHERE post_id = ? AND vote_type = 1) AS upvotes,
+                (SELECT COUNT(*) FROM post_likes WHERE post_id = ? AND vote_type = -1) AS downvotes
+        """;
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, postId);
+            ps.setInt(2, postId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new int[]{ rs.getInt("upvotes"), rs.getInt("downvotes") };
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new int[]{0, 0};
     }
 
     /**

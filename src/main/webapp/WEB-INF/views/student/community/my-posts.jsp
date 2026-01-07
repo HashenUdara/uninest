@@ -425,7 +425,7 @@
         // Close modal
         if (modal) {
           modal.addEventListener("click", (e) => {
-            if (e.target.matches("[data-close]")) {
+            if (e.target.closest("[data-close]")) {
               modal.hidden = true;
               pendingDeleteId = null;
             }

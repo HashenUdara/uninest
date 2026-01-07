@@ -164,4 +164,22 @@ public class CommunityPostDAO {
             throw new RuntimeException("Error updating community post", e);
         }
     }
+
+    /**
+     * Deletes a community post by its ID.
+     * Also deletes associated likes and comments due to CASCADE constraint.
+     * @param postId The ID of the post to delete
+     * @return true if deletion was successful, false otherwise
+     */
+    public boolean delete(int postId) {
+        String sql = "DELETE FROM community_posts WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, postId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error deleting community post", e);
+        }
+    }
 }

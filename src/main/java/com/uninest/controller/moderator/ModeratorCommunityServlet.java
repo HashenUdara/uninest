@@ -36,14 +36,24 @@ public class ModeratorCommunityServlet extends HttpServlet {
 
         // Check if user has a community
         if (user.getCommunityId() == null) {
-            // For now, redirect or show error. Moderators should have a community assigned.
             resp.sendRedirect(req.getContextPath() + "/moderator/dashboard?error=no_community");
             return;
         }
+
+        String tab = req.getParameter("tab");
+        if (tab == null) tab = "upvoted"; // Default
         
-        // Fetch posts for the user's community (Same DAO logic as students)
-        List<CommunityPost> posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId());
+        List<CommunityPost> posts;
+        if ("deleted".equalsIgnoreCase(tab)) {
+            posts = postDAO.findDeletedByCommunityId(user.getCommunityId());
+        } else {
+            // Fetch active posts (Same DAO logic as students)
+            // Note: upvoted/recent sorting could be added here in future
+            posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId());
+        }
+        
         req.setAttribute("posts", posts);
+        req.setAttribute("activeTab", tab);
         
         req.getRequestDispatcher("/WEB-INF/views/moderator/community/index.jsp").forward(req, resp);
     }

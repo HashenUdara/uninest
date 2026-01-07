@@ -178,11 +178,11 @@
     <div id="delete-modal" class="c-modal" hidden>
       <!-- ... existing delete-modal content ... -->
       <div class="c-modal__overlay" data-close></div>
-      <div class="c-modal__content" role="dialog" aria-labelledby="delete-title">
-        <header class="c-modal__header">
-          <h2 id="delete-title">Delete Comment</h2>
-          <button class="c-modal__close" data-close aria-label="Close">
-            <i data-lucide="x"></i>
+      <div class="c-modal__content" role="dialog" aria-labelledby="delete-title" style="position: relative;">
+        <header class="c-modal__header" style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4);">
+          <h2 id="delete-title" style="margin: 0;">Delete Comment</h2>
+          <button class="c-modal__close" data-close aria-label="Close" style="background: rgba(255,255,255,0.05); border: none; border-radius: 4px; padding: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+            <i data-lucide="x" style="width: 20px; height: 20px;"></i>
           </button>
         </header>
         <div class="c-modal__body">
@@ -201,11 +201,11 @@
     <!-- Moderator Delete Post Modal (New) -->
     <div id="mod-delete-modal" class="c-modal" hidden>
       <div class="c-modal__overlay" data-close></div>
-      <div class="c-modal__content" role="dialog" aria-labelledby="mod-delete-title" style="border-radius: 12px; background-color: #1A1D21; border: 1px solid #2A2D35;">
-        <header class="c-modal__header">
-          <h2 id="mod-delete-title">Delete Post</h2>
-          <button class="c-modal__close" data-close aria-label="Close">
-            <i data-lucide="x"></i>
+      <div class="c-modal__content" role="dialog" aria-labelledby="mod-delete-title" style="border-radius: 12px; background-color: #1A1D21; border: 1px solid #2A2D35; position: relative;">
+        <header class="c-modal__header" style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4);">
+          <h2 id="mod-delete-title" style="margin: 0;">Delete Post</h2>
+          <button class="c-modal__close" data-close aria-label="Close" style="background: rgba(255,255,255,0.05); border: none; border-radius: 4px; padding: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+            <i data-lucide="x" style="width: 20px; height: 20px;"></i>
           </button>
         </header>
         <form action="${pageContext.request.contextPath}/moderator/community/post/delete" method="POST">

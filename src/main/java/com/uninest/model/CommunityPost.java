@@ -16,11 +16,14 @@ public class CommunityPost {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
+    private boolean isDeleted;
+    private Timestamp deletedAt;
 
     // Display fields (populated via JOIN queries)
     private String authorName;
     private int likeCount;
     private int commentCount;
+    private String deletionReason; // Populated for moderator audit view
 
     // Getters and Setters
     public int getId() { return id; }
@@ -56,4 +59,13 @@ public class CommunityPost {
 
     public int getCommentCount() { return commentCount; }
     public void setCommentCount(int commentCount) { this.commentCount = commentCount; }
+
+    public boolean isDeleted() { return isDeleted; }
+    public void setDeleted(boolean deleted) { isDeleted = deleted; }
+
+    public Timestamp getDeletedAt() { return deletedAt; }
+    public void setDeletedAt(Timestamp deletedAt) { this.deletedAt = deletedAt; }
+
+    public String getDeletionReason() { return deletionReason; }
+    public void setDeletionReason(String deletionReason) { this.deletionReason = deletionReason; }
 }

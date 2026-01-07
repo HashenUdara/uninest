@@ -54,10 +54,10 @@ tagdir="/WEB-INF/tags/dashboard" %>
           <!-- New Post button hidden for moderator view -->
         </div>
         <nav class="c-tabs-line" aria-label="Filter">
-          <a href="#" class="is-active">Most Upvoted</a>
-          <a href="#">Most Recent</a>
-          <a href="#">Unanswered</a>
-          <!-- My Posts hidden for moderator -->
+          <a href="${pageContext.request.contextPath}/moderator/community?tab=upvoted" class="${activeTab == 'upvoted' ? 'is-active' : ''}">Most Upvoted</a>
+          <a href="${pageContext.request.contextPath}/moderator/community?tab=recent" class="${activeTab == 'recent' ? 'is-active' : ''}">Most Recent</a>
+          <a href="${pageContext.request.contextPath}/moderator/community?tab=unanswered" class="${activeTab == 'unanswered' ? 'is-active' : ''}">Unanswered</a>
+          <a href="${pageContext.request.contextPath}/moderator/community?tab=deleted" class="${activeTab == 'deleted' ? 'is-active' : ''}" style="color: var(--c-danger);">Deleted Posts</a>
         </nav>
         <!-- Filters -->
         <div
@@ -123,11 +123,18 @@ tagdir="/WEB-INF/tags/dashboard" %>
 
                   <div class="c-post__body">
                     <h4 class="c-post__title">
-                        <a href="${pageContext.request.contextPath}/moderator/community/post?id=${post.id}" style="color: inherit; text-decoration: none;">
-                          ${post.title}
-                        </a>
+                        <c:choose>
+                            <c:when test="${post.deleted}">
+                                <span style="color: inherit; opacity: 0.6;">${post.title} (Deleted)</span>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="${pageContext.request.contextPath}/moderator/community/post?id=${post.id}" style="color: inherit; text-decoration: none;">
+                                  ${post.title}
+                                </a>
+                            </c:otherwise>
+                        </c:choose>
                     </h4>
-                    <p class="u-text-muted">${post.content}</p>
+                    <p class="u-text-muted" style="${post.deleted ? 'text-decoration: line-through; opacity: 0.5;' : ''}">${post.content}</p>
                     <c:if test="${not empty post.imageUrl}">
                         <div class="c-post__image">
                         <img
@@ -139,26 +146,41 @@ tagdir="/WEB-INF/tags/dashboard" %>
                   </div>
                   
                   <div class="c-post__actions">
-                    <div class="c-btn c-btn--ghost c-btn--sm" style="cursor: default;">
-                      <i data-lucide="thumbs-up"></i>
-                      <span>${post.likeCount}</span>
-                    </div>
-                    <a
-                      href="${pageContext.request.contextPath}/moderator/community/post?id=${post.id}"
-                      class="c-btn c-btn--ghost c-btn--sm"
-                      aria-label="Comments"
-                    >
-                      <i data-lucide="message-square"></i>${post.commentCount}
-                    </a>
-                    
-                    <button 
-                        class="c-btn c-btn--ghost c-btn--sm js-moderator-delete-post" 
-                        data-post-id="${post.id}"
-                        style="color: var(--c-danger); margin-left: auto;"
-                        title="Delete Post"
-                    >
-                        <i data-lucide="trash-2"></i>
-                    </button>
+                    <c:choose>
+                        <c:when test="${post.deleted}">
+                            <div class="o-stack-1" style="width: 100%;">
+                                <div style="display: flex; align-items: center; gap: var(--space-2); color: #ef4444; font-size: 0.875rem; font-weight: 600; padding: var(--space-2); background: rgba(239, 68, 68, 0.05); border-radius: 6px;">
+                                    <i data-lucide="info" style="width: 16px; height: 16px;"></i>
+                                    Reason: <c:out value="${post.deletionReason != null ? post.deletionReason : 'No reason provided'}"/>
+                                </div>
+                                <div class="u-text-muted" style="font-size: 0.75rem; margin-top: 4px;">
+                                    Deleted on <fmt:formatDate value="${post.deletedAt}" pattern="MMM d, yyyy HH:mm"/>
+                                </div>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="c-btn c-btn--ghost c-btn--sm" style="cursor: default;">
+                              <i data-lucide="thumbs-up"></i>
+                              <span>${post.likeCount}</span>
+                            </div>
+                            <a
+                              href="${pageContext.request.contextPath}/moderator/community/post?id=${post.id}"
+                              class="c-btn c-btn--ghost c-btn--sm"
+                              aria-label="Comments"
+                            >
+                              <i data-lucide="message-square"></i>${post.commentCount}
+                            </a>
+                            
+                            <button 
+                                class="c-btn c-btn--ghost c-btn--sm js-moderator-delete-post" 
+                                data-post-id="${post.id}"
+                                style="color: var(--c-danger); margin-left: auto;"
+                                title="Delete Post"
+                            >
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </c:otherwise>
+                    </c:choose>
                   </div>
                 </article>
               </c:forEach>
@@ -171,11 +193,11 @@ tagdir="/WEB-INF/tags/dashboard" %>
     <!-- Modals -->
     <div id="mod-delete-modal" class="c-modal" hidden>
       <div class="c-modal__overlay" data-close></div>
-      <div class="c-modal__content" role="dialog" aria-labelledby="mod-delete-title" style="border-radius: 12px; background-color: #1A1D21; border: 1px solid #2A2D35;">
-        <header class="c-modal__header">
-          <h2 id="mod-delete-title">Delete Post</h2>
-          <button class="c-modal__close" data-close aria-label="Close">
-            <i data-lucide="x"></i>
+      <div class="c-modal__content" role="dialog" aria-labelledby="mod-delete-title" style="border-radius: 12px; background-color: #1A1D21; border: 1px solid #2A2D35; position: relative;">
+        <header class="c-modal__header" style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4);">
+          <h2 id="mod-delete-title" style="margin: 0;">Delete Post</h2>
+          <button class="c-modal__close" data-close aria-label="Close" style="background: rgba(255,255,255,0.05); border: none; border-radius: 4px; padding: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+            <i data-lucide="x" style="width: 20px; height: 20px;"></i>
           </button>
         </header>
         <form action="${pageContext.request.contextPath}/moderator/community/post/delete" method="POST">

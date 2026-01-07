@@ -111,13 +111,24 @@ public class CommunityPostDAO {
      * Finds all posts by a specific user (for My Posts page).
      */
     public List<CommunityPost> findByUserId(int userId) {
-        String sql = "SELECT * FROM community_posts WHERE user_id = ? AND is_deleted = FALSE ORDER BY created_at DESC";
+        String sql = """
+            SELECT p.*, 
+                   ma.reason AS deletion_reason
+            FROM community_posts p
+            LEFT JOIN moderator_actions ma ON ma.post_id = p.id AND ma.action_type = 'POST_DELETE'
+            WHERE p.user_id = ?
+            ORDER BY p.created_at DESC
+            """;
         List<CommunityPost> list = new ArrayList<>();
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) list.add(map(rs));
+                while (rs.next()) {
+                    CommunityPost post = map(rs);
+                    post.setDeletionReason(rs.getString("deletion_reason"));
+                    list.add(post);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error fetching posts by user", e);

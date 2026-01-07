@@ -195,9 +195,10 @@
                   <c:otherwise>
                     <c:forEach var="post" items="${posts}">
                       <article
-                        class="c-post c-post--${not empty post.imageUrl ? 'image' : 'text'} c-post--mine"
+                        class="c-post c-post--${not empty post.imageUrl ? 'image' : 'text'} c-post--mine ${post.deleted ? 'c-post--deleted' : ''}"
                         data-type="${not empty post.imageUrl ? 'image' : 'text'}"
                         data-post-id="${post.id}"
+                        style="${post.deleted ? 'opacity: 0.6; filter: grayscale(0.5);' : ''}"
                       >
                         <div class="c-post__head">
                           <div class="c-avatar-sm">
@@ -208,34 +209,45 @@
                           </div>
                           <div style="flex: 1">
                             <strong>${authUser.name} (You)</strong>
+                             <c:if test="${post.deleted}">
+                                <span class="c-badge c-badge--danger" style="margin-left: var(--space-2); font-size: 0.7rem; vertical-align: middle;">Deleted</span>
+                            </c:if>
                             <div class="c-post__meta">
                               <fmt:formatDate value="${post.createdAt}" pattern="MMM d, yyyy"/>
                             </div>
                           </div>
-                          <div class="c-post__manage">
-                            <a
-                              href="${pageContext.request.contextPath}/student/community/edit-post?id=${post.id}"
-                              class="c-btn c-btn--ghost c-btn--sm"
-                              aria-label="Edit post"
-                              ><i data-lucide="edit-2"></i
-                            ></a>
-                            <button
-                              class="c-btn c-btn--ghost c-btn--sm js-delete-post"
-                              aria-label="Delete post"
-                              data-post-id="${post.id}"
-                            >
-                              <i data-lucide="trash-2"></i>
-                            </button>
-                          </div>
+                          <c:if test="${!post.deleted}">
+                              <div class="c-post__manage">
+                                <a
+                                  href="${pageContext.request.contextPath}/student/community/edit-post?id=${post.id}"
+                                  class="c-btn c-btn--ghost c-btn--sm"
+                                  aria-label="Edit post"
+                                  ><i data-lucide="edit-2"></i
+                                ></a>
+                                <button
+                                  class="c-btn c-btn--ghost c-btn--sm js-delete-post"
+                                  aria-label="Delete post"
+                                  data-post-id="${post.id}"
+                                >
+                                  <i data-lucide="trash-2"></i>
+                                </button>
+                              </div>
+                          </c:if>
                         </div>
                         <h4 class="c-post__title">
                             <a href="${pageContext.request.contextPath}/student/community/post?id=${post.id}" style="color: inherit; text-decoration: none;">
                                 ${post.title}
                             </a>
                         </h4>
-                        <p class="u-text-muted">
+                        <p class="u-text-muted" style="${post.deleted ? 'text-decoration: line-through; opacity: 0.5;' : ''}">
                           <c:out value="${post.content}"/>
                         </p>
+                        <c:if test="${post.deleted}">
+                            <div style="display: flex; align-items: center; gap: var(--space-2); color: #ef4444; font-size: 0.85rem; font-weight: 500; padding: var(--space-2); background: rgba(239, 68, 68, 0.05); border-radius: 6px; margin-top: 1rem;">
+                                <i data-lucide="info" style="width: 14px; height: 14px;"></i>
+                                Deletion Reason: <c:out value="${post.deletionReason != null ? post.deletionReason : 'No reason provided'}"/>
+                            </div>
+                        </c:if>
                         <c:if test="${not empty post.imageUrl}">
                           <div class="c-post__image">
                             <img

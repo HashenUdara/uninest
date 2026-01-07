@@ -31,9 +31,9 @@
         <!-- Action Bar -->
         <div class="c-comment__actions">
             <button 
-                class="c-btn c-btn--link c-btn--sm js-reply-toggle" 
+                class="c-btn c-btn--ghost c-btn--sm js-reply-toggle" 
                 data-comment-id="${comment.id}"
-                style="padding: 0; color: var(--color-brand); font-size: 0.875rem;"
+                style="padding: 0 0.5rem;"
             >
                 Reply
             </button>

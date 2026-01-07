@@ -19,6 +19,35 @@
                 font-size: 0.875rem;
                 padding: var(--space-2);
             }
+            /* Fix for modal transparency */
+            .c-modal__content {
+                background-color: #1A1D21; /* Solid dark background */
+                border: 1px solid #2A2D35;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+                opacity: 1;
+                z-index: 1000;
+                border-radius: 12px;
+                overflow: hidden;
+            }
+            .c-modal__overlay {
+                background-color: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(2px);
+            }
+            
+            /* Comment Action Buttons Hover */
+            .c-comment__actions button {
+                transition: all 0.2s ease;
+                border-radius: 4px; /* Slight rounding for the buttons themselves */
+            }
+            .c-comment__actions button:hover {
+                background-color: rgba(255, 255, 255, 0.05);
+                color: var(--color-brand-light, #7961F2) !important; /* Highlight color */
+            }
+            /* Specific danger hover for delete */
+            .c-comment__actions button.js-delete-comment:hover {
+                background-color: rgba(220, 38, 38, 0.1);
+                color: #ef4444 !important;
+            }
         </style>
     <header class="c-page__header">
         <nav class="c-breadcrumbs" aria-label="Breadcrumb">
@@ -225,11 +254,46 @@
           </aside>
         </div>
 
+        </div>
+
+     <!-- Delete Confirmation Modal (Same style as my-posts) -->
+    <div id="delete-modal" class="c-modal" hidden>
+      <div class="c-modal__overlay" data-close></div>
+      <div class="c-modal__content" role="dialog" aria-labelledby="delete-title">
+        <header class="c-modal__header">
+          <h2 id="delete-title">Delete Comment</h2>
+          <button class="c-modal__close" data-close aria-label="Close">
+            <i data-lucide="x"></i>
+          </button>
+        </header>
+        <div class="c-modal__body">
+          <p>
+            Are you sure you want to delete this comment? 
+            <br><small class="u-text-muted">This will also delete all replies to this comment.</small>
+          </p>
+        </div>
+        <footer class="c-modal__footer">
+          <button class="c-btn c-btn--ghost" data-close>Cancel</button>
+          <button class="c-btn c-btn--danger js-confirm-delete">Delete</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Hidden Global Delete Form -->
+    <form id="global-delete-form" action="${pageContext.request.contextPath}/student/community/comments/delete" method="POST">
+        <input type="hidden" name="id" id="delete-comment-id">
+        <input type="hidden" name="postId" value="${post.id}">
+    </form>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         if (window.lucide) window.lucide.createIcons();
         
-        // Reply & Edit toggle logic
+        const modal = document.getElementById("delete-modal");
+        const deleteForm = document.getElementById("global-delete-form");
+        const deleteInput = document.getElementById("delete-comment-id");
+        let pendingDeleteId = null;
+
         document.body.addEventListener('click', function(e) {
             // Reply Toggle
             if (e.target.closest('.js-reply-toggle')) {
@@ -269,6 +333,38 @@
                 const commentId = btn.getAttribute('data-comment-id');
                 const form = document.getElementById('edit-form-' + commentId);
                 if (form) form.hidden = true;
+            }
+
+            // Delete Click (Show Modal)
+            if (e.target.closest('.js-delete-comment')) {
+                const btn = e.target.closest('.js-delete-comment');
+                pendingDeleteId = btn.getAttribute('data-comment-id');
+                if (modal) {
+                    modal.hidden = false;
+                    modal.querySelector(".js-confirm-delete")?.focus();
+                }
+            }
+            
+            // Modal Close
+            if (modal && e.target.closest("[data-close]")) {
+                modal.hidden = true;
+                pendingDeleteId = null;
+            }
+            
+            // Confirm Delete
+            if (modal && e.target.classList.contains('js-confirm-delete')) {
+                if (pendingDeleteId) {
+                    deleteInput.value = pendingDeleteId;
+                    deleteForm.submit();
+                }
+            }
+        });
+
+        // Close modal on Escape
+        document.addEventListener("keydown", (e) => {
+            if (modal && !modal.hidden && e.key === "Escape") {
+                modal.hidden = true;
+                pendingDeleteId = null;
             }
         });
     });

@@ -48,22 +48,13 @@
                     <i data-lucide="edit-2" style="width: 14px; height: 14px; margin-right: 4px;"></i> Edit
                 </button>
                 
-                <form 
-                    action="${pageContext.request.contextPath}/student/community/comments/delete" 
-                    method="POST" 
-                    style="display: inline;"
-                    onsubmit="return confirm('Are you sure you want to delete this comment? All replies will also be deleted.');"
+                <button 
+                    class="c-btn c-btn--ghost c-btn--sm js-delete-comment" 
+                    data-comment-id="${comment.id}"
+                    style="padding: 0 0.5rem; color: var(--c-danger);"
                 >
-                    <input type="hidden" name="id" value="${comment.id}">
-                    <input type="hidden" name="postId" value="${comment.postId}">
-                    <button 
-                        type="submit" 
-                        class="c-btn c-btn--ghost c-btn--sm"
-                        style="padding: 0 0.5rem; color: var(--c-danger);"
-                    >
-                        <i data-lucide="trash-2" style="width: 14px; height: 14px; margin-right: 4px;"></i> Delete
-                    </button>
-                </form>
+                    <i data-lucide="trash-2" style="width: 14px; height: 14px; margin-right: 4px;"></i> Delete
+                </button>
             </c:if>
         </div>
 

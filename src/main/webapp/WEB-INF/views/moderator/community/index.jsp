@@ -150,7 +150,15 @@ tagdir="/WEB-INF/tags/dashboard" %>
                     >
                       <i data-lucide="message-square"></i>${post.commentCount}
                     </a>
-                    <!-- Delete button for moderator could be added here in future -->
+                    
+                    <button 
+                        class="c-btn c-btn--ghost c-btn--sm js-moderator-delete-post" 
+                        data-post-id="${post.id}"
+                        style="color: var(--c-danger); margin-left: auto;"
+                        title="Delete Post"
+                    >
+                        <i data-lucide="trash-2"></i>
+                    </button>
                   </div>
                 </article>
               </c:forEach>
@@ -160,8 +168,66 @@ tagdir="/WEB-INF/tags/dashboard" %>
       </section>
     </div>
 
+    <!-- Modals -->
+    <div id="mod-delete-modal" class="c-modal" hidden>
+      <div class="c-modal__overlay" data-close></div>
+      <div class="c-modal__content" role="dialog" aria-labelledby="mod-delete-title" style="border-radius: 12px; background-color: #1A1D21; border: 1px solid #2A2D35;">
+        <header class="c-modal__header">
+          <h2 id="mod-delete-title">Delete Post</h2>
+          <button class="c-modal__close" data-close aria-label="Close">
+            <i data-lucide="x"></i>
+          </button>
+        </header>
+        <form action="${pageContext.request.contextPath}/moderator/community/post/delete" method="POST">
+            <input type="hidden" name="postId" id="mod-delete-post-id">
+            <div class="c-modal__body">
+              <p class="u-text-muted u-stack-2">Please provide a reason for deleting this post. This action will be logged for accountability.</p>
+              <div class="c-field">
+                <label for="del-reason" class="c-label">Deletion Reason</label>
+                <textarea 
+                    id="del-reason" 
+                    name="reason" 
+                    class="c-input" 
+                    rows="3" 
+                    placeholder="e.g., Inappropriate content, False information..." 
+                    required
+                ></textarea>
+              </div>
+            </div>
+            <footer class="c-modal__footer">
+              <button type="button" class="c-btn c-btn--ghost" data-close>Cancel</button>
+              <button type="submit" class="c-btn c-btn--danger">Confirm Delete</button>
+            </footer>
+        </form>
+      </div>
+    </div>
+
     <aside class="c-right-panel">
       <!-- Right panel content -->
     </aside>
   </div>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (window.lucide) window.lucide.createIcons();
+
+        const modal = document.getElementById("mod-delete-modal");
+        const postIdInput = document.getElementById("mod-delete-post-id");
+
+        document.body.addEventListener('click', function(e) {
+            if (e.target.closest('.js-moderator-delete-post')) {
+                const btn = e.target.closest('.js-moderator-delete-post');
+                const postId = btn.getAttribute('data-post-id');
+                if (modal && postIdInput) {
+                    postIdInput.value = postId;
+                    modal.hidden = false;
+                }
+            }
+
+            if (modal && e.target.closest('[data-close]')) {
+                modal.hidden = true;
+            }
+        });
+    });
+  </script>
 </layout:moderator-dashboard>

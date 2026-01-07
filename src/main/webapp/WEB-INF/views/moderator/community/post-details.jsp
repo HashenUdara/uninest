@@ -154,10 +154,18 @@
           <!-- Sidebar (kept similar but could be moderator specific stats later) -->
           <aside class="c-right-panel">
             <section class="c-right-section">
-                <!-- Placeholder for moderator actions on this post e.g. Delete Post -->
                <h3 class="c-section-title" style="margin-top: 0">Moderation</h3>
                <div class="c-card" style="padding: var(--space-4);">
-                    <p class="u-text-muted">Moderation tools coming soon.</p>
+                    <button 
+                        class="c-btn c-btn--danger c-btn--sm js-moderator-delete-post" 
+                        data-post-id="${post.id}"
+                        style="width: 100%; justify-content: center;"
+                    >
+                        <i data-lucide="trash-2"></i> Delete Post
+                    </button>
+                    <p class="u-text-muted u-stack-2" style="font-size: 0.8rem; margin-top: 1rem;">
+                        Note: Deleting a post requires a reason and will be logged.
+                    </p>
                </div>
             </section>
           </aside>
@@ -165,8 +173,10 @@
 
         </div>
 
-     <!-- Delete Confirmation Modal (Same style as my-posts) -->
+    <!-- Modals -->
+    <!-- Delete Comment Modal (Existing) -->
     <div id="delete-modal" class="c-modal" hidden>
+      <!-- ... existing delete-modal content ... -->
       <div class="c-modal__overlay" data-close></div>
       <div class="c-modal__content" role="dialog" aria-labelledby="delete-title">
         <header class="c-modal__header">
@@ -188,7 +198,41 @@
       </div>
     </div>
 
-    <!-- Hidden Global Delete Form -->
+    <!-- Moderator Delete Post Modal (New) -->
+    <div id="mod-delete-modal" class="c-modal" hidden>
+      <div class="c-modal__overlay" data-close></div>
+      <div class="c-modal__content" role="dialog" aria-labelledby="mod-delete-title" style="border-radius: 12px; background-color: #1A1D21; border: 1px solid #2A2D35;">
+        <header class="c-modal__header">
+          <h2 id="mod-delete-title">Delete Post</h2>
+          <button class="c-modal__close" data-close aria-label="Close">
+            <i data-lucide="x"></i>
+          </button>
+        </header>
+        <form action="${pageContext.request.contextPath}/moderator/community/post/delete" method="POST">
+            <input type="hidden" name="postId" id="mod-delete-post-id">
+            <div class="c-modal__body">
+              <p class="u-text-muted u-stack-2">Please provide a reason for deleting this post. This action will be logged for accountability.</p>
+              <div class="c-field">
+                <label for="del-reason" class="c-label">Deletion Reason</label>
+                <textarea 
+                    id="del-reason" 
+                    name="reason" 
+                    class="c-input" 
+                    rows="3" 
+                    placeholder="e.g., Inappropriate content, False information..." 
+                    required
+                ></textarea>
+              </div>
+            </div>
+            <footer class="c-modal__footer">
+              <button type="button" class="c-btn c-btn--ghost" data-close>Cancel</button>
+              <button type="submit" class="c-btn c-btn--danger">Confirm Delete</button>
+            </footer>
+        </form>
+      </div>
+    </div>
+
+    <!-- Hidden Global Delete Comment Form -->
     <form id="global-delete-form" action="${pageContext.request.contextPath}/student/community/comments/delete" method="POST">
         <input type="hidden" name="id" id="delete-comment-id">
         <input type="hidden" name="postId" value="${post.id}">
@@ -198,24 +242,26 @@
     document.addEventListener("DOMContentLoaded", function() {
         if (window.lucide) window.lucide.createIcons();
         
-        const modal = document.getElementById("delete-modal");
-        const deleteForm = document.getElementById("global-delete-form");
-        const deleteInput = document.getElementById("delete-comment-id");
+        const deleteCommentModal = document.getElementById("delete-modal");
+        const deleteCommentForm = document.getElementById("global-delete-form");
+        const deleteCommentInput = document.getElementById("delete-comment-id");
+        
+        const modDeletePostModal = document.getElementById("mod-delete-modal");
+        const modDeletePostInput = document.getElementById("mod-delete-post-id");
+        
         let pendingDeleteId = null;
 
         document.body.addEventListener('click', function(e) {
+            // ... existing toggles ...
             // Reply Toggle
             if (e.target.closest('.js-reply-toggle')) {
                 const btn = e.target.closest('.js-reply-toggle');
                 const commentId = btn.getAttribute('data-comment-id');
                 const form = document.getElementById('reply-form-' + commentId);
-                // Hide edit form if open
                 const editForm = document.getElementById('edit-form-' + commentId);
                 if (editForm) editForm.hidden = true;
-                
                 if (form) form.hidden = !form.hidden;
             }
-            
             // Cancel Reply
             if (e.target.closest('.js-cancel-reply')) {
                 const btn = e.target.closest('.js-cancel-reply');
@@ -223,19 +269,15 @@
                 const form = document.getElementById('reply-form-' + commentId);
                 if (form) form.hidden = true;
             }
-
             // Edit Toggle
             if (e.target.closest('.js-edit-toggle')) {
                 const btn = e.target.closest('.js-edit-toggle');
                 const commentId = btn.getAttribute('data-comment-id');
                 const form = document.getElementById('edit-form-' + commentId);
-                // Hide reply form if open
                 const replyForm = document.getElementById('reply-form-' + commentId);
                 if (replyForm) replyForm.hidden = true;
-
                 if (form) form.hidden = !form.hidden;
             }
-
             // Cancel Edit
             if (e.target.closest('.js-cancel-edit')) {
                 const btn = e.target.closest('.js-cancel-edit');
@@ -244,35 +286,46 @@
                 if (form) form.hidden = true;
             }
 
-            // Delete Click (Show Modal)
+            // Comment Delete (Show Modal)
             if (e.target.closest('.js-delete-comment')) {
                 const btn = e.target.closest('.js-delete-comment');
                 pendingDeleteId = btn.getAttribute('data-comment-id');
-                if (modal) {
-                    modal.hidden = false;
-                    modal.querySelector(".js-confirm-delete")?.focus();
+                if (deleteCommentModal) {
+                    deleteCommentModal.hidden = false;
+                }
+            }
+
+            // Moderator Post Delete (Show Modal)
+            if (e.target.closest('.js-moderator-delete-post')) {
+                const btn = e.target.closest('.js-moderator-delete-post');
+                const postId = btn.getAttribute('data-post-id');
+                if (modDeletePostModal && modDeletePostInput) {
+                    modDeletePostInput.value = postId;
+                    modDeletePostModal.hidden = false;
                 }
             }
             
-            // Modal Close
-            if (modal && e.target.closest("[data-close]")) {
-                modal.hidden = true;
+            // Modal Close (Generic)
+            if (e.target.closest("[data-close]")) {
+                if (deleteCommentModal) deleteCommentModal.hidden = true;
+                if (modDeletePostModal) modDeletePostModal.hidden = true;
                 pendingDeleteId = null;
             }
             
-            // Confirm Delete
-            if (modal && e.target.classList.contains('js-confirm-delete')) {
-                if (pendingDeleteId) {
-                    deleteInput.value = pendingDeleteId;
-                    deleteForm.submit();
+            // Confirm Comment Delete
+            if (e.target.classList.contains('js-confirm-delete')) {
+                if (pendingDeleteId && deleteCommentForm) {
+                    deleteCommentInput.value = pendingDeleteId;
+                    deleteCommentForm.submit();
                 }
             }
         });
 
-        // Close modal on Escape
+        // Close modals on Escape
         document.addEventListener("keydown", (e) => {
-            if (modal && !modal.hidden && e.key === "Escape") {
-                modal.hidden = true;
+            if (e.key === "Escape") {
+                if (deleteCommentModal) deleteCommentModal.hidden = true;
+                if (modDeletePostModal) modDeletePostModal.hidden = true;
                 pendingDeleteId = null;
             }
         });

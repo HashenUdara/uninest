@@ -229,17 +229,45 @@
     document.addEventListener("DOMContentLoaded", function() {
         if (window.lucide) window.lucide.createIcons();
         
-        // Reply toggle logic
+        // Reply & Edit toggle logic
         document.body.addEventListener('click', function(e) {
-            if (e.target.classList.contains('js-reply-toggle')) {
-                const commentId = e.target.getAttribute('data-comment-id');
+            // Reply Toggle
+            if (e.target.closest('.js-reply-toggle')) {
+                const btn = e.target.closest('.js-reply-toggle');
+                const commentId = btn.getAttribute('data-comment-id');
                 const form = document.getElementById('reply-form-' + commentId);
+                // Hide edit form if open
+                const editForm = document.getElementById('edit-form-' + commentId);
+                if (editForm) editForm.hidden = true;
+                
                 if (form) form.hidden = !form.hidden;
             }
             
-            if (e.target.classList.contains('js-cancel-reply')) {
-                const commentId = e.target.getAttribute('data-comment-id');
+            // Cancel Reply
+            if (e.target.closest('.js-cancel-reply')) {
+                const btn = e.target.closest('.js-cancel-reply');
+                const commentId = btn.getAttribute('data-comment-id');
                 const form = document.getElementById('reply-form-' + commentId);
+                if (form) form.hidden = true;
+            }
+
+            // Edit Toggle
+            if (e.target.closest('.js-edit-toggle')) {
+                const btn = e.target.closest('.js-edit-toggle');
+                const commentId = btn.getAttribute('data-comment-id');
+                const form = document.getElementById('edit-form-' + commentId);
+                // Hide reply form if open
+                const replyForm = document.getElementById('reply-form-' + commentId);
+                if (replyForm) replyForm.hidden = true;
+
+                if (form) form.hidden = !form.hidden;
+            }
+
+            // Cancel Edit
+            if (e.target.closest('.js-cancel-edit')) {
+                const btn = e.target.closest('.js-cancel-edit');
+                const commentId = btn.getAttribute('data-comment-id');
+                const form = document.getElementById('edit-form-' + commentId);
                 if (form) form.hidden = true;
             }
         });

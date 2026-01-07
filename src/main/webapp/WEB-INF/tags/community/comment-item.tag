@@ -29,7 +29,7 @@
         </p>
 
         <!-- Action Bar -->
-        <div class="c-comment__actions">
+        <div class="c-comment__actions" style="display: flex; gap: var(--space-3); align-items: center;">
             <button 
                 class="c-btn c-btn--ghost c-btn--sm js-reply-toggle" 
                 data-comment-id="${comment.id}"
@@ -37,6 +37,34 @@
             >
                 Reply
             </button>
+
+            <!-- Edit/Delete for Author -->
+            <c:if test="${sessionScope.authUser != null && sessionScope.authUser.id == comment.userId}">
+                <button 
+                    class="c-btn c-btn--ghost c-btn--sm js-edit-toggle" 
+                    data-comment-id="${comment.id}"
+                    style="padding: 0 0.5rem;"
+                >
+                    <i data-lucide="edit-2" style="width: 14px; height: 14px; margin-right: 4px;"></i> Edit
+                </button>
+                
+                <form 
+                    action="${pageContext.request.contextPath}/student/community/comments/delete" 
+                    method="POST" 
+                    style="display: inline;"
+                    onsubmit="return confirm('Are you sure you want to delete this comment? All replies will also be deleted.');"
+                >
+                    <input type="hidden" name="id" value="${comment.id}">
+                    <input type="hidden" name="postId" value="${comment.postId}">
+                    <button 
+                        type="submit" 
+                        class="c-btn c-btn--ghost c-btn--sm"
+                        style="padding: 0 0.5rem; color: var(--c-danger);"
+                    >
+                        <i data-lucide="trash-2" style="width: 14px; height: 14px; margin-right: 4px;"></i> Delete
+                    </button>
+                </form>
+            </c:if>
         </div>
 
         <!-- Hidden Reply Form -->
@@ -55,6 +83,26 @@
                     <div style="display: flex; gap: var(--space-2);">
                         <button type="submit" class="c-btn c-btn--secondary c-btn--sm">Post Reply</button>
                         <button type="button" class="c-btn c-btn--ghost c-btn--sm js-cancel-reply" data-comment-id="${comment.id}">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Hidden Edit Form -->
+        <div class="c-edit-form-container" id="edit-form-${comment.id}" hidden style="margin-top: var(--space-2);">
+            <form action="${pageContext.request.contextPath}/student/community/comments/update" method="POST">
+                <input type="hidden" name="id" value="${comment.id}">
+                <input type="hidden" name="postId" value="${comment.postId}">
+                <div class="o-grid" style="gap: var(--space-2);">
+                    <textarea 
+                        name="content" 
+                        class="c-textarea c-textarea--sm" 
+                        rows="2" 
+                        required
+                    ><c:out value="${comment.content}"/></textarea>
+                    <div style="display: flex; gap: var(--space-2);">
+                        <button type="submit" class="c-btn c-btn--primary c-btn--sm">Save Changes</button>
+                        <button type="button" class="c-btn c-btn--ghost c-btn--sm js-cancel-edit" data-comment-id="${comment.id}">Cancel</button>
                     </div>
                 </div>
             </form>

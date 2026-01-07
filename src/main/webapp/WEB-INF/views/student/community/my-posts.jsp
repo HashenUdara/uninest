@@ -228,7 +228,11 @@
                             </button>
                           </div>
                         </div>
-                        <h4 class="c-post__title">${post.title}</h4>
+                        <h4 class="c-post__title">
+                            <a href="${pageContext.request.contextPath}/student/community/post?id=${post.id}" style="color: inherit; text-decoration: none;">
+                                ${post.title}
+                            </a>
+                        </h4>
                         <p class="u-text-muted">
                           <c:out value="${post.content}"/>
                         </p>
@@ -248,12 +252,13 @@
                             <i data-lucide="thumbs-up"></i
                             ><span class="js-score">${post.likeCount}</span>
                           </button>
-                          <button
+                          <a
+                            href="${pageContext.request.contextPath}/student/community/post?id=${post.id}"
                             class="c-btn c-btn--ghost c-btn--sm"
                             aria-label="Comments"
                           >
                             <i data-lucide="message-square"></i>${post.commentCount}
-                          </button>
+                          </a>
                           <button
                             class="c-btn c-btn--ghost c-btn--sm js-downvote"
                             aria-label="Downvote"

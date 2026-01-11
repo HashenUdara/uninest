@@ -21,6 +21,7 @@ public class Poll {
     // User interaction state (transient, for display)
     private boolean currentUserVoted;
     private List<Integer> currentUserSelectedOptionIds = new ArrayList<>();
+    private Timestamp currentUserVoteTimestamp; // When the user voted (for change window)
 
     public int getId() {
         return id;
@@ -88,5 +89,13 @@ public class Poll {
 
     public void setCurrentUserSelectedOptionIds(List<Integer> currentUserSelectedOptionIds) {
         this.currentUserSelectedOptionIds = currentUserSelectedOptionIds;
+    }
+
+    public Timestamp getCurrentUserVoteTimestamp() {
+        return currentUserVoteTimestamp;
+    }
+
+    public void setCurrentUserVoteTimestamp(Timestamp currentUserVoteTimestamp) {
+        this.currentUserVoteTimestamp = currentUserVoteTimestamp;
     }
 }

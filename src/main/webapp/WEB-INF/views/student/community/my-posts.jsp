@@ -273,8 +273,30 @@
                                         </c:forEach>
                                       </div>
                                       <div
-                                        style="margin-top: var(--space-2); font-size: var(--fs-xs); color: var(--color-text-muted);">
-                                        You have voted.
+                                        style="margin-top: var(--space-2); font-size: var(--fs-xs); color: var(--color-text-muted); display: flex; justify-content: space-between; align-items: center;">
+                                        <span>You have voted.</span>
+
+                                        <%-- Show "Change Vote" button if within 30 minutes --%>
+                                          <jsp:useBean id="nowMyPost" class="java.util.Date" />
+                                          <c:if test="${not empty post.poll.currentUserVoteTimestamp}">
+                                            <c:set var="timeDiffMillis"
+                                              value="${nowMyPost.time - post.poll.currentUserVoteTimestamp.time}" />
+                                            <c:set var="timeDiffMinutes" value="${timeDiffMillis / (1000 * 60)}" />
+                                            <c:if test="${timeDiffMinutes < 30}">
+                                              <form
+                                                action="${pageContext.request.contextPath}/student/community/polls/vote"
+                                                method="POST" style="margin: 0;">
+                                                <input type="hidden" name="pollId" value="${post.poll.id}">
+                                                <input type="hidden" name="action" value="undo">
+                                                <input type="hidden" name="returnUrl"
+                                                  value="${pageContext.request.contextPath}/student/community/my-posts">
+                                                <button type="submit" class="c-btn c-btn--ghost c-btn--xs"
+                                                  style="font-size: 0.75rem;">
+                                                  Change Vote
+                                                </button>
+                                              </form>
+                                            </c:if>
+                                          </c:if>
                                       </div>
                                     </c:when>
 

@@ -171,7 +171,34 @@ public class PollDAO {
             List<Integer> votedOptionIds = getUserVotedOptionIds(poll.getId(), userId);
             poll.setCurrentUserSelectedOptionIds(votedOptionIds);
             poll.setCurrentUserVoted(!votedOptionIds.isEmpty());
+
+            // Also fetch when they voted (most recent vote timestamp)
+            if (!votedOptionIds.isEmpty()) {
+                Timestamp voteTime = getUserVoteTimestamp(poll.getId(), userId);
+                poll.setCurrentUserVoteTimestamp(voteTime);
+            }
         }
+    }
+
+    /**
+     * Gets the timestamp of when the user voted on this poll.
+     * Returns the most recent vote timestamp.
+     */
+    private Timestamp getUserVoteTimestamp(int pollId, int userId) {
+        String sql = "SELECT MAX(created_at) as vote_time FROM community_poll_votes WHERE poll_id = ? AND user_id = ?";
+        try (Connection con = DBConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, pollId);
+            ps.setInt(2, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getTimestamp("vote_time");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching user vote timestamp", e);
+        }
+        return null;
     }
 
     /**
@@ -241,6 +268,66 @@ public class PollDAO {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error recording vote", e);
+        }
+    }
+
+    /**
+     * Removes all votes by a user for a specific poll.
+     * Decrements the vote counts and deletes the vote records.
+     * 
+     * @return true if votes were removed, false if no votes found
+     */
+    public boolean removeVote(int pollId, int userId) {
+        String selectVotesSql = "SELECT option_id FROM community_poll_votes WHERE poll_id = ? AND user_id = ?";
+        String deleteVotesSql = "DELETE FROM community_poll_votes WHERE poll_id = ? AND user_id = ?";
+        String updateCountSql = "UPDATE community_poll_options SET vote_count = vote_count - 1 WHERE id = ?";
+
+        try (Connection con = DBConnection.getConnection()) {
+            // First, get all option IDs the user voted for
+            List<Integer> votedOptionIds = new ArrayList<>();
+            try (PreparedStatement ps = con.prepareStatement(selectVotesSql)) {
+                ps.setInt(1, pollId);
+                ps.setInt(2, userId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        votedOptionIds.add(rs.getInt("option_id"));
+                    }
+                }
+            }
+
+            if (votedOptionIds.isEmpty()) {
+                return false; // No votes to remove
+            }
+
+            // Start transaction
+            con.setAutoCommit(false);
+            try {
+                // Delete votes
+                try (PreparedStatement ps = con.prepareStatement(deleteVotesSql)) {
+                    ps.setInt(1, pollId);
+                    ps.setInt(2, userId);
+                    ps.executeUpdate();
+                }
+
+                // Decrement vote counts
+                try (PreparedStatement ps = con.prepareStatement(updateCountSql)) {
+                    for (int optionId : votedOptionIds) {
+                        ps.setInt(1, optionId);
+                        ps.addBatch();
+                    }
+                    ps.executeBatch();
+                }
+
+                con.commit();
+                return true;
+            } catch (SQLException e) {
+                con.rollback();
+                throw e;
+            } finally {
+                con.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error removing vote", e);
         }
     }
 }

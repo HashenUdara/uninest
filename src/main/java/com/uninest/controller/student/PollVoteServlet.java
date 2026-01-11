@@ -27,12 +27,25 @@ public class PollVoteServlet extends HttpServlet {
 
         try {
             int pollId = Integer.parseInt(req.getParameter("pollId"));
-            String[] optionIds = req.getParameterValues("optionId");
+            String action = req.getParameter("action"); // "vote" or "undo"
             String returnUrl = req.getParameter("returnUrl");
             if (returnUrl == null || returnUrl.isEmpty()) {
                 returnUrl = req.getContextPath() + "/student/community";
             }
 
+            // Handle vote removal
+            if ("undo".equals(action)) {
+                boolean removed = pollDAO.removeVote(pollId, user.getId());
+                if (removed) {
+                    resp.sendRedirect(returnUrl + "?vote=removed");
+                } else {
+                    resp.sendRedirect(returnUrl + "?error=no_vote_found");
+                }
+                return;
+            }
+
+            // Handle normal voting
+            String[] optionIds = req.getParameterValues("optionId");
             if (optionIds != null && optionIds.length > 0) {
                 List<Integer> selectedOptions = new ArrayList<>();
                 for (String optId : optionIds) {

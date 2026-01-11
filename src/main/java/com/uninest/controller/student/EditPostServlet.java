@@ -22,19 +22,18 @@ import java.util.Optional;
  * Handles GET/POST for /student/community/edit-post
  */
 @WebServlet(name = "editPost", urlPatterns = "/student/community/edit-post")
-@MultipartConfig(
-    fileSizeThreshold = 1024 * 1024 * 2,  // 2MB threshold
-    maxFileSize = 1024 * 1024 * 10,        // 10MB max
-    maxRequestSize = 1024 * 1024 * 15      // 15MB total
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB threshold
+        maxFileSize = 1024 * 1024 * 10, // 10MB max
+        maxRequestSize = 1024 * 1024 * 15 // 15MB total
 )
 public class EditPostServlet extends HttpServlet {
-    
+
     private final CommunityPostDAO postDAO = new CommunityPostDAO();
-    
+
     // Store uploads OUTSIDE webapp to survive redeployments
     private static final String UPLOAD_BASE_PATH = System.getProperty("user.home") + "/uninest-uploads";
     private static final String UPLOAD_DIRECTORY = "community-posts";
-    
+
     // Allowed image extensions
     private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "gif");
 
@@ -45,14 +44,14 @@ public class EditPostServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
             return;
         }
-        
+
         // Get post ID from request parameter
         String postIdParam = req.getParameter("id");
         if (postIdParam == null || postIdParam.isEmpty()) {
             resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
             return;
         }
-        
+
         int postId;
         try {
             postId = Integer.parseInt(postIdParam);
@@ -60,7 +59,7 @@ public class EditPostServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
             return;
         }
-        
+
         // Fetch post by ID
         Optional<CommunityPost> postOpt = postDAO.findById(postId);
         if (postOpt.isEmpty()) {
@@ -68,16 +67,21 @@ public class EditPostServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
             return;
         }
-        
+
         CommunityPost post = postOpt.get();
-        
+
         // Check if the current user is the owner of this post
         if (post.getUserId() != user.getId()) {
             req.setAttribute("error", "You can only edit your own posts");
             resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
             return;
         }
-        
+
+        // Enrich with poll vote state
+        if (post.getPoll() != null) {
+            new com.uninest.model.dao.PollDAO().loadUserVoteState(post.getPoll(), user.getId());
+        }
+
         req.setAttribute("post", post);
         req.getRequestDispatcher("/WEB-INF/views/student/community/edit-post.jsp").forward(req, resp);
     }
@@ -97,28 +101,28 @@ public class EditPostServlet extends HttpServlet {
                 resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
                 return;
             }
-            
+
             int postId = Integer.parseInt(postIdParam);
-            
+
             // Fetch existing post
             Optional<CommunityPost> postOpt = postDAO.findById(postId);
             if (postOpt.isEmpty()) {
                 resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
                 return;
             }
-            
+
             CommunityPost post = postOpt.get();
-            
+
             // Verify ownership
             if (post.getUserId() != user.getId()) {
                 resp.sendRedirect(req.getContextPath() + "/student/community/my-posts");
                 return;
             }
-            
+
             // Get form parameters
             String title = req.getParameter("title");
             String content = req.getParameter("content");
-            
+
             // Validate required fields
             if (title == null || title.trim().isEmpty()) {
                 req.setAttribute("error", "Title is required");
@@ -126,7 +130,7 @@ public class EditPostServlet extends HttpServlet {
                 req.getRequestDispatcher("/WEB-INF/views/student/community/edit-post.jsp").forward(req, resp);
                 return;
             }
-            
+
             if (content == null || content.trim().isEmpty()) {
                 req.setAttribute("error", "Content is required");
                 req.setAttribute("post", post);
@@ -136,11 +140,11 @@ public class EditPostServlet extends HttpServlet {
 
             // Handle optional image upload
             Part filePart = req.getPart("image");
-            
+
             if (filePart != null && filePart.getSize() > 0) {
                 String fileName = getSubmittedFileName(filePart);
                 String extension = getFileExtension(fileName).toLowerCase();
-                
+
                 // Validate file extension
                 if (!ALLOWED_EXTENSIONS.contains(extension)) {
                     req.setAttribute("error", "Invalid image type. Allowed: JPG, PNG, GIF");
@@ -148,42 +152,42 @@ public class EditPostServlet extends HttpServlet {
                     req.getRequestDispatcher("/WEB-INF/views/student/community/edit-post.jsp").forward(req, resp);
                     return;
                 }
-                
+
                 // Create upload directory if it doesn't exist
                 String uploadPath = UPLOAD_BASE_PATH + File.separator + UPLOAD_DIRECTORY;
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs();
                 }
-                
+
                 // Generate unique file name
                 String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
                 String filePath = uploadPath + File.separator + uniqueFileName;
-                
+
                 // Save the file
                 filePart.write(filePath);
-                
+
                 // Update image URL
                 post.setImageUrl(UPLOAD_DIRECTORY + "/" + uniqueFileName);
             }
-            
+
             // Update post fields
             post.setTitle(title.trim());
             post.setContent(content.trim());
-            
+
             // Save to database
             postDAO.update(post);
-            
+
             // Redirect to my posts with success message
             resp.sendRedirect(req.getContextPath() + "/student/community/my-posts?update=success");
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("error", "Failed to update post: " + e.getMessage());
             doGet(req, resp);
         }
     }
-    
+
     /**
      * Extracts the filename from the Content-Disposition header.
      */
@@ -198,7 +202,7 @@ public class EditPostServlet extends HttpServlet {
         }
         return "unknown";
     }
-    
+
     /**
      * Extracts the file extension from a filename.
      */

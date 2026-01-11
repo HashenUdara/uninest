@@ -123,6 +123,24 @@ tagdir="/WEB-INF/tags/dashboard" %>
                             </h4>
                             <p class="u-text-muted">${post.content}</p>
                           </div>
+                          <div class="c-post__actions">
+                            <a 
+                                href="${pageContext.request.contextPath}/moderator/community/post?id=${post.id}" 
+                                class="c-btn c-btn--ghost c-btn--sm"
+                                title="View Details"
+                            >
+                                <i data-lucide="eye"></i>
+                            </a>
+                            
+                            <button 
+                                class="c-btn c-btn--ghost c-btn--sm c-btn--danger-ghost js-moderator-delete-post" 
+                                data-post-id="${post.id}"
+                                style="margin-left: 12px;"
+                                title="Delete Post"
+                            >
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                          </div>
                     </article>
                 </c:forEach>
             </div>

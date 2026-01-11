@@ -129,6 +129,28 @@ tagdir="/WEB-INF/tags/dashboard" %>
                             </h4>
                             <p class="u-text-muted">${post.content}</p>
                           </div>
+                          <div class="c-post__actions">
+                            <button
+                              class="c-btn c-btn--ghost c-btn--sm js-upvote"
+                              aria-label="Upvote"
+                            >
+                              <i data-lucide="thumbs-up"></i
+                              ><span class="js-score">${post.likeCount}</span>
+                            </button>
+                            <a
+                              href="${pageContext.request.contextPath}/student/community/post?id=${post.id}"
+                              class="c-btn c-btn--ghost c-btn--sm"
+                              aria-label="Comments"
+                            >
+                              <i data-lucide="message-square"></i>${post.commentCount}
+                            </a>
+                            <button
+                              class="c-btn c-btn--ghost c-btn--sm js-downvote"
+                              aria-label="Downvote"
+                            >
+                              <i data-lucide="thumbs-down"></i>
+                            </button>
+                          </div>
                     </article>
                 </c:forEach>
             </div>

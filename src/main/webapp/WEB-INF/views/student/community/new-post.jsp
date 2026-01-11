@@ -75,10 +75,11 @@
                         placeholder="Write your post content" required></textarea>
                     </div>
 
-                    <!-- Poll Section -->
                     <div class="c-field">
-                      <button type="button" class="c-btn c-btn--ghost c-btn--sm" id="toggle-poll-btn">
-                        <i class="u-icon" style="margin-right: 4px;">📊</i> Create a Poll
+                      <button type="button" class="c-btn c-btn--ghost" id="toggle-poll-btn"
+                        style="font-size: 1rem; padding: var(--space-3) var(--space-4);">
+                        <i class="u-icon" style="margin-right: 8px;">📊</i> Create a Poll
+                        <i data-lucide="chevron-down" style="margin-left: 8px; width: 16px; height: 16px;"></i>
                       </button>
 
                       <div id="poll-section"

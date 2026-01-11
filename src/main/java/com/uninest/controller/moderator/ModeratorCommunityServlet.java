@@ -17,7 +17,7 @@ import java.util.List;
  */
 @WebServlet(name = "ModeratorCommunity", urlPatterns = "/moderator/community")
 public class ModeratorCommunityServlet extends HttpServlet {
-    
+
     private final CommunityPostDAO postDAO = new CommunityPostDAO();
 
     @Override
@@ -27,11 +27,11 @@ public class ModeratorCommunityServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
             return;
         }
-        
+
         // Ensure only moderators can access (Role check)
         if (!"moderator".equalsIgnoreCase(user.getRole())) {
-             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-             return;
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
+            return;
         }
 
         // Check if user has a community
@@ -41,8 +41,9 @@ public class ModeratorCommunityServlet extends HttpServlet {
         }
 
         String tab = req.getParameter("tab");
-        if (tab == null) tab = "upvoted"; // Default
-        
+        if (tab == null)
+            tab = "upvoted"; // Default
+
         List<CommunityPost> posts;
         if ("deleted".equalsIgnoreCase(tab)) {
             posts = postDAO.findDeletedByCommunityId(user.getCommunityId());
@@ -51,10 +52,18 @@ public class ModeratorCommunityServlet extends HttpServlet {
             // Note: upvoted/recent sorting could be added here in future
             posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId());
         }
-        
+
+        // Enrich with poll vote state
+        com.uninest.model.dao.PollDAO pollDAO = new com.uninest.model.dao.PollDAO();
+        for (CommunityPost post : posts) {
+            if (post.getPoll() != null) {
+                pollDAO.loadUserVoteState(post.getPoll(), user.getId());
+            }
+        }
+
         req.setAttribute("posts", posts);
         req.setAttribute("activeTab", tab);
-        
+
         req.getRequestDispatcher("/WEB-INF/views/moderator/community/index.jsp").forward(req, resp);
     }
 }

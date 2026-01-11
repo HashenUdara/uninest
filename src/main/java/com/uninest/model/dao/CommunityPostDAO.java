@@ -16,6 +16,8 @@ public class CommunityPostDAO {
     /**
      * Maps a ResultSet row to a CommunityPost object.
      */
+    private final PollDAO pollDAO = new PollDAO();
+
     private CommunityPost map(ResultSet rs) throws SQLException {
         CommunityPost post = new CommunityPost();
         post.setId(rs.getInt("id"));
@@ -28,18 +30,32 @@ public class CommunityPostDAO {
         post.setUpdatedAt(rs.getTimestamp("updated_at"));
         post.setDeleted(rs.getBoolean("is_deleted"));
         post.setDeletedAt(rs.getTimestamp("deleted_at"));
+
+        // Eagerly fetch poll (N+1 but simple for now)
+        // Check for current user if possible, but map() often doesn't have userId
+        // context easily.
+        // We'll fetch the poll structure, vote status might need a separate call or
+        // passing userId to map.
+        // For lists, we usually don't need vote status unless we view details.
+        // Let's just fetch the poll structure for now.
+        // Passing 0 for userId means we won't get vote status here.
+        // View logic or specific servlets should handle user-specific vote status if
+        // needed.
+        pollDAO.findByPostId(post.getId(), 0).ifPresent(post::setPoll);
+
         return post;
     }
 
     /**
      * Creates a new community post.
+     * 
      * @param post The post to create
      * @return The generated post ID
      */
     public int create(CommunityPost post) {
         String sql = "INSERT INTO community_posts(user_id, community_id, title, content, image_url) VALUES(?,?,?,?,?)";
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, post.getUserId());
             ps.setInt(2, post.getCommunityId());
             ps.setString(3, post.getTitle());
@@ -65,10 +81,11 @@ public class CommunityPostDAO {
     public Optional<CommunityPost> findById(int id) {
         String sql = "SELECT * FROM community_posts WHERE id = ? AND is_deleted = FALSE";
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return Optional.of(map(rs));
+                if (rs.next())
+                    return Optional.of(map(rs));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error fetching community post", e);
@@ -81,16 +98,16 @@ public class CommunityPostDAO {
      */
     public Optional<CommunityPost> findByIdWithAuthor(int id) {
         String sql = """
-            SELECT p.*, 
-                   u.name AS author_name,
-                   (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS like_count,
-                   (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
-            FROM community_posts p
-            JOIN users u ON p.user_id = u.id
-            WHERE p.id = ? AND p.is_deleted = FALSE
-            """;
+                SELECT p.*,
+                       u.name AS author_name,
+                       (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS like_count,
+                       (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
+                FROM community_posts p
+                JOIN users u ON p.user_id = u.id
+                WHERE p.id = ? AND p.is_deleted = FALSE
+                """;
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -112,16 +129,16 @@ public class CommunityPostDAO {
      */
     public List<CommunityPost> findByUserId(int userId) {
         String sql = """
-            SELECT p.*, 
-                   ma.reason AS deletion_reason
-            FROM community_posts p
-            LEFT JOIN moderator_actions ma ON ma.post_id = p.id AND ma.action_type = 'POST_DELETE'
-            WHERE p.user_id = ?
-            ORDER BY p.created_at DESC
-            """;
+                SELECT p.*,
+                       ma.reason AS deletion_reason
+                FROM community_posts p
+                LEFT JOIN moderator_actions ma ON ma.post_id = p.id AND ma.action_type = 'POST_DELETE'
+                WHERE p.user_id = ?
+                ORDER BY p.created_at DESC
+                """;
         List<CommunityPost> list = new ArrayList<>();
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -143,10 +160,11 @@ public class CommunityPostDAO {
         String sql = "SELECT * FROM community_posts WHERE community_id = ? AND is_deleted = FALSE ORDER BY created_at DESC";
         List<CommunityPost> list = new ArrayList<>();
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, communityId);
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) list.add(map(rs));
+                while (rs.next())
+                    list.add(map(rs));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error fetching posts by community", e);
@@ -160,18 +178,18 @@ public class CommunityPostDAO {
      */
     public List<CommunityPost> findByCommunityIdWithAuthor(int communityId) {
         String sql = """
-            SELECT p.*, 
-                   u.name AS author_name,
-                   (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS like_count,
-                   (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
-            FROM community_posts p
-            JOIN users u ON p.user_id = u.id
-            WHERE p.community_id = ? AND p.is_deleted = FALSE
-            ORDER BY p.created_at DESC
-            """;
+                SELECT p.*,
+                       u.name AS author_name,
+                       (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS like_count,
+                       (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
+                FROM community_posts p
+                JOIN users u ON p.user_id = u.id
+                WHERE p.community_id = ? AND p.is_deleted = FALSE
+                ORDER BY p.created_at DESC
+                """;
         List<CommunityPost> list = new ArrayList<>();
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, communityId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -191,13 +209,14 @@ public class CommunityPostDAO {
     /**
      * Updates an existing community post.
      * Updates title, content, image_url, and sets updated_at to current timestamp.
+     * 
      * @param post The post with updated values (must have valid id)
      * @return true if update was successful, false otherwise
      */
     public boolean update(CommunityPost post) {
         String sql = "UPDATE community_posts SET title = ?, content = ?, image_url = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, post.getTitle());
             ps.setString(2, post.getContent());
             ps.setString(3, post.getImageUrl());
@@ -212,13 +231,14 @@ public class CommunityPostDAO {
     /**
      * Deletes a community post by its ID.
      * Also deletes associated likes and comments due to CASCADE constraint.
+     * 
      * @param postId The ID of the post to delete
      * @return true if deletion was successful, false otherwise
      */
     public boolean delete(int postId) {
         String sql = "UPDATE community_posts SET is_deleted = TRUE, deleted_at = CURRENT_TIMESTAMP WHERE id = ?";
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, postId);
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
@@ -232,18 +252,18 @@ public class CommunityPostDAO {
      */
     public List<CommunityPost> findDeletedByCommunityId(int communityId) {
         String sql = """
-            SELECT p.*, 
-                   u.name AS author_name,
-                   ma.reason AS deletion_reason
-            FROM community_posts p
-            JOIN users u ON p.user_id = u.id
-            LEFT JOIN moderator_actions ma ON ma.post_id = p.id AND ma.action_type = 'POST_DELETE'
-            WHERE p.community_id = ? AND p.is_deleted = TRUE
-            ORDER BY p.deleted_at DESC
-            """;
+                SELECT p.*,
+                       u.name AS author_name,
+                       ma.reason AS deletion_reason
+                FROM community_posts p
+                JOIN users u ON p.user_id = u.id
+                LEFT JOIN moderator_actions ma ON ma.post_id = p.id AND ma.action_type = 'POST_DELETE'
+                WHERE p.community_id = ? AND p.is_deleted = TRUE
+                ORDER BY p.deleted_at DESC
+                """;
         List<CommunityPost> list = new ArrayList<>();
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, communityId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {

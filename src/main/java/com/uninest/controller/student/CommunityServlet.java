@@ -18,7 +18,7 @@ import java.util.List;
  */
 @WebServlet(name = "community", urlPatterns = "/student/community")
 public class CommunityServlet extends HttpServlet {
-    
+
     private final CommunityPostDAO postDAO = new CommunityPostDAO();
 
     @Override
@@ -28,23 +28,32 @@ public class CommunityServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
             return;
         }
-        
+
         // Check if user has a community
         if (user.getCommunityId() == null) {
             resp.sendRedirect(req.getContextPath() + "/student/join-community");
             return;
         }
-        
+
         // Fetch posts for the user's community
         List<CommunityPost> posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId());
+
+        // Enrich with poll vote state
+        com.uninest.model.dao.PollDAO pollDAO = new com.uninest.model.dao.PollDAO();
+        for (CommunityPost post : posts) {
+            if (post.getPoll() != null) {
+                pollDAO.loadUserVoteState(post.getPoll(), user.getId());
+            }
+        }
+
         req.setAttribute("posts", posts);
-        
+
         // Check for success message from post creation
         String postStatus = req.getParameter("post");
         if ("success".equals(postStatus)) {
             req.setAttribute("success", "Post created successfully!");
         }
-        
+
         req.getRequestDispatcher("/WEB-INF/views/student/community/index.jsp").forward(req, resp);
     }
 }

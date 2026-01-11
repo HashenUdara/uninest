@@ -53,6 +53,12 @@ public class PostDetailServlet extends HttpServlet {
             }
 
             CommunityPost post = postOpt.get();
+
+            // Enrich with poll vote state
+            if (post.getPoll() != null) {
+                new com.uninest.model.dao.PollDAO().loadUserVoteState(post.getPoll(), user.getId());
+            }
+
             List<PostComment> comments = commentDAO.findByPostId(postId);
 
             req.setAttribute("post", post);

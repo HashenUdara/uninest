@@ -24,6 +24,7 @@ public class CommunityPost {
     private int likeCount;
     private int commentCount;
     private String deletionReason; // Populated for moderator audit view
+    private boolean isPinned;
 
     // Getters and Setters
     public int getId() { return id; }
@@ -68,4 +69,7 @@ public class CommunityPost {
 
     public String getDeletionReason() { return deletionReason; }
     public void setDeletionReason(String deletionReason) { this.deletionReason = deletionReason; }
+
+    public boolean isPinned() { return isPinned; }
+    public void setPinned(boolean pinned) { isPinned = pinned; }
 }

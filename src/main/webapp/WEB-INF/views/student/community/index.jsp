@@ -89,8 +89,70 @@ tagdir="/WEB-INF/tags/dashboard" %>
       </header>
 
       <section class="u-stack-4">
-        <h3 class="c-section-title" style="margin-top: 0">Pinned Posts</h3>
+        <div class="c-pinned-section ${empty pinnedPosts ? 'u-hidden' : ''}" id="pinned-section">
+            <header class="c-pinned-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding-bottom: var(--space-2); border-bottom: 1px solid rgba(84, 44, 245, 0.1); margin-bottom: var(--space-4);" onclick="togglePinnedSection()">
+                <div style="display: flex; align-items: center; gap: var(--space-2);">
+                    <i data-lucide="pin" style="color: var(--color-brand); width: 20px; height: 20px;"></i>
+                    <h3 style="font-size: var(--fs-lg); font-weight: var(--fw-bold); color: var(--color-brand); margin: 0; line-height: 1;">Pinned Posts</h3>
+                </div>
+                <button class="c-pinned-toggle" aria-label="Toggle Pinned Posts" style="background: none; border: none; color: var(--color-brand); padding: 4px; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="chevron-down" style="width: 20px; height: 20px;"></i>
+                </button>
+            </header>
+            <div class="c-pinned-content">
+                <c:forEach var="post" items="${pinnedPosts}">
+                    <article class="c-post c-post--pinned">
+                         <div class="c-post__head">
+                            <div class="c-avatar-sm">
+                              <c:set var="initials" value="${fn:substring(post.authorName, 0, 1)}${fn:substring(fn:substringAfter(post.authorName, ' '), 0, 1)}" />
+                              <img alt="${post.authorName}" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3E${fn:toUpperCase(initials)}%3C/text%3E%3C/svg%3E" />
+                            </div>
+                            <div>
+                              <strong>${post.authorName}</strong>
+                              <div class="c-post__meta">
+                                <fmt:formatDate value="${post.createdAt}" pattern="MMM d, yyyy" />
+                                <span class="c-pin-badge"><i data-lucide="pin" style="width:10px; height:10px;"></i> Pinned</span>
+                              </div>
+                            </div>
+                            <div style="margin-left: auto; color: var(--color-brand); opacity: 0.8; display: none;">
+                                <i data-lucide="pin"></i>
+                            </div>
+                          </div>
+                          <div class="c-post__body">
+                            <h4 class="c-post__title">
+                                <c:if test="${post.pinned}">
+                                    <i data-lucide="pin" style="width: 14px; height: 14px; color: var(--color-brand); margin-right: 4px; display: inline-block; vertical-align: middle;"></i>
+                                </c:if>
+                                <a href="${pageContext.request.contextPath}/student/community/post?id=${post.id}" style="color: inherit; text-decoration: none; vertical-align: middle;">
+                                  ${post.title}
+                                </a>
+                            </h4>
+                            <p class="u-text-muted">${post.content}</p>
+                          </div>
+                    </article>
+                </c:forEach>
+            </div>
+        </div>
       </section>
+
+      <script>
+        function togglePinnedSection() {
+            const section = document.getElementById('pinned-section');
+            if (!section) return;
+            section.classList.toggle('is-collapsed');
+            
+            const isCollapsed = section.classList.contains('is-collapsed');
+            localStorage.setItem('pinnedSectionCollapsed', isCollapsed);
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if (window.lucide) window.lucide.createIcons();
+            const section = document.getElementById('pinned-section');
+            if (section && localStorage.getItem('pinnedSectionCollapsed') === 'true') {
+                section.classList.add('is-collapsed');
+            }
+        });
+      </script>
 
       <!-- Latest posts -->
       <section class="u-stack-4">
@@ -125,24 +187,32 @@ tagdir="/WEB-INF/tags/dashboard" %>
                           value="${post.createdAt}"
                           pattern="MMM d, yyyy"
                         />
+                        <c:if test="${post.pinned}">
+                             <span class="c-pin-badge"><i data-lucide="pin" style="width:10px; height:10px;"></i> Pinned</span>
+                        </c:if>
                       </div>
                     </div>
                   </div>
 
-                  <h4 class="c-post__title">
-                      <a href="${pageContext.request.contextPath}/student/community/post?id=${post.id}" style="color: inherit; text-decoration: none;">
-                        ${post.title}
-                      </a>
-                  </h4>
-                  <p class="u-text-muted">${post.content}</p>
-                  <c:if test="${not empty post.imageUrl}">
-                    <div class="c-post__image">
-                      <img
-                        src="${pageContext.request.contextPath}/uploads/${post.imageUrl}"
-                        alt="Post image"
-                      />
-                    </div>
-                  </c:if>
+                  <div class="c-post__body">
+                      <h4 class="c-post__title">
+                          <c:if test="${post.pinned}">
+                              <i data-lucide="pin" style="width: 14px; height: 14px; color: var(--color-brand); margin-right: 4px; display: inline-block; vertical-align: middle;"></i>
+                          </c:if>
+                          <a href="${pageContext.request.contextPath}/student/community/post?id=${post.id}" style="color: inherit; text-decoration: none; vertical-align: middle;">
+                            ${post.title}
+                          </a>
+                      </h4>
+                      <p class="u-text-muted">${post.content}</p>
+                      <c:if test="${not empty post.imageUrl}">
+                        <div class="c-post__image">
+                          <img
+                            src="${pageContext.request.contextPath}/uploads/${post.imageUrl}"
+                            alt="Post image"
+                          />
+                        </div>
+                      </c:if>
+                  </div>
                   <div class="c-post__actions">
                     <button
                       class="c-btn c-btn--ghost c-btn--sm js-upvote"

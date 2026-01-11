@@ -2,3 +2,5 @@
 ALTER TABLE community_posts 
 ADD COLUMN is_deleted BOOLEAN DEFAULT FALSE,
 ADD COLUMN deleted_at TIMESTAMP NULL DEFAULT NULL;
+
+-- deleted posts for moderator view

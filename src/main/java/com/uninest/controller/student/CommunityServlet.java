@@ -36,7 +36,10 @@ public class CommunityServlet extends HttpServlet {
         }
         
         // Fetch posts for the user's community
+        List<CommunityPost> pinnedPosts = postDAO.findPinnedByCommunityId(user.getCommunityId());
         List<CommunityPost> posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId());
+        
+        req.setAttribute("pinnedPosts", pinnedPosts);
         req.setAttribute("posts", posts);
         
         // Check for success message from post creation

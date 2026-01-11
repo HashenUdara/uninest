@@ -52,6 +52,8 @@ public class ModeratorCommunityServlet extends HttpServlet {
             posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId());
         }
         
+        List<CommunityPost> pinnedPosts = postDAO.findPinnedByCommunityId(user.getCommunityId());
+        req.setAttribute("pinnedPosts", pinnedPosts);
         req.setAttribute("posts", posts);
         req.setAttribute("activeTab", tab);
         

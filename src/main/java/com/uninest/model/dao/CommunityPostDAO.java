@@ -28,6 +28,7 @@ public class CommunityPostDAO {
         post.setUpdatedAt(rs.getTimestamp("updated_at"));
         post.setDeleted(rs.getBoolean("is_deleted"));
         post.setDeletedAt(rs.getTimestamp("deleted_at"));
+        post.setPinned(rs.getBoolean("is_pinned"));
         return post;
     }
 
@@ -167,7 +168,7 @@ public class CommunityPostDAO {
             FROM community_posts p
             JOIN users u ON p.user_id = u.id
             WHERE p.community_id = ? AND p.is_deleted = FALSE
-            ORDER BY p.created_at DESC
+            ORDER BY p.is_pinned DESC, p.created_at DESC
             """;
         List<CommunityPost> list = new ArrayList<>();
         try (Connection con = DBConnection.getConnection();
@@ -255,6 +256,57 @@ public class CommunityPostDAO {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error fetching deleted posts", e);
+        }
+        return list;
+    }
+
+    /**
+     * Toggles the pinned status of a post.
+     * @param postId The ID of the post
+     * @param isPinned true to pin, false to unpin
+     * @return true if successful
+     */
+    public boolean setPinned(int postId, boolean isPinned) {
+        String sql = "UPDATE community_posts SET is_pinned = ? WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setBoolean(1, isPinned);
+            ps.setInt(2, postId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating pin status", e);
+        }
+    }
+
+    /**
+     * Finds all pinned posts for a community.
+     */
+    public List<CommunityPost> findPinnedByCommunityId(int communityId) {
+        String sql = """
+            SELECT p.*, 
+                   u.name AS author_name,
+                   (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS like_count,
+                   (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
+            FROM community_posts p
+            JOIN users u ON p.user_id = u.id
+            WHERE p.community_id = ? AND p.is_deleted = FALSE AND p.is_pinned = TRUE
+            ORDER BY p.created_at DESC
+            """;
+        List<CommunityPost> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, communityId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CommunityPost post = map(rs);
+                    post.setAuthorName(rs.getString("author_name"));
+                    post.setLikeCount(rs.getInt("like_count"));
+                    post.setCommentCount(rs.getInt("comment_count"));
+                    list.add(post);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching pinned posts", e);
         }
         return list;
     }

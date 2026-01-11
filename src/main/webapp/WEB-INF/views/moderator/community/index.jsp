@@ -57,7 +57,7 @@ tagdir="/WEB-INF/tags/dashboard" %>
           <a href="${pageContext.request.contextPath}/moderator/community?tab=upvoted" class="${activeTab == 'upvoted' ? 'is-active' : ''}">Most Upvoted</a>
           <a href="${pageContext.request.contextPath}/moderator/community?tab=recent" class="${activeTab == 'recent' ? 'is-active' : ''}">Most Recent</a>
           <a href="${pageContext.request.contextPath}/moderator/community?tab=unanswered" class="${activeTab == 'unanswered' ? 'is-active' : ''}">Unanswered</a>
-          <a href="${pageContext.request.contextPath}/moderator/community?tab=deleted" class="${activeTab == 'deleted' ? 'is-active' : ''}" style="color: var(--c-danger);">Deleted Posts</a>
+          <a href="${pageContext.request.contextPath}/moderator/community?tab=deleted" class="${activeTab == 'deleted' ? 'is-active' : ''}" style="color: var(--color-danger);">Deleted Posts</a>
         </nav>
         <!-- Filters -->
         <div
@@ -81,7 +81,55 @@ tagdir="/WEB-INF/tags/dashboard" %>
       </header>
 
       <section class="u-stack-4">
-        <h3 class="c-section-title" style="margin-top: 0">Pinned Posts</h3>
+        <div class="c-pinned-section ${empty pinnedPosts ? 'u-hidden' : ''}" id="pinned-section">
+            <header class="c-pinned-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding-bottom: var(--space-2); border-bottom: 1px solid rgba(84, 44, 245, 0.1); margin-bottom: var(--space-4);" onclick="togglePinnedSection()">
+                <div style="display: flex; align-items: center; gap: var(--space-2);">
+                    <i data-lucide="pin" style="color: var(--color-brand); width: 20px; height: 20px;"></i>
+                    <h3 style="font-size: var(--fs-lg); font-weight: var(--fw-bold); color: var(--color-brand); margin: 0; line-height: 1;">Pinned Posts</h3>
+                </div>
+                <button class="c-pinned-toggle" aria-label="Toggle Pinned Posts" style="background: none; border: none; color: var(--color-brand); padding: 4px; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="chevron-down" style="width: 20px; height: 20px;"></i>
+                </button>
+            </header>
+            <div class="c-pinned-content">
+                <c:forEach var="post" items="${pinnedPosts}">
+                    <article class="c-post c-post--pinned">
+                         <div class="c-post__head">
+                            <div class="c-avatar-sm">
+                              <c:set var="initials" value="${fn:substring(post.authorName, 0, 1)}${fn:substring(fn:substringAfter(post.authorName, ' '), 0, 1)}" />
+                              <img alt="${post.authorName}" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3E${fn:toUpperCase(initials)}%3C/text%3E%3C/svg%3E" />
+                            </div>
+                            <div>
+                              <strong>${post.authorName}</strong>
+                              <div class="c-post__meta">
+                                <fmt:formatDate value="${post.createdAt}" pattern="MMM d, yyyy" />
+                                <span class="c-pin-badge"><i data-lucide="pin" style="width:10px; height:10px;"></i> Pinned</span>
+                              </div>
+                            </div>
+                            <form action="${pageContext.request.contextPath}/moderator/community/post/pin" method="POST" style="margin-left: auto;">
+                                <input type="hidden" name="postId" value="${post.id}">
+                                <input type="hidden" name="action" value="unpin">
+                                <input type="hidden" name="tab" value="${activeTab}">
+                                <button type="submit" class="c-btn c-btn--ghost c-btn--sm" title="Unpin Post">
+                                    <i data-lucide="pin-off"></i>
+                                </button>
+                            </form>
+                          </div>
+                          <div class="c-post__body">
+                            <h4 class="c-post__title">
+                                <c:if test="${post.pinned}">
+                                    <i data-lucide="pin" style="width: 14px; height: 14px; color: var(--color-brand); margin-right: 4px; display: inline-block; vertical-align: middle;"></i>
+                                </c:if>
+                                <a href="${pageContext.request.contextPath}/moderator/community/post?id=${post.id}" style="color: inherit; text-decoration: none; vertical-align: middle;">
+                                  ${post.title}
+                                </a>
+                            </h4>
+                            <p class="u-text-muted">${post.content}</p>
+                          </div>
+                    </article>
+                </c:forEach>
+            </div>
+        </div>
       </section>
 
       <!-- Latest posts -->
@@ -117,8 +165,22 @@ tagdir="/WEB-INF/tags/dashboard" %>
                           value="${post.createdAt}"
                           pattern="MMM d, yyyy"
                         />
+                        <c:if test="${post.pinned}">
+                             <span class="c-pin-badge"><i data-lucide="pin" style="width:10px; height:10px;"></i> Pinned</span>
+                        </c:if>
                       </div>
                     </div>
+                    
+                    <c:if test="${!post.deleted}">
+                        <form action="${pageContext.request.contextPath}/moderator/community/post/pin" method="POST" style="margin-left: auto;">
+                            <input type="hidden" name="postId" value="${post.id}">
+                            <input type="hidden" name="action" value="${post.pinned ? 'unpin' : 'pin'}">
+                            <input type="hidden" name="tab" value="${activeTab}">
+                            <button type="submit" class="c-btn c-btn--ghost c-btn--sm ${post.pinned ? 'is-pinned' : ''}" title="${post.pinned ? 'Unpin Post' : 'Pin Post'}">
+                                <i data-lucide="${post.pinned ? 'pin-off' : 'pin'}"></i>
+                            </button>
+                        </form>
+                    </c:if>
                   </div>
 
                   <div class="c-post__body">
@@ -128,7 +190,10 @@ tagdir="/WEB-INF/tags/dashboard" %>
                                 <span style="color: inherit; opacity: 0.6;">${post.title} (Deleted)</span>
                             </c:when>
                             <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/moderator/community/post?id=${post.id}" style="color: inherit; text-decoration: none;">
+                                <c:if test="${post.pinned}">
+                                    <i data-lucide="pin" style="width: 14px; height: 14px; color: var(--color-brand); margin-right: 4px; display: inline-block; vertical-align: middle;"></i>
+                                </c:if>
+                                <a href="${pageContext.request.contextPath}/moderator/community/post?id=${post.id}" style="color: inherit; text-decoration: none; vertical-align: middle;">
                                   ${post.title}
                                 </a>
                             </c:otherwise>
@@ -172,9 +237,9 @@ tagdir="/WEB-INF/tags/dashboard" %>
                             </a>
                             
                             <button 
-                                class="c-btn c-btn--ghost c-btn--sm js-moderator-delete-post" 
+                                class="c-btn c-btn--ghost c-btn--sm c-btn--danger-ghost js-moderator-delete-post" 
                                 data-post-id="${post.id}"
-                                style="color: var(--c-danger); margin-left: auto;"
+                                style="margin-left: 12px;"
                                 title="Delete Post"
                             >
                                 <i data-lucide="trash-2"></i>
@@ -230,8 +295,29 @@ tagdir="/WEB-INF/tags/dashboard" %>
   </div>
   
   <script>
+    function togglePinnedSection() {
+        const section = document.getElementById('pinned-section');
+        section.classList.toggle('is-collapsed');
+        
+        // Save state to localStorage
+        const isCollapsed = section.classList.contains('is-collapsed');
+        localStorage.setItem('pinnedSectionCollapsed', isCollapsed);
+        
+        // Update icon if needed (lucide handles this on refresh, but for live toggle:)
+        const icon = section.querySelector('.c-pinned-toggle i');
+        if (icon && window.lucide) {
+             // Lucide icons are SVGs, so we rotate the parent button via CSS instead
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         if (window.lucide) window.lucide.createIcons();
+
+        // Restore collapsed state
+        const section = document.getElementById('pinned-section');
+        if (section && localStorage.getItem('pinnedSectionCollapsed') === 'true') {
+            section.classList.add('is-collapsed');
+        }
 
         const modal = document.getElementById("mod-delete-modal");
         const postIdInput = document.getElementById("mod-delete-post-id");

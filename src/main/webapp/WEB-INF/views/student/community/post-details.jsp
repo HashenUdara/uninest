@@ -112,12 +112,23 @@
                     <div class="c-post__stats" aria-label="Post stats">
                       <span class="c-stat"><i data-lucide="thumbs-up"></i>${post.likeCount}</span>
                       <span class="c-stat"><i data-lucide="message-square"></i>${post.commentCount}</span>
-                      <button class="c-btn c-btn--ghost c-btn--sm js-report-post" aria-label="Report"
-                        onclick="openReportModal(${post.id})"
-                        style="margin-left: auto; color: var(--color-danger); border: none; background: none; cursor: pointer; display: flex; align-items: center;">
-                        <i data-lucide="flag" style="width: 16px; height: 16px;"></i>
-                        <span style="font-size: 0.85rem; margin-left: 6px;">Report</span>
-                      </button>
+                      <c:choose>
+                        <c:when test="${post.currentUserReported}">
+                          <button class="c-btn c-btn--ghost c-btn--sm" aria-label="Reported" disabled
+                            style="margin-left: auto; color: #f59e0b; border: none; background: none; cursor: not-allowed; display: flex; align-items: center; opacity: 1;">
+                            <i data-lucide="flag" style="width: 16px; height: 16px; fill: #f59e0b;"></i>
+                            <span style="font-size: 0.85rem; margin-left: 6px;">Reported</span>
+                          </button>
+                        </c:when>
+                        <c:otherwise>
+                          <button class="c-btn c-btn--ghost c-btn--sm js-report-post" aria-label="Report"
+                            onclick="openReportModal(${post.id})"
+                            style="margin-left: auto; color: var(--color-danger); border: none; background: none; cursor: pointer; display: flex; align-items: center;">
+                            <i data-lucide="flag" style="width: 16px; height: 16px;"></i>
+                            <span style="font-size: 0.85rem; margin-left: 6px;">Report</span>
+                          </button>
+                        </c:otherwise>
+                      </c:choose>
                     </div>
 
                     <section class="c-comments u-stack-4" id="comments">

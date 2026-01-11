@@ -213,11 +213,21 @@
                                   <i data-lucide="thumbs-down"></i>
                                 </button>
                                 <!-- Report Button -->
-                                <button class="c-btn c-btn--ghost c-btn--sm js-report-post" aria-label="Report"
-                                  onclick="openReportModal(${post.id})"
-                                  style="margin-left: auto; color: var(--color-danger);">
-                                  <i data-lucide="flag"></i>
-                                </button>
+                                <c:choose>
+                                  <c:when test="${post.currentUserReported}">
+                                    <button class="c-btn c-btn--ghost c-btn--sm" aria-label="Reported" disabled
+                                      style="margin-left: auto; color: #f59e0b; cursor: not-allowed; opacity: 1;">
+                                      <i data-lucide="flag" style="fill: #f59e0b;"></i>
+                                    </button>
+                                  </c:when>
+                                  <c:otherwise>
+                                    <button class="c-btn c-btn--ghost c-btn--sm js-report-post" aria-label="Report"
+                                      onclick="openReportModal(${post.id})"
+                                      style="margin-left: auto; color: var(--color-danger);">
+                                      <i data-lucide="flag"></i>
+                                    </button>
+                                  </c:otherwise>
+                                </c:choose>
                               </div>
                             </article>
                           </c:forEach>

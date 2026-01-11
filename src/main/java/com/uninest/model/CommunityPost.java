@@ -26,6 +26,7 @@ public class CommunityPost {
     private String deletionReason; // Populated for moderator audit view
     private boolean isPinned;
     private int reportCount; // Populated for moderator reported posts view
+    private boolean currentUserReported; // Populated for student view
 
     // Getters and Setters
     public int getId() {
@@ -155,5 +156,13 @@ public class CommunityPost {
 
     public void setReportCount(int reportCount) {
         this.reportCount = reportCount;
+    }
+
+    public boolean isCurrentUserReported() {
+        return currentUserReported;
+    }
+
+    public void setCurrentUserReported(boolean currentUserReported) {
+        this.currentUserReported = currentUserReported;
     }
 }

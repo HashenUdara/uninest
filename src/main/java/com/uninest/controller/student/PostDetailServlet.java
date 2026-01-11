@@ -4,6 +4,7 @@ import com.uninest.model.CommunityPost;
 import com.uninest.model.PostComment;
 import com.uninest.model.User;
 import com.uninest.model.dao.CommunityPostDAO;
+import com.uninest.model.dao.PostReportDAO;
 import com.uninest.model.dao.PostCommentDAO;
 
 import jakarta.servlet.ServletException;
@@ -21,11 +22,13 @@ import java.util.Optional;
 public class PostDetailServlet extends HttpServlet {
     private CommunityPostDAO postDAO;
     private PostCommentDAO commentDAO;
+    private PostReportDAO postReportDAO;
 
     @Override
     public void init() throws ServletException {
         postDAO = new CommunityPostDAO();
         commentDAO = new PostCommentDAO();
+        postReportDAO = new PostReportDAO();
     }
 
     @Override
@@ -53,6 +56,8 @@ public class PostDetailServlet extends HttpServlet {
             }
 
             CommunityPost post = postOpt.get();
+            postReportDAO.loadUserReportState(post, user.getId());
+
             List<PostComment> comments = commentDAO.findByPostId(postId);
 
             req.setAttribute("post", post);

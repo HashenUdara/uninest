@@ -1,11 +1,15 @@
 package com.uninest.model.dao;
 
+import com.uninest.model.CommunityPost;
 import com.uninest.model.PostReport;
 import com.uninest.util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 /**
  * Data Access Object for community post reports.
@@ -93,5 +97,56 @@ public class PostReportDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Error dismissing reports", e);
         }
+    }
+
+    /**
+     * Efficiently loads report status for a list of posts for a specific user.
+     * Populates the currentUserReported field.
+     */
+    public void loadUserReportState(List<CommunityPost> posts, int userId) {
+        if (posts == null || posts.isEmpty())
+            return;
+
+        List<Integer> postIds = posts.stream().map(CommunityPost::getId).collect(Collectors.toList());
+
+        // Build query for specific post IDs
+        StringBuilder sql = new StringBuilder(
+                "SELECT post_id FROM community_post_reports WHERE reporter_user_id = ? AND post_id IN (");
+        for (int i = 0; i < postIds.size(); i++) {
+            sql.append(i == 0 ? "?" : ", ?");
+        }
+        sql.append(")");
+
+        Set<Integer> reportedPostIds = new HashSet<>();
+        try (Connection con = DBConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+            ps.setInt(1, userId);
+            for (int i = 0; i < postIds.size(); i++) {
+                ps.setInt(i + 2, postIds.get(i));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    reportedPostIds.add(rs.getInt("post_id"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error loading report states", e);
+        }
+
+        // Update posts
+        for (CommunityPost post : posts) {
+            post.setCurrentUserReported(reportedPostIds.contains(post.getId()));
+        }
+    }
+
+    /**
+     * Loads report status for a single post.
+     */
+    public void loadUserReportState(CommunityPost post, int userId) {
+        if (post == null)
+            return;
+        post.setCurrentUserReported(hasUserReported(post.getId(), userId));
     }
 }

@@ -59,9 +59,9 @@ tagdir="/WEB-INF/tags/dashboard" %>
           >
         </div>
         <nav class="c-tabs-line" aria-label="Filter">
-          <a href="#" class="is-active">Most Upvoted</a>
-          <a href="#">Most Recent</a>
-          <a href="#">Unanswered</a>
+          <a href="${pageContext.request.contextPath}/student/community?tab=upvoted" class="${activeTab == 'upvoted' || empty activeTab ? 'is-active' : ''}">Most Upvoted</a>
+          <a href="${pageContext.request.contextPath}/student/community?tab=recent" class="${activeTab == 'recent' ? 'is-active' : ''}">Most Recent</a>
+          <a href="${pageContext.request.contextPath}/student/community?tab=unanswered" class="${activeTab == 'unanswered' ? 'is-active' : ''}">Unanswered</a>
           <a
             href="${pageContext.request.contextPath}/student/community/my-posts"
             >My Posts</a
@@ -88,6 +88,7 @@ tagdir="/WEB-INF/tags/dashboard" %>
         </div>
       </header>
 
+      <c:if test="${activeTab == 'upvoted' || activeTab == 'recent' || empty activeTab}">
       <section class="u-stack-4">
         <div class="c-pinned-section ${empty pinnedPosts ? 'u-hidden' : ''}" id="pinned-section">
             <header class="c-pinned-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding-bottom: var(--space-2); border-bottom: 1px solid rgba(84, 44, 245, 0.1); margin-bottom: var(--space-4);" onclick="togglePinnedSection()">
@@ -156,6 +157,7 @@ tagdir="/WEB-INF/tags/dashboard" %>
             </div>
         </div>
       </section>
+      </c:if>
 
       <script>
         function togglePinnedSection() {

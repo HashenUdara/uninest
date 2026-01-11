@@ -36,11 +36,15 @@ public class CommunityServlet extends HttpServlet {
         }
         
         // Fetch posts for the user's community
+        String tab = req.getParameter("tab");
+        if (tab == null) tab = "upvoted"; // Default
+        
         List<CommunityPost> pinnedPosts = postDAO.findPinnedByCommunityId(user.getCommunityId());
         List<CommunityPost> posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId());
         
         req.setAttribute("pinnedPosts", pinnedPosts);
         req.setAttribute("posts", posts);
+        req.setAttribute("activeTab", tab);
         
         // Check for success message from post creation
         String postStatus = req.getParameter("post");

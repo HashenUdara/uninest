@@ -80,6 +80,7 @@ tagdir="/WEB-INF/tags/dashboard" %>
         </div>
       </header>
 
+      <c:if test="${activeTab == 'upvoted' || activeTab == 'recent' || empty activeTab}">
       <section class="u-stack-4">
         <div class="c-pinned-section ${empty pinnedPosts ? 'u-hidden' : ''}" id="pinned-section">
             <header class="c-pinned-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding-bottom: var(--space-2); border-bottom: 1px solid rgba(84, 44, 245, 0.1); margin-bottom: var(--space-4);" onclick="togglePinnedSection()">
@@ -146,6 +147,7 @@ tagdir="/WEB-INF/tags/dashboard" %>
             </div>
         </div>
       </section>
+      </c:if>
 
       <!-- Latest posts -->
       <section class="u-stack-4">

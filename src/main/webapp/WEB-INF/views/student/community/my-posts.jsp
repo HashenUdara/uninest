@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
 <%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
 
@@ -10,6 +11,76 @@
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
                 gap: var(--space-4);
+            }
+            
+            /* Modal overlay and content styling for better visibility */
+            #delete-modal .c-modal__overlay {
+                position: fixed !important;
+                inset: 0 !important;
+                background: rgba(0, 0, 0, 0.85) !important; /* Very dark overlay */
+                backdrop-filter: blur(4px);
+                z-index: 9998 !important;
+            }
+            
+            #delete-modal .c-modal__content {
+                position: relative !important;
+                width: min(520px, 92vw) !important;
+                background: #ffffff !important; /* Force solid white background */
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 12px !important;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+                z-index: 9999 !important;
+                color: #000000 !important; /* Force black text */
+            }
+            
+            #delete-modal .c-modal__header {
+                padding: 1.25rem;
+                border-bottom: 1px solid #e2e8f0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #fff !important;
+                border-radius: 12px 12px 0 0;
+            }
+            
+            #delete-modal .c-modal__header h2 {
+                margin: 0;
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: #1a202c !important;
+            }
+            
+            #delete-modal .c-modal__body {
+                padding: 1.5rem;
+                color: #4a5568 !important;
+                line-height: 1.6;
+                background: #fff !important;
+                font-size: 1rem;
+            }
+            
+            #delete-modal .c-modal__footer {
+                padding: 1.25rem;
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.75rem;
+                border-top: 1px solid #e2e8f0;
+                background: #f7fafc !important;
+                border-radius: 0 0 12px 12px;
+            }
+
+
+            /* Ensure modal container sits on top - BUT ONLY WHEN NOT HIDDEN */
+            #delete-modal:not([hidden]) {
+                z-index: 9999 !important;
+                position: fixed !important;
+                inset: 0 !important;
+                display: grid !important;
+                place-items: center !important;
+            }
+            
+            /* Ensure it stays hidden when it has the hidden attribute */
+            #delete-modal[hidden] {
+                display: none !important;
             }
         </style>
     <header class="c-page__header">
@@ -50,7 +121,7 @@
                   <a href="${pageContext.request.contextPath}/student/community" class="c-btn c-btn--ghost"
                     ><i data-lucide="arrow-left"></i> All Posts</a
                   >
-                  <a href="${pageContext.request.contextPath}/student/community/new-post" class="c-btn c-btn--secondary"
+                  <a href="${pageContext.request.contextPath}/student/community/posts/create" class="c-btn c-btn--secondary"
                   ><i data-lucide="plus"></i> New Post</a
                 >
                 </div>
@@ -107,199 +178,110 @@
                 "
               >
                 <h3 class="c-section-title" style="margin-top: 0">
-                  My Posts (<span class="js-post-count">3</span>)
+                  My Posts (<span class="js-post-count">${posts.size()}</span>)
                 </h3>
               </div>
               <div class="c-posts">
-                <!-- My Post 1: text -->
-                <article
-                  class="c-post c-post--text c-post--mine"
-                  data-type="text"
-                  data-subject="CS204"
-                  data-post-id="1"
-                >
-                  <div class="c-post__head">
-                    <div class="c-avatar-sm">
-                      <img
-                        alt="Sophia Clark"
-                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3ESC%3C/text%3E%3C/svg%3E"
-                      />
+                <c:choose>
+                  <c:when test="${empty posts}">
+                    <div class="c-empty-state" style="text-align: center; padding: var(--space-8);">
+                      <i data-lucide="file-text" style="width: 48px; height: 48px; color: var(--c-text-muted);"></i>
+                      <p class="u-text-muted" style="margin-top: var(--space-4);">You haven't created any posts yet.</p>
+                      <a href="${pageContext.request.contextPath}/student/community/posts/create" class="c-btn c-btn--secondary" style="margin-top: var(--space-4);">
+                        <i data-lucide="plus"></i> Create Your First Post
+                      </a>
                     </div>
-                    <div style="flex: 1">
-                      <strong>Sophia Clark (You)</strong>
-                      <div class="c-post__meta">2d ago • CS204</div>
-                    </div>
-                    <div class="c-post__manage">
-                      <a
-                        href="${pageContext.request.contextPath}/student/community/edit-post?id=1"
-                        class="c-btn c-btn--ghost c-btn--sm"
-                        aria-label="Edit post"
-                        ><i data-lucide="edit-2"></i
-                      ></a>
-                      <button
-                        class="c-btn c-btn--ghost c-btn--sm js-delete-post"
-                        aria-label="Delete post"
-                        data-post-id="1"
+                  </c:when>
+                  <c:otherwise>
+                    <c:forEach var="post" items="${posts}">
+                      <article
+                        class="c-post c-post--${not empty post.imageUrl ? 'image' : 'text'} c-post--mine ${post.deleted ? 'c-post--deleted' : ''}"
+                        data-type="${not empty post.imageUrl ? 'image' : 'text'}"
+                        data-post-id="${post.id}"
+                        style="${post.deleted ? 'opacity: 0.6; filter: grayscale(0.5);' : ''}"
                       >
-                        <i data-lucide="trash-2"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <p class="u-text-muted">
-                    Anyone has tips for CS204 lab 3? I'm stuck on the stack
-                    implementation edge cases. Would really appreciate some
-                    guidance on handling null pointers!
-                  </p>
-                  <div class="c-post__actions">
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-upvote"
-                      aria-label="Upvote"
-                    >
-                      <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">5</span>
-                    </button>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm"
-                      aria-label="Comments"
-                    >
-                      <i data-lucide="message-square"></i>4
-                    </button>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-downvote"
-                      aria-label="Downvote"
-                    >
-                      <i data-lucide="thumbs-down"></i>
-                    </button>
-                  </div>
-                </article>
-
-                <!-- My Post 2: image -->
-                <article
-                  class="c-post c-post--image c-post--mine"
-                  data-type="image"
-                  data-subject="CS301"
-                  data-post-id="2"
-                >
-                  <div class="c-post__head">
-                    <div class="c-avatar-sm">
-                      <img
-                        alt="Sophia Clark"
-                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3ESC%3C/text%3E%3C/svg%3E"
-                      />
-                    </div>
-                    <div style="flex: 1">
-                      <strong>Sophia Clark (You)</strong>
-                      <div class="c-post__meta">1w ago • CS301</div>
-                    </div>
-                    <div class="c-post__manage">
-                      <a
-                        href="${pageContext.request.contextPath}/student/community/edit-post?id=2"
-                        class="c-btn c-btn--ghost c-btn--sm"
-                        aria-label="Edit post"
-                        ><i data-lucide="edit-2"></i
-                      ></a>
-                      <button
-                        class="c-btn c-btn--ghost c-btn--sm js-delete-post"
-                        aria-label="Delete post"
-                        data-post-id="2"
-                      >
-                        <i data-lucide="trash-2"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <p class="u-text-muted">
-                    My notes on dynamic programming patterns - hope this helps
-                    someone preparing for the exam!
-                  </p>
-                  <div class="c-post__image">
-                    <img
-                      src="${pageContext.request.contextPath}/static/img/1.avif"
-                      alt="DP patterns notes"
-                    />
-                  </div>
-                  <div class="c-post__actions">
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-upvote"
-                      aria-label="Upvote"
-                    >
-                      <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">18</span>
-                    </button>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm"
-                      aria-label="Comments"
-                    >
-                      <i data-lucide="message-square"></i>7
-                    </button>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-downvote"
-                      aria-label="Downvote"
-                    >
-                      <i data-lucide="thumbs-down"></i>
-                    </button>
-                  </div>
-                </article>
-
-                <!-- My Post 3: text -->
-                <article
-                  class="c-post c-post--text c-post--mine"
-                  data-type="text"
-                  data-subject="CS123"
-                  data-post-id="3"
-                >
-                  <div class="c-post__head">
-                    <div class="c-avatar-sm">
-                      <img
-                        alt="Sophia Clark"
-                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3ESC%3C/text%3E%3C/svg%3E"
-                      />
-                    </div>
-                    <div style="flex: 1">
-                      <strong>Sophia Clark (You)</strong>
-                      <div class="c-post__meta">2w ago • CS123</div>
-                    </div>
-                    <div class="c-post__manage">
-                      <a
-                        href="${pageContext.request.contextPath}/student/community/edit-post?id=3"
-                        class="c-btn c-btn--ghost c-btn--sm"
-                        aria-label="Edit post"
-                        ><i data-lucide="edit-2"></i
-                      ></a>
-                      <button
-                        class="c-btn c-btn--ghost c-btn--sm js-delete-post"
-                        aria-label="Delete post"
-                        data-post-id="3"
-                      >
-                        <i data-lucide="trash-2"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <p class="u-text-muted">
-                    Looking for study partners for the final project. Anyone
-                    interested in forming a team?
-                  </p>
-                  <div class="c-post__actions">
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-upvote"
-                      aria-label="Upvote"
-                    >
-                      <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">9</span>
-                    </button>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm"
-                      aria-label="Comments"
-                    >
-                      <i data-lucide="message-square"></i>12
-                    </button>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-downvote"
-                      aria-label="Downvote"
-                    >
-                      <i data-lucide="thumbs-down"></i>
-                    </button>
-                  </div>
-                </article>
+                        <div class="c-post__head">
+                          <div class="c-avatar-sm">
+                            <img
+                              alt="${authUser.name}"
+                              src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3E${authUser.name.substring(0,1)}${authUser.name.contains(' ') ? authUser.name.substring(authUser.name.indexOf(' ')+1, authUser.name.indexOf(' ')+2) : ''}%3C/text%3E%3C/svg%3E"
+                            />
+                          </div>
+                          <div style="flex: 1">
+                            <strong>${authUser.name} (You)</strong>
+                             <c:if test="${post.deleted}">
+                                <span class="c-badge c-badge--danger" style="margin-left: var(--space-2); font-size: 0.7rem; vertical-align: middle;">Deleted</span>
+                            </c:if>
+                            <div class="c-post__meta">
+                              <fmt:formatDate value="${post.createdAt}" pattern="MMM d, yyyy"/>
+                            </div>
+                          </div>
+                          <c:if test="${!post.deleted}">
+                              <div class="c-post__manage">
+                                <a
+                                  href="${pageContext.request.contextPath}/student/community/edit-post?id=${post.id}"
+                                  class="c-btn c-btn--ghost c-btn--sm"
+                                  aria-label="Edit post"
+                                  ><i data-lucide="edit-2"></i
+                                ></a>
+                                <button
+                                  class="c-btn c-btn--ghost c-btn--sm js-delete-post"
+                                  aria-label="Delete post"
+                                  data-post-id="${post.id}"
+                                >
+                                  <i data-lucide="trash-2"></i>
+                                </button>
+                              </div>
+                          </c:if>
+                        </div>
+                        <h4 class="c-post__title">
+                            <a href="${pageContext.request.contextPath}/student/community/post?id=${post.id}" style="color: inherit; text-decoration: none;">
+                                ${post.title}
+                            </a>
+                        </h4>
+                        <p class="u-text-muted" style="${post.deleted ? 'text-decoration: line-through; opacity: 0.5;' : ''}">
+                          <c:out value="${post.content}"/>
+                        </p>
+                        <c:if test="${post.deleted}">
+                            <div style="display: flex; align-items: center; gap: var(--space-2); color: #ef4444; font-size: 0.85rem; font-weight: 500; padding: var(--space-2); background: rgba(239, 68, 68, 0.05); border-radius: 6px; margin-top: 1rem;">
+                                <i data-lucide="info" style="width: 14px; height: 14px;"></i>
+                                Deletion Reason: <c:out value="${post.deletionReason != null ? post.deletionReason : 'No reason provided'}"/>
+                            </div>
+                        </c:if>
+                        <c:if test="${not empty post.imageUrl}">
+                          <div class="c-post__image">
+                            <img
+                              src="${pageContext.request.contextPath}/uploads/${post.imageUrl}"
+                              alt="${post.title}"
+                            />
+                          </div>
+                        </c:if>
+                        <div class="c-post__actions">
+                          <button
+                            class="c-btn c-btn--ghost c-btn--sm js-upvote"
+                            aria-label="Upvote"
+                          >
+                            <i data-lucide="thumbs-up"></i
+                            ><span class="js-score">${post.likeCount}</span>
+                          </button>
+                          <a
+                            href="${pageContext.request.contextPath}/student/community/post?id=${post.id}"
+                            class="c-btn c-btn--ghost c-btn--sm"
+                            aria-label="Comments"
+                          >
+                            <i data-lucide="message-square"></i>${post.commentCount}
+                          </a>
+                          <button
+                            class="c-btn c-btn--ghost c-btn--sm js-downvote"
+                            aria-label="Downvote"
+                          >
+                            <i data-lucide="thumbs-down"></i>
+                          </button>
+                        </div>
+                      </article>
+                    </c:forEach>
+                  </c:otherwise>
+                </c:choose>
               </div>
             </section>
           </div>
@@ -460,7 +442,7 @@
         // Close modal
         if (modal) {
           modal.addEventListener("click", (e) => {
-            if (e.target.matches("[data-close]")) {
+            if (e.target.closest("[data-close]")) {
               modal.hidden = true;
               pendingDeleteId = null;
             }
@@ -472,21 +454,53 @@
             }
           });
 
+
           // Confirm delete
           const confirmBtn = modal.querySelector(".js-confirm-delete");
-          confirmBtn?.addEventListener("click", () => {
+          confirmBtn?.addEventListener("click", async () => {
             if (pendingDeleteId) {
-              const post = document.querySelector(
-                `.c-post[data-post-id="${pendingDeleteId}"]`
-              );
-              if (post) {
-                post.remove();
-                updatePostCount();
-                showToast("Post deleted successfully");
+              try {
+                // Disable button during request
+                confirmBtn.disabled = true;
+                confirmBtn.textContent = "Deleting...";
+
+                // Make AJAX request to backend
+                const response = await fetch(
+                  "${pageContext.request.contextPath}/student/community/posts/delete",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: "postId=" + pendingDeleteId,
+                  }
+                );
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                  showToast("Post deleted successfully");
+                  modal.hidden = true;
+                  
+                  // Automatically reload the page after a short delay
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 800);
+                } else {
+                  // Show error message from server
+                  showToast(data.message || "Failed to delete post");
+                  confirmBtn.disabled = false;
+                  confirmBtn.textContent = "Delete";
+                }
+              } catch (error) {
+                console.error("Error deleting post:", error);
+                showToast("An error occurred while deleting the post");
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = "Delete";
+              } finally {
+                pendingDeleteId = null;
               }
-              pendingDeleteId = null;
             }
-            modal.hidden = true;
           });
         }
 

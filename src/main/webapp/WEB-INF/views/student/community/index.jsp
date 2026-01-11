@@ -1,441 +1,371 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="layout" tagdir="/WEB-INF/tags/layouts" %>
-<%@ taglib prefix="dash" tagdir="/WEB-INF/tags/dashboard" %>
+<%@ page contentType="text/html;charset=UTF-8" %> <%@ taglib prefix="c"
+uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib prefix="fn"
+uri="http://java.sun.com/jsp/jstl/functions" %> <%@ taglib prefix="fmt"
+uri="http://java.sun.com/jsp/jstl/fmt" %> <%@ taglib prefix="layout"
+tagdir="/WEB-INF/tags/layouts" %> <%@ taglib prefix="dash"
+tagdir="/WEB-INF/tags/dashboard" %>
 
 <layout:student-dashboard pageTitle="Community" activePage="community">
-         <link rel="stylesheet" href="${pageContext.request.contextPath}/static/community.css" />
-        <style>
-            .c-form-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: var(--space-4);
-            }
-        </style>
-    <header class="c-page__header">
-        <nav class="c-breadcrumbs" aria-label="Breadcrumb">
-            <a href="${pageContext.request.contextPath}/student/dashboard">Home</a>
-            <span class="c-breadcrumbs__sep">/</span>
-            <a href="${pageContext.request.contextPath}/student/community">Community</a>
-            
-        </nav>
-    </header>
+  <link
+    rel="stylesheet"
+    href="${pageContext.request.contextPath}/static/community.css"
+  />
+  <style>
+    .c-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-4);
+    }
+  </style>
+  <header class="c-page__header">
+    <nav class="c-breadcrumbs" aria-label="Breadcrumb">
+      <a href="${pageContext.request.contextPath}/student/dashboard">Home</a>
+      <span class="c-breadcrumbs__sep">/</span>
+      <a href="${pageContext.request.contextPath}/student/community"
+        >Community</a
+      >
+    </nav>
+  </header>
 
-    <c:if test="${not empty error}">
-        <div class="c-alert c-alert--danger" role="alert">
-            <p>${error}</p>
-        </div>
-    </c:if>
+  <c:if test="${not empty error}">
+    <div class="c-alert c-alert--danger" role="alert">
+      <p>${error}</p>
+    </div>
+  </c:if>
 
- <div class="comm-layout">
-          <div class="o-feed">
-            <header class="c-page__header">
-             
-              <div
-                class="o-inline"
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  gap: var(--space-4);
-                "
-              >
-                <div>
-                  <h1 class="c-page__title">Community</h1>
-                  <p class="c-page__subtitle u-text-muted">
-                    Stay updated with the latest discussions and resources from
-                    your peers.
-                  </p>
-                </div>
-                <a href="${pageContext.request.contextPath}/student/community/new-post" class="c-btn c-btn--secondary"
-                  ><i data-lucide="plus"></i> New Post</a
-                >
-              </div>
-              <nav class="c-tabs-line" aria-label="Filter">
-                <a href="#" class="is-active">Most Upvoted</a>
-                <a href="#">Most Recent</a>
-                <a href="#">Unanswered</a>
-                <a href="${pageContext.request.contextPath}/student/community/my-posts">My Posts</a>
-              </nav>
-              <!-- Filters -->
-              <div
-                class="c-filters u-stack-2"
-                role="search"
-                style="margin-top: var(--space-4)"
-              >
-                <div
-                  class="o-inline"
-                  style="display: flex; gap: var(--space-3); flex-wrap: wrap"
-                >
-                  <input
-                    type="search"
-                    class="c-input c-input--soft js-post-search"
-                    placeholder="Search posts"
-                    aria-label="Search posts"
-                    style="min-width: 220px"
-                  />
-                </div>
-              </div>
-            </header>
-
-            <section class="u-stack-4">
-              <h3 class="c-section-title" style="margin-top: 0">
-                Pinned Posts
-              </h3>
-              <div class="c-posts">
-                <!-- Post 1: text -->
-                <article
-                  class="c-post c-post--text c-post--pinned"
-                  data-type="text"
-                  data-subject="CS123"
-                  data-answered="true"
-                >
-                  <div class="c-post__head">
-                    <div class="c-avatar-sm">
-                      <img
-                        alt="Sophia Clark"
-                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3ESC%3C/text%3E%3C/svg%3E"
-                      />
-                    </div>
-                    <div>
-                      <strong>Sophia Clark</strong>
-                      <div class="c-post__meta">2d ago</div>
-                    </div>
-                  </div>
-                  <p class="u-text-muted">
-                    I'm having trouble understanding recursion in the
-                    programming module. Can anyone explain it in simpler terms?
-                  </p>
-                  <div class="c-post__actions">
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-upvote"
-                      aria-label="Upvote"
-                    >
-                      <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">12</span>
-                    </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
-                      class="c-btn c-btn--ghost c-btn--sm"
-                      aria-label="Comments"
-                    >
-                      <i data-lucide="message-square"></i>3
-                    </a>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-downvote"
-                      aria-label="Downvote"
-                    >
-                      <i data-lucide="thumbs-down"></i>
-                    </button>
-                  </div>
-                </article>
-
-                <!-- Post 2: image -->
-                <article
-                  class="c-post c-post--image c-post--pinned"
-                  data-type="image"
-                  data-subject="CS204"
-                  data-answered="true"
-                >
-                  <div class="c-post__head">
-                    <div class="c-avatar-sm">
-                      <img
-                        alt="Noah Thompson"
-                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E6F7EF'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%2325814b' text-anchor='middle' dominant-baseline='middle'%3ENT%3C/text%3E%3C/svg%3E"
-                      />
-                    </div>
-                    <div>
-                      <strong>Noah Thompson</strong>
-                      <div class="c-post__meta">3d ago</div>
-                    </div>
-                  </div>
-                  <p class="u-text-muted">
-                    Has anyone found a good resource for learning about data
-                    structures? I'm struggling with linked lists.
-                  </p>
-                  <div class="c-post__image">
-                    <img src="${pageContext.request.contextPath}/static/img/1.avif" alt="Shared notes image" />
-                  </div>
-                  <div class="c-post__actions">
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-upvote"
-                      aria-label="Upvote"
-                    >
-                      <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">8</span>
-                    </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
-                      class="c-btn c-btn--ghost c-btn--sm"
-                      aria-label="Comments"
-                    >
-                      <i data-lucide="message-square"></i>2
-                    </a>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-downvote"
-                      aria-label="Downvote"
-                    >
-                      <i data-lucide="thumbs-down"></i>
-                    </button>
-                  </div>
-                </article>
-              </div>
-            </section>
-
-            <!-- Latest posts -->
-            <section class="u-stack-4">
-              <h3 class="c-section-title">Latest Posts</h3>
-              <div class="c-posts">
-                <!-- Post A: text -->
-                <article
-                  class="c-post c-post--text"
-                  data-type="text"
-                  data-subject="CS204"
-                  data-answered="true"
-                >
-                  <div class="c-post__head">
-                    <div class="c-avatar-sm">
-                      <img
-                        alt="Emma Martinez"
-                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3EEM%3C/text%3E%3C/svg%3E"
-                      />
-                    </div>
-                    <div>
-                      <strong>Emma Martinez</strong>
-                      <div class="c-post__meta">1h ago</div>
-                    </div>
-                  </div>
-                  <p class="u-text-muted">
-                    Anyone has tips for CS204 lab 3? I'm stuck on the stack
-                    implementation edge cases.
-                  </p>
-                  <div class="c-post__actions">
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-upvote"
-                      aria-label="Upvote"
-                    >
-                      <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">5</span>
-                    </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
-                      class="c-btn c-btn--ghost c-btn--sm"
-                      aria-label="Comments"
-                    >
-                      <i data-lucide="message-square"></i>4
-                    </a>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-downvote"
-                      aria-label="Downvote"
-                    >
-                      <i data-lucide="thumbs-down"></i>
-                    </button>
-                  </div>
-                </article>
-
-                <!-- Post B: image -->
-                <article
-                  class="c-post c-post--image"
-                  data-type="image"
-                  data-subject="CS301"
-                  data-answered="true"
-                >
-                  <div class="c-post__head">
-                    <div class="c-avatar-sm">
-                      <img
-                        alt="Liam Torres"
-                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E6F7EF'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%2325814b' text-anchor='middle' dominant-baseline='middle'%3ELT%3C/text%3E%3C/svg%3E"
-                      />
-                    </div>
-                    <div>
-                      <strong>Liam Torres</strong>
-                      <div class="c-post__meta">4h ago</div>
-                    </div>
-                  </div>
-                  <p class="u-text-muted">
-                    Sharing my quick cheatsheet for Big-O and common data
-                    structures.
-                  </p>
-                  <div class="c-post__image">
-                    <img src="${pageContext.request.contextPath}/static/img/1.avif" alt="Big-O and DS cheatsheet" />
-                  </div>
-                  <div class="c-post__actions">
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-upvote"
-                      aria-label="Upvote"
-                    >
-                      <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">11</span>
-                    </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
-                      class="c-btn c-btn--ghost c-btn--sm"
-                      aria-label="Comments"
-                    >
-                      <i data-lucide="message-square"></i>6
-                    </a>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-downvote"
-                      aria-label="Downvote"
-                    >
-                      <i data-lucide="thumbs-down"></i>
-                    </button>
-                  </div>
-                </article>
-
-                <!-- Post C: question -->
-                <article
-                  class="c-post c-post--text"
-                  data-type="text"
-                  data-subject="CS204"
-                  data-answered="true"
-                >
-                  <div class="c-post__head">
-                    <div class="c-avatar-sm">
-                      <img
-                        alt="Zara Khan"
-                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23EAF8E6'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%23287b2c' text-anchor='middle' dominant-baseline='middle'%3EZK%3C/text%3E%3C/svg%3E"
-                      />
-                    </div>
-                    <div>
-                      <strong>Zara Khan</strong>
-                      <div class="c-post__meta">Yesterday</div>
-                    </div>
-                  </div>
-                  <p class="u-text-muted">
-                    Is the worst-case time for BST search O(n) even if it's
-                    balanced? I get confused with degenerate cases.
-                  </p>
-                  <div class="c-post__actions">
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-upvote"
-                      aria-label="Upvote"
-                    >
-                      <i data-lucide="thumbs-up"></i
-                      ><span class="js-score">3</span>
-                    </button>
-                    <a
-                      href="${pageContext.request.contextPath}/student/community/post-details"
-                      class="c-btn c-btn--ghost c-btn--sm"
-                      aria-label="Comments"
-                    >
-                      <i data-lucide="message-square"></i>1
-                    </a>
-                    <button
-                      class="c-btn c-btn--ghost c-btn--sm js-downvote"
-                      aria-label="Downvote"
-                    >
-                      <i data-lucide="thumbs-down"></i>
-                    </button>
-                  </div>
-                </article>
-              </div>
-            </section>
+  <div class="comm-layout">
+    <div class="o-feed">
+      <header class="c-page__header">
+        <div
+          class="o-inline"
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-4);
+          "
+        >
+          <div>
+            <h1 class="c-page__title">Community</h1>
+            <p class="c-page__subtitle u-text-muted">
+              Stay updated with the latest discussions and resources from your
+              peers.
+            </p>
           </div>
-
-          <aside class="c-right-panel">
-            <section class="c-right-section">
-              <h3 class="c-section-title" style="margin-top: 0">Subjects</h3>
-              <ul class="c-subjects" role="list">
-                <li>
-                  <a
-                    href="${pageContext.request.contextPath}/student/community/subject?subject=CS204"
-                    class="c-subject"
-                  >
-                    <span class="c-subject__badge is-lavender">CS204</span>
-                    <span class="c-subject__text">
-                      <span class="c-subject__label">Data Structures</span>
-                      <span class="c-subject__sub">CS204</span>
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="${pageContext.request.contextPath}/student/community/subject?subject=CS301"
-                    class="c-subject"
-                  >
-                    <span class="c-subject__badge is-mint">CS301</span>
-                    <span class="c-subject__text">
-                      <span class="c-subject__label">Algorithms</span>
-                      <span class="c-subject__sub">CS301</span>
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="${pageContext.request.contextPath}/student/community/subject?subject=CS123"
-                    class="c-subject"
-                  >
-                    <span class="c-subject__badge is-lime">CS123</span>
-                    <span class="c-subject__text">
-                      <span class="c-subject__label"
-                        >Programming Fundamentals</span
-                      >
-                      <span class="c-subject__sub">CS123</span>
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="${pageContext.request.contextPath}/student/community/subject?subject=CS205"
-                    class="c-subject"
-                  >
-                    <span class="c-subject__badge is-lavender">CS205</span>
-                    <span class="c-subject__text">
-                      <span class="c-subject__label">Operating Systems</span>
-                      <span class="c-subject__sub">CS205</span>
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="${pageContext.request.contextPath}/student/community/subject?subject=MA201"
-                    class="c-subject"
-                  >
-                    <span class="c-subject__badge is-mint">MA201</span>
-                    <span class="c-subject__text">
-                      <span class="c-subject__label">Calculus II</span>
-                      <span class="c-subject__sub">MA201</span>
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="${pageContext.request.contextPath}/student/community/subject?subject=ENG101"
-                    class="c-subject"
-                  >
-                    <span class="c-subject__badge is-lime">ENG101</span>
-                    <span class="c-subject__text">
-                      <span class="c-subject__label">English Composition</span>
-                      <span class="c-subject__sub">ENG101</span>
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="${pageContext.request.contextPath}/student/community/subject?subject=PHY110"
-                    class="c-subject"
-                  >
-                    <span class="c-subject__badge is-lavender">PHY110</span>
-                    <span class="c-subject__text">
-                      <span class="c-subject__label">Physics I</span>
-                      <span class="c-subject__sub">PHY110</span>
-                    </span>
-                  </a>
-                </li>
-              </ul>
-            </section>
-            <section class="c-right-section">
-              <h3 class="c-section-title">Trending</h3>
-              <div class="c-tags">
-                <a href="#" class="c-tag">Recursion</a>
-                <a href="#" class="c-tag">Linked Lists</a>
-                <a href="#" class="c-tag">Derivatives</a>
-                <a href="#" class="c-tag">Big-O</a>
-              </div>
-            </section>
-          </aside>
+          <a
+            href="${pageContext.request.contextPath}/student/community/posts/create"
+            class="c-btn c-btn--secondary"
+            ><i data-lucide="plus"></i> New Post</a
+          >
         </div>
+        <nav class="c-tabs-line" aria-label="Filter">
+          <a href="${pageContext.request.contextPath}/student/community?tab=upvoted" class="${activeTab == 'upvoted' || empty activeTab ? 'is-active' : ''}">Most Upvoted</a>
+          <a href="${pageContext.request.contextPath}/student/community?tab=recent" class="${activeTab == 'recent' ? 'is-active' : ''}">Most Recent</a>
+          <a href="${pageContext.request.contextPath}/student/community?tab=unanswered" class="${activeTab == 'unanswered' ? 'is-active' : ''}">Unanswered</a>
+          <a
+            href="${pageContext.request.contextPath}/student/community/my-posts"
+            >My Posts</a
+          >
+        </nav>
+        <!-- Filters -->
+        <div
+          class="c-filters u-stack-2"
+          role="search"
+          style="margin-top: var(--space-4)"
+        >
+          <div
+            class="o-inline"
+            style="display: flex; gap: var(--space-3); flex-wrap: wrap"
+          >
+            <input
+              type="search"
+              class="c-input c-input--soft js-post-search"
+              placeholder="Search posts"
+              aria-label="Search posts"
+              style="min-width: 220px"
+            />
+          </div>
+        </div>
+      </header>
 
-       
+      <c:if test="${activeTab == 'upvoted' || activeTab == 'recent' || empty activeTab}">
+      <section class="u-stack-4">
+        <div class="c-pinned-section ${empty pinnedPosts ? 'u-hidden' : ''}" id="pinned-section">
+            <header class="c-pinned-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding-bottom: var(--space-2); border-bottom: 1px solid rgba(84, 44, 245, 0.1); margin-bottom: var(--space-4);" onclick="togglePinnedSection()">
+                <div style="display: flex; align-items: center; gap: var(--space-2);">
+                    <i data-lucide="pin" style="color: var(--color-brand); width: 20px; height: 20px;"></i>
+                    <h3 style="font-size: var(--fs-lg); font-weight: var(--fw-bold); color: var(--color-brand); margin: 0; line-height: 1;">Pinned Posts</h3>
+                </div>
+                <button class="c-pinned-toggle" aria-label="Toggle Pinned Posts" style="background: none; border: none; color: var(--color-brand); padding: 4px; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="chevron-down" style="width: 20px; height: 20px;"></i>
+                </button>
+            </header>
+            <div class="c-pinned-content">
+                <c:forEach var="post" items="${pinnedPosts}">
+                    <article class="c-post c-post--pinned">
+                         <div class="c-post__head">
+                            <div class="c-avatar-sm">
+                              <c:set var="initials" value="${fn:substring(post.authorName, 0, 1)}${fn:substring(fn:substringAfter(post.authorName, ' '), 0, 1)}" />
+                              <img alt="${post.authorName}" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3E${fn:toUpperCase(initials)}%3C/text%3E%3C/svg%3E" />
+                            </div>
+                            <div>
+                              <strong>${post.authorName}</strong>
+                              <div class="c-post__meta">
+                                <fmt:formatDate value="${post.createdAt}" pattern="MMM d, yyyy" />
+                                <span class="c-pin-badge"><i data-lucide="pin" style="width:10px; height:10px;"></i> Pinned</span>
+                              </div>
+                            </div>
+                            <div style="margin-left: auto; color: var(--color-brand); opacity: 0.8; display: none;">
+                                <i data-lucide="pin"></i>
+                            </div>
+                          </div>
+                          <div class="c-post__body">
+                            <h4 class="c-post__title">
+                                <c:if test="${post.pinned}">
+                                    <i data-lucide="pin" style="width: 14px; height: 14px; color: var(--color-brand); margin-right: 4px; display: inline-block; vertical-align: middle;"></i>
+                                </c:if>
+                                <a href="${pageContext.request.contextPath}/student/community/post?id=${post.id}" style="color: inherit; text-decoration: none; vertical-align: middle;">
+                                  ${post.title}
+                                </a>
+                            </h4>
+                            <p class="u-text-muted">${post.content}</p>
+                          </div>
+                          <div class="c-post__actions">
+                            <button
+                              class="c-btn c-btn--ghost c-btn--sm js-upvote"
+                              aria-label="Upvote"
+                            >
+                              <i data-lucide="thumbs-up"></i
+                              ><span class="js-score">${post.likeCount}</span>
+                            </button>
+                            <a
+                              href="${pageContext.request.contextPath}/student/community/post?id=${post.id}"
+                              class="c-btn c-btn--ghost c-btn--sm"
+                              aria-label="Comments"
+                            >
+                              <i data-lucide="message-square"></i>${post.commentCount}
+                            </a>
+                            <button
+                              class="c-btn c-btn--ghost c-btn--sm js-downvote"
+                              aria-label="Downvote"
+                            >
+                              <i data-lucide="thumbs-down"></i>
+                            </button>
+                          </div>
+                    </article>
+                </c:forEach>
+            </div>
+        </div>
+      </section>
+      </c:if>
+
+      <script>
+        function togglePinnedSection() {
+            const section = document.getElementById('pinned-section');
+            if (!section) return;
+            section.classList.toggle('is-collapsed');
+            
+            const isCollapsed = section.classList.contains('is-collapsed');
+            localStorage.setItem('pinnedSectionCollapsed', isCollapsed);
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if (window.lucide) window.lucide.createIcons();
+            const section = document.getElementById('pinned-section');
+            if (section && localStorage.getItem('pinnedSectionCollapsed') === 'true') {
+                section.classList.add('is-collapsed');
+            }
+        });
+      </script>
+
+      <!-- Latest posts -->
+      <section class="u-stack-4">
+        <h3 class="c-section-title">Latest Posts</h3>
+        <div class="c-posts">
+          <c:choose>
+            <c:when test="${empty posts}">
+              <p class="u-text-muted">
+                No posts yet. Be the first to share something!
+              </p>
+            </c:when>
+            <c:otherwise>
+              <c:forEach var="post" items="${posts}">
+                <article
+                  class="c-post ${not empty post.imageUrl ? 'c-post--image' : 'c-post--text'}"
+                >
+                  <div class="c-post__head">
+                    <div class="c-avatar-sm">
+                      <c:set
+                        var="initials"
+                        value="${fn:substring(post.authorName, 0, 1)}${fn:substring(fn:substringAfter(post.authorName, ' '), 0, 1)}"
+                      />
+                      <img
+                        alt="${post.authorName}"
+                        src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3E${fn:toUpperCase(initials)}%3C/text%3E%3C/svg%3E"
+                      />
+                    </div>
+                    <div>
+                      <strong>${post.authorName}</strong>
+                      <div class="c-post__meta">
+                        <fmt:formatDate
+                          value="${post.createdAt}"
+                          pattern="MMM d, yyyy"
+                        />
+                        <c:if test="${post.pinned}">
+                             <span class="c-pin-badge"><i data-lucide="pin" style="width:10px; height:10px;"></i> Pinned</span>
+                        </c:if>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="c-post__body">
+                      <h4 class="c-post__title">
+                          <c:if test="${post.pinned}">
+                              <i data-lucide="pin" style="width: 14px; height: 14px; color: var(--color-brand); margin-right: 4px; display: inline-block; vertical-align: middle;"></i>
+                          </c:if>
+                          <a href="${pageContext.request.contextPath}/student/community/post?id=${post.id}" style="color: inherit; text-decoration: none; vertical-align: middle;">
+                            ${post.title}
+                          </a>
+                      </h4>
+                      <p class="u-text-muted">${post.content}</p>
+                      <c:if test="${not empty post.imageUrl}">
+                        <div class="c-post__image">
+                          <img
+                            src="${pageContext.request.contextPath}/uploads/${post.imageUrl}"
+                            alt="Post image"
+                          />
+                        </div>
+                      </c:if>
+                  </div>
+                  <div class="c-post__actions">
+                    <button
+                      class="c-btn c-btn--ghost c-btn--sm js-upvote"
+                      aria-label="Upvote"
+                    >
+                      <i data-lucide="thumbs-up"></i
+                      ><span class="js-score">${post.likeCount}</span>
+                    </button>
+                    <a
+                      href="${pageContext.request.contextPath}/student/community/post?id=${post.id}"
+                      class="c-btn c-btn--ghost c-btn--sm"
+                      aria-label="Comments"
+                    >
+                      <i data-lucide="message-square"></i>${post.commentCount}
+                    </a>
+                    <button
+                      class="c-btn c-btn--ghost c-btn--sm js-downvote"
+                      aria-label="Downvote"
+                    >
+                      <i data-lucide="thumbs-down"></i>
+                    </button>
+                  </div>
+                </article>
+              </c:forEach>
+            </c:otherwise>
+          </c:choose>
+        </div>
+      </section>
+    </div>
+
+    <aside class="c-right-panel">
+      <section class="c-right-section">
+        <h3 class="c-section-title" style="margin-top: 0">Subjects</h3>
+        <ul class="c-subjects" role="list">
+          <li>
+            <a
+              href="${pageContext.request.contextPath}/student/community/subject?subject=CS204"
+              class="c-subject"
+            >
+              <span class="c-subject__badge is-lavender">CS204</span>
+              <span class="c-subject__text">
+                <span class="c-subject__label">Data Structures</span>
+                <span class="c-subject__sub">CS204</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="${pageContext.request.contextPath}/student/community/subject?subject=CS301"
+              class="c-subject"
+            >
+              <span class="c-subject__badge is-mint">CS301</span>
+              <span class="c-subject__text">
+                <span class="c-subject__label">Algorithms</span>
+                <span class="c-subject__sub">CS301</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="${pageContext.request.contextPath}/student/community/subject?subject=CS123"
+              class="c-subject"
+            >
+              <span class="c-subject__badge is-lime">CS123</span>
+              <span class="c-subject__text">
+                <span class="c-subject__label">Programming Fundamentals</span>
+                <span class="c-subject__sub">CS123</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="${pageContext.request.contextPath}/student/community/subject?subject=CS205"
+              class="c-subject"
+            >
+              <span class="c-subject__badge is-lavender">CS205</span>
+              <span class="c-subject__text">
+                <span class="c-subject__label">Operating Systems</span>
+                <span class="c-subject__sub">CS205</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="${pageContext.request.contextPath}/student/community/subject?subject=MA201"
+              class="c-subject"
+            >
+              <span class="c-subject__badge is-mint">MA201</span>
+              <span class="c-subject__text">
+                <span class="c-subject__label">Calculus II</span>
+                <span class="c-subject__sub">MA201</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="${pageContext.request.contextPath}/student/community/subject?subject=ENG101"
+              class="c-subject"
+            >
+              <span class="c-subject__badge is-lime">ENG101</span>
+              <span class="c-subject__text">
+                <span class="c-subject__label">English Composition</span>
+                <span class="c-subject__sub">ENG101</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="${pageContext.request.contextPath}/student/community/subject?subject=PHY110"
+              class="c-subject"
+            >
+              <span class="c-subject__badge is-lavender">PHY110</span>
+              <span class="c-subject__text">
+                <span class="c-subject__label">Physics I</span>
+                <span class="c-subject__sub">PHY110</span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </section>
+      <section class="c-right-section">
+        <h3 class="c-section-title">Trending</h3>
+        <div class="c-tags">
+          <a href="#" class="c-tag">Recursion</a>
+          <a href="#" class="c-tag">Linked Lists</a>
+          <a href="#" class="c-tag">Derivatives</a>
+          <a href="#" class="c-tag">Big-O</a>
+        </div>
+      </section>
+    </aside>
+  </div>
 </layout:student-dashboard>

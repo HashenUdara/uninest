@@ -25,51 +25,135 @@ public class CommunityPost {
     private int commentCount;
     private String deletionReason; // Populated for moderator audit view
     private boolean isPinned;
+    private int reportCount; // Populated for moderator reported posts view
 
     // Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public int getCommunityId() { return communityId; }
-    public void setCommunityId(int communityId) { this.communityId = communityId; }
+    public int getUserId() {
+        return userId;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
+    public int getCommunityId() {
+        return communityId;
+    }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public void setCommunityId(int communityId) {
+        this.communityId = communityId;
+    }
 
-    public Timestamp getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+    public String getTitle() {
+        return title;
+    }
 
-    public Timestamp getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     // Display field getters/setters
-    public String getAuthorName() { return authorName; }
-    public void setAuthorName(String authorName) { this.authorName = authorName; }
+    public String getAuthorName() {
+        return authorName;
+    }
 
-    public int getLikeCount() { return likeCount; }
-    public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
 
-    public int getCommentCount() { return commentCount; }
-    public void setCommentCount(int commentCount) { this.commentCount = commentCount; }
+    public int getLikeCount() {
+        return likeCount;
+    }
 
-    public boolean isDeleted() { return isDeleted; }
-    public void setDeleted(boolean deleted) { isDeleted = deleted; }
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
 
-    public Timestamp getDeletedAt() { return deletedAt; }
-    public void setDeletedAt(Timestamp deletedAt) { this.deletedAt = deletedAt; }
+    public int getCommentCount() {
+        return commentCount;
+    }
 
-    public String getDeletionReason() { return deletionReason; }
-    public void setDeletionReason(String deletionReason) { this.deletionReason = deletionReason; }
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
 
-    public boolean isPinned() { return isPinned; }
-    public void setPinned(boolean pinned) { isPinned = pinned; }
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Timestamp getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Timestamp deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public String getDeletionReason() {
+        return deletionReason;
+    }
+
+    public void setDeletionReason(String deletionReason) {
+        this.deletionReason = deletionReason;
+    }
+
+    public boolean isPinned() {
+        return isPinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        isPinned = pinned;
+    }
+
+    public int getReportCount() {
+        return reportCount;
+    }
+
+    public void setReportCount(int reportCount) {
+        this.reportCount = reportCount;
+    }
 }

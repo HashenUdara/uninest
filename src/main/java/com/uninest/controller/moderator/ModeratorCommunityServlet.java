@@ -17,7 +17,7 @@ import java.util.List;
  */
 @WebServlet(name = "ModeratorCommunity", urlPatterns = "/moderator/community")
 public class ModeratorCommunityServlet extends HttpServlet {
-    
+
     private final CommunityPostDAO postDAO = new CommunityPostDAO();
 
     @Override
@@ -27,11 +27,11 @@ public class ModeratorCommunityServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
             return;
         }
-        
+
         // Ensure only moderators can access (Role check)
         if (!"moderator".equalsIgnoreCase(user.getRole())) {
-             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-             return;
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
+            return;
         }
 
         // Check if user has a community
@@ -41,22 +41,25 @@ public class ModeratorCommunityServlet extends HttpServlet {
         }
 
         String tab = req.getParameter("tab");
-        if (tab == null) tab = "upvoted"; // Default
-        
+        if (tab == null)
+            tab = "upvoted"; // Default
+
         List<CommunityPost> posts;
         if ("deleted".equalsIgnoreCase(tab)) {
             posts = postDAO.findDeletedByCommunityId(user.getCommunityId());
+        } else if ("reported".equalsIgnoreCase(tab)) {
+            posts = postDAO.findReportedPostsByCommunityId(user.getCommunityId());
         } else {
             // Fetch active posts (Same DAO logic as students)
             // Note: upvoted/recent sorting could be added here in future
             posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId());
         }
-        
+
         List<CommunityPost> pinnedPosts = postDAO.findPinnedByCommunityId(user.getCommunityId());
         req.setAttribute("pinnedPosts", pinnedPosts);
         req.setAttribute("posts", posts);
         req.setAttribute("activeTab", tab);
-        
+
         req.getRequestDispatcher("/WEB-INF/views/moderator/community/index.jsp").forward(req, resp);
     }
 }

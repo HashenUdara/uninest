@@ -18,7 +18,7 @@ import java.util.List;
  */
 @WebServlet(name = "myPosts", urlPatterns = "/student/community/my-posts")
 public class MyPostsServlet extends HttpServlet {
-    
+
     private final CommunityPostDAO postDAO = new CommunityPostDAO();
 
     @Override
@@ -28,7 +28,7 @@ public class MyPostsServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
             return;
         }
-        
+
         // Check if user has a community
         if (user.getCommunityId() == null) {
             resp.sendRedirect(req.getContextPath() + "/student/join-community");
@@ -37,6 +37,15 @@ public class MyPostsServlet extends HttpServlet {
 
         // Fetch posts for current user
         List<CommunityPost> posts = postDAO.findByUserId(user.getId());
+
+        // Enrich with poll vote state
+        com.uninest.model.dao.PollDAO pollDAO = new com.uninest.model.dao.PollDAO();
+        for (CommunityPost post : posts) {
+            if (post.getPoll() != null) {
+                pollDAO.loadUserVoteState(post.getPoll(), user.getId());
+            }
+        }
+
         req.setAttribute("posts", posts);
 
         req.getRequestDispatcher("/WEB-INF/views/student/community/my-posts.jsp").forward(req, resp);

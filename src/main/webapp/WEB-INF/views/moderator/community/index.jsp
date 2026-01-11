@@ -110,17 +110,14 @@ tagdir="/WEB-INF/tags/dashboard" %>
                                 <input type="hidden" name="postId" value="${post.id}">
                                 <input type="hidden" name="action" value="unpin">
                                 <input type="hidden" name="tab" value="${activeTab}">
-                                <button type="submit" class="c-btn c-btn--ghost c-btn--sm" title="Unpin Post">
-                                    <i data-lucide="pin-off"></i>
+                                <button type="submit" class="c-btn c-btn--ghost c-btn--sm is-pinned" title="Unpin Post" style="padding: 4px; color: var(--color-brand) !important;">
+                                    <i data-lucide="pin-off" style="width: 18px; height: 18px;"></i>
                                 </button>
                             </form>
                           </div>
                           <div class="c-post__body">
                             <h4 class="c-post__title">
-                                <c:if test="${post.pinned}">
-                                    <i data-lucide="pin" style="width: 14px; height: 14px; color: var(--color-brand); margin-right: 4px; display: inline-block; vertical-align: middle;"></i>
-                                </c:if>
-                                <a href="${pageContext.request.contextPath}/moderator/community/post?id=${post.id}" style="color: inherit; text-decoration: none; vertical-align: middle;">
+                                <a href="${pageContext.request.contextPath}/moderator/community/post?id=${post.id}" style="color: inherit; text-decoration: none;">
                                   ${post.title}
                                 </a>
                             </h4>
@@ -176,8 +173,8 @@ tagdir="/WEB-INF/tags/dashboard" %>
                             <input type="hidden" name="postId" value="${post.id}">
                             <input type="hidden" name="action" value="${post.pinned ? 'unpin' : 'pin'}">
                             <input type="hidden" name="tab" value="${activeTab}">
-                            <button type="submit" class="c-btn c-btn--ghost c-btn--sm ${post.pinned ? 'is-pinned' : ''}" title="${post.pinned ? 'Unpin Post' : 'Pin Post'}">
-                                <i data-lucide="${post.pinned ? 'pin-off' : 'pin'}"></i>
+                            <button type="submit" class="c-btn c-btn--ghost c-btn--sm ${post.pinned ? 'is-pinned' : ''}" style="padding: 4px; ${post.pinned ? 'color: var(--color-brand) !important;' : 'opacity: 0.6;'}" title="${post.pinned ? 'Unpin Post' : 'Pin Post'}">
+                                <i data-lucide="${post.pinned ? 'pin-off' : 'pin'}" style="width: 18px; height: 18px;"></i>
                             </button>
                         </form>
                     </c:if>
@@ -190,9 +187,6 @@ tagdir="/WEB-INF/tags/dashboard" %>
                                 <span style="color: inherit; opacity: 0.6;">${post.title} (Deleted)</span>
                             </c:when>
                             <c:otherwise>
-                                <c:if test="${post.pinned}">
-                                    <i data-lucide="pin" style="width: 14px; height: 14px; color: var(--color-brand); margin-right: 4px; display: inline-block; vertical-align: middle;"></i>
-                                </c:if>
                                 <a href="${pageContext.request.contextPath}/moderator/community/post?id=${post.id}" style="color: inherit; text-decoration: none; vertical-align: middle;">
                                   ${post.title}
                                 </a>

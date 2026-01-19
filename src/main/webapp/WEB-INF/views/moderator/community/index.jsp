@@ -242,7 +242,12 @@
                                           data-post-id="${post.id}" title="Delete Post">
                                           Delete Post
                                         </button>
-                                        <a href="#" class="c-btn c-btn--ghost c-btn--sm">View Reports</a>
+                                        <form action="${pageContext.request.contextPath}/moderator/community/post/dismiss-report" method="POST" style="display: inline;">
+                                          <input type="hidden" name="postId" value="${post.id}">
+                                          <button type="submit" class="c-btn c-btn--ghost c-btn--sm" title="Dismiss all reports for this post">
+                                            <i data-lucide="x-circle" style="width: 14px; height: 14px; margin-right: 4px;"></i>Dismiss Report
+                                          </button>
+                                        </form>
                                       </div>
                                     </div>
                                   </c:when>

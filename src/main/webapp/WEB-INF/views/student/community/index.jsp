@@ -251,24 +251,31 @@
 
               <!-- Report Modal -->
               <div id="report-modal" class="c-modal-overlay"
-                style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+                style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;">
                 <div class="c-modal"
-                  style="background: white; padding: var(--space-4); border-radius: var(--radius-md); width: 100%; max-width: 400px;">
-                  <h3 style="margin-top: 0; margin-bottom: var(--space-3);">Report Post</h3>
+                  style="background: var(--panel-bg, #1A1D21); border: 1px solid var(--color-border, #2A2D35); padding: var(--space-6); border-radius: var(--radius-xl); width: 90%; max-width: 420px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); position: relative;">
+                  <button type="button" onclick="closeReportModal()" aria-label="Close"
+                    style="position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.05); border: none; border-radius: 6px; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--color-text-muted);">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                  </button>
+                  <h3 style="margin-top: 0; margin-bottom: var(--space-4); color: var(--color-text); font-size: var(--fs-lg); font-weight: var(--fw-semibold);">Report Post</h3>
                   <form action="${pageContext.request.contextPath}/student/community/posts/report" method="post">
                     <input type="hidden" name="postId" id="report-post-id">
                     <input type="hidden" name="returnUrl" value="${pageContext.request.contextPath}/student/community">
 
-                    <div class="c-field">
-                      <label class="c-label">Reason for reporting</label>
-                      <textarea name="reason" class="c-textarea c-textarea--soft" rows="4" required
-                        placeholder="Why is this inappropriate?"></textarea>
+                    <div class="c-field" style="margin-top: 0;">
+                      <label class="c-label" style="color: var(--color-text-muted); margin-bottom: var(--space-2);">Reason for reporting</label>
+                      <textarea name="reason" class="c-textarea" rows="4" required
+                        placeholder="Why is this inappropriate?"
+                        style="background: var(--color-surface, #252830); border: 1px solid var(--color-border, #2A2D35); color: var(--color-text); border-radius: var(--radius-md); padding: var(--space-3); width: 100%; resize: vertical;"></textarea>
                     </div>
 
                     <div
-                      style="display: flex; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-4);">
-                      <button type="button" class="c-btn c-btn--ghost" onclick="closeReportModal()">Cancel</button>
-                      <button type="submit" class="c-btn c-btn--danger">Submit Report</button>
+                      style="display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-5);">
+                      <button type="button" class="c-btn c-btn--ghost" onclick="closeReportModal()"
+                        style="padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill);">Cancel</button>
+                      <button type="submit" class="c-btn c-btn--danger"
+                        style="padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill);">Submit Report</button>
                     </div>
                   </form>
                 </div>

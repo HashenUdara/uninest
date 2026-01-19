@@ -9,7 +9,7 @@ import java.util.Optional;
 public class UserDAO {
 
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, " +
+        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
@@ -31,8 +31,8 @@ public class UserDAO {
     }
 
     public void create(User user) {
-        String sql = "INSERT INTO users(email, name, password_hash, role_id, community_id, academic_year, university_id) " +
-                "VALUES(?,?,?,(SELECT id FROM roles WHERE name = ?),?,?,?)";
+        String sql = "INSERT INTO users(email, name, password_hash, role_id, community_id, academic_year, university_id, university_id_number, faculty) " +
+                "VALUES(?,?,?,(SELECT id FROM roles WHERE name = ?),?,?,?,?,?)";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getEmail());
@@ -42,6 +42,8 @@ public class UserDAO {
             if (user.getCommunityId() == null) ps.setNull(5, Types.INTEGER); else ps.setInt(5, user.getCommunityId());
             if (user.getAcademicYear() == null) ps.setNull(6, Types.TINYINT); else ps.setInt(6, user.getAcademicYear());
             if (user.getUniversityId() == null) ps.setNull(7, Types.INTEGER); else ps.setInt(7, user.getUniversityId());
+            if (user.getUniversityIdNumber() == null) ps.setNull(8, Types.VARCHAR); else ps.setString(8, user.getUniversityIdNumber());
+            if (user.getFaculty() == null) ps.setNull(9, Types.VARCHAR); else ps.setString(9, user.getFaculty());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) user.setId(keys.getInt(1));
@@ -119,6 +121,8 @@ public class UserDAO {
         int uniId = rs.getInt("university_id");
         u.setUniversityId(rs.wasNull() ? null : uniId);
         u.setUniversityName(rs.getString("university_name"));
+        u.setUniversityIdNumber(rs.getString("university_id_number"));
+        u.setFaculty(rs.getString("faculty"));
         return u;
     }
 
@@ -135,7 +139,7 @@ public class UserDAO {
     }
 
     public java.util.List<User> findByRole(String roleName) {
-        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, " +
+        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
@@ -158,7 +162,7 @@ public class UserDAO {
     }
 
     public java.util.List<User> searchUsers(String roleName, String searchTerm) {
-        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, " +
+        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
@@ -185,7 +189,7 @@ public class UserDAO {
     }
 
     public Optional<User> findById(int id) {
-        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, " +
+        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
@@ -207,7 +211,7 @@ public class UserDAO {
     }
 
     public void update(User user) {
-        String sql = "UPDATE users SET email = ?, name = ?, community_id = ?, academic_year = ?, university_id = ? WHERE id = ?";
+        String sql = "UPDATE users SET email = ?, name = ?, community_id = ?, academic_year = ?, university_id = ?, university_id_number = ?, faculty = ? WHERE id = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, user.getEmail());
@@ -215,7 +219,9 @@ public class UserDAO {
             if (user.getCommunityId() == null) ps.setNull(3, Types.INTEGER); else ps.setInt(3, user.getCommunityId());
             if (user.getAcademicYear() == null) ps.setNull(4, Types.TINYINT); else ps.setInt(4, user.getAcademicYear());
             if (user.getUniversityId() == null) ps.setNull(5, Types.INTEGER); else ps.setInt(5, user.getUniversityId());
-            ps.setInt(6, user.getId());
+            if (user.getUniversityIdNumber() == null) ps.setNull(6, Types.VARCHAR); else ps.setString(6, user.getUniversityIdNumber());
+            if (user.getFaculty() == null) ps.setNull(7, Types.VARCHAR); else ps.setString(7, user.getFaculty());
+            ps.setInt(8, user.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error updating user", e);
@@ -245,7 +251,7 @@ public class UserDAO {
     }
 
     public java.util.List<User> findByCommunityId(int communityId) {
-        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, " +
+        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +

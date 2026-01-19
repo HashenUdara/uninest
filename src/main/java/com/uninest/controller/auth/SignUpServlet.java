@@ -96,6 +96,16 @@ public class SignUpServlet extends HttpServlet {
             }
         } catch (NumberFormatException ignored) {}
         
+        // Set university ID number and faculty
+        String universityIdNumber = req.getParameter("universityIdNumber");
+        String faculty = req.getParameter("faculty");
+        if (universityIdNumber != null && !universityIdNumber.trim().isEmpty()) {
+            user.setUniversityIdNumber(universityIdNumber.trim());
+        }
+        if (faculty != null && !faculty.trim().isEmpty()) {
+            user.setFaculty(faculty.trim());
+        }
+        
         try {
             userDAO.create(user);
             // Auto-login after signup

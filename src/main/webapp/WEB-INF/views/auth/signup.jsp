@@ -166,6 +166,34 @@
       <p class="c-field__error" data-error-for="university" aria-live="polite"></p>
     </div>
 
+    <div class="c-field">
+      <label for="universityIdNumber" class="c-field__label">University ID</label>
+      <input
+        type="text"
+        id="universityIdNumber"
+        name="universityIdNumber"
+        class="c-field__input"
+        placeholder="Eg: 2013/CS/025"
+        autocomplete="off"
+        value="${param.universityIdNumber}"
+      />
+      <p class="c-field__error" data-error-for="universityIdNumber" aria-live="polite"></p>
+    </div>
+
+    <div class="c-field">
+      <label for="faculty" class="c-field__label">Faculty</label>
+      <input
+        type="text"
+        id="faculty"
+        name="faculty"
+        class="c-field__input"
+        placeholder="Eg: Faculty of Arts"
+        autocomplete="off"
+        value="${param.faculty}"
+      />
+      <p class="c-field__error" data-error-for="faculty" aria-live="polite"></p>
+    </div>
+
     <div class="c-role-select">
       <label class="c-role-select__label">Select Your Role</label>
       <div class="c-role-select__options">

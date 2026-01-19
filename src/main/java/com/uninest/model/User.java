@@ -11,6 +11,8 @@ public class User {
     private Integer academicYear; // 1..4
     private Integer universityId; // Foreign key to universities table
     private String universityName; // University name for display
+    private String universityIdNumber; // Student/Staff ID (e.g., 2013/CS/025)
+    private String faculty; // Faculty name (e.g., Faculty of Arts)
 
     public User() {}
     
@@ -65,4 +67,10 @@ public class User {
 
     public String getUniversityName() { return universityName; }
     public void setUniversityName(String universityName) { this.universityName = universityName; }
+
+    public String getUniversityIdNumber() { return universityIdNumber; }
+    public void setUniversityIdNumber(String universityIdNumber) { this.universityIdNumber = universityIdNumber; }
+
+    public String getFaculty() { return faculty; }
+    public void setFaculty(String faculty) { this.faculty = faculty; }
 }

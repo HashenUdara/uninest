@@ -30,7 +30,7 @@ public class PostReportDAO {
     }
 
     public boolean hasUserReported(int postId, int userId) {
-        String sql = "SELECT id FROM community_post_reports WHERE post_id = ? AND reporter_user_id = ?";
+        String sql = "SELECT id FROM community_post_reports WHERE post_id = ? AND reporter_user_id = ? AND status = 'pending'";
         try (Connection con = DBConnection.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, postId);
@@ -111,7 +111,7 @@ public class PostReportDAO {
 
         // Build query for specific post IDs
         StringBuilder sql = new StringBuilder(
-                "SELECT post_id FROM community_post_reports WHERE reporter_user_id = ? AND post_id IN (");
+                "SELECT post_id FROM community_post_reports WHERE reporter_user_id = ? AND status = 'pending' AND post_id IN (");
         for (int i = 0; i < postIds.size(); i++) {
             sql.append(i == 0 ? "?" : ", ?");
         }

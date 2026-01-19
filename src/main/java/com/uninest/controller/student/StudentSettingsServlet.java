@@ -42,6 +42,7 @@ public class StudentSettingsServlet extends HttpServlet {
         String firstName = req.getParameter("firstName");
         String lastName = req.getParameter("lastName");
         String yearStr = req.getParameter("academicYear");
+        String phone = req.getParameter("phone");
         
         // We generally shouldn't let students change their email or university ID without verification,
         // but for this task, the request is about filling values. We'll allow name/year updates.
@@ -52,6 +53,10 @@ public class StudentSettingsServlet extends HttpServlet {
         
         if (lastName != null && !lastName.isBlank()) {
             user.setLastName(lastName.trim());
+        }
+
+        if (phone != null) {
+            user.setPhoneNumber(phone.trim());
         }
 
         if (yearStr != null && !yearStr.isBlank()) {

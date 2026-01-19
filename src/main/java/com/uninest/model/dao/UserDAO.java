@@ -9,7 +9,7 @@ import java.util.Optional;
 public class UserDAO {
 
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, " +
+        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, u.phone_number, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
@@ -31,8 +31,8 @@ public class UserDAO {
     }
 
     public void create(User user) {
-        String sql = "INSERT INTO users(email, first_name, last_name, password_hash, role_id, community_id, academic_year, university_id, university_id_number, faculty) " +
-                "VALUES(?,?,?,?,(SELECT id FROM roles WHERE name = ?),?,?,?,?,?)";
+        String sql = "INSERT INTO users(email, first_name, last_name, password_hash, role_id, community_id, academic_year, university_id, university_id_number, faculty, phone_number) " +
+                "VALUES(?,?,?,?,(SELECT id FROM roles WHERE name = ?),?,?,?,?,?,?)";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getEmail());
@@ -45,6 +45,7 @@ public class UserDAO {
             if (user.getUniversityId() == null) ps.setNull(8, Types.INTEGER); else ps.setInt(8, user.getUniversityId());
             if (user.getUniversityIdNumber() == null) ps.setNull(9, Types.VARCHAR); else ps.setString(9, user.getUniversityIdNumber());
             if (user.getFaculty() == null) ps.setNull(10, Types.VARCHAR); else ps.setString(10, user.getFaculty());
+            if (user.getPhoneNumber() == null) ps.setNull(11, Types.VARCHAR); else ps.setString(11, user.getPhoneNumber());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) user.setId(keys.getInt(1));
@@ -125,6 +126,7 @@ public class UserDAO {
         u.setUniversityName(rs.getString("university_name"));
         u.setUniversityIdNumber(rs.getString("university_id_number"));
         u.setFaculty(rs.getString("faculty"));
+        u.setPhoneNumber(rs.getString("phone_number"));
         return u;
     }
 
@@ -141,7 +143,7 @@ public class UserDAO {
     }
 
     public java.util.List<User> findByRole(String roleName) {
-        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, " +
+        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, u.phone_number, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
@@ -164,7 +166,7 @@ public class UserDAO {
     }
 
     public java.util.List<User> searchUsers(String roleName, String searchTerm) {
-        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, " +
+        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, u.phone_number, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
@@ -192,7 +194,7 @@ public class UserDAO {
     }
 
     public Optional<User> findById(int id) {
-        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, " +
+        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, u.phone_number, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
@@ -214,7 +216,7 @@ public class UserDAO {
     }
 
     public void update(User user) {
-        String sql = "UPDATE users SET email = ?, first_name = ?, last_name = ?, community_id = ?, academic_year = ?, university_id = ?, university_id_number = ?, faculty = ? WHERE id = ?";
+        String sql = "UPDATE users SET email = ?, first_name = ?, last_name = ?, community_id = ?, academic_year = ?, university_id = ?, university_id_number = ?, faculty = ?, phone_number = ? WHERE id = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, user.getEmail());
@@ -225,7 +227,8 @@ public class UserDAO {
             if (user.getUniversityId() == null) ps.setNull(6, Types.INTEGER); else ps.setInt(6, user.getUniversityId());
             if (user.getUniversityIdNumber() == null) ps.setNull(7, Types.VARCHAR); else ps.setString(7, user.getUniversityIdNumber());
             if (user.getFaculty() == null) ps.setNull(8, Types.VARCHAR); else ps.setString(8, user.getFaculty());
-            ps.setInt(9, user.getId());
+            if (user.getPhoneNumber() == null) ps.setNull(9, Types.VARCHAR); else ps.setString(9, user.getPhoneNumber());
+            ps.setInt(10, user.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error updating user", e);
@@ -255,7 +258,7 @@ public class UserDAO {
     }
 
     public java.util.List<User> findByCommunityId(int communityId) {
-        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, " +
+        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, u.phone_number, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +

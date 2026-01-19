@@ -14,6 +14,7 @@ public class User {
     private String universityName; // University name for display
     private String universityIdNumber; // Student/Staff ID (e.g., 2013/CS/025)
     private String faculty; // Faculty name (e.g., Faculty of Arts)
+    private String phoneNumber;
 
     public User() {}
     
@@ -104,4 +105,7 @@ public class User {
 
     public String getFaculty() { return faculty; }
     public void setFaculty(String faculty) { this.faculty = faculty; }
+
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 }

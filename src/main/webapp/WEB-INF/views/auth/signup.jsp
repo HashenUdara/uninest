@@ -86,7 +86,7 @@
           id="firstName"
           name="firstName"
           class="c-field__input"
-          placeholder="e.g. John"
+          placeholder="e.g. Amal"
           autocomplete="given-name"
           value="${param.firstName}"
           autofocus
@@ -101,7 +101,7 @@
           id="lastName"
           name="lastName"
           class="c-field__input"
-          placeholder="e.g. Doe"
+          placeholder="e.g. Perera"
           autocomplete="family-name"
           value="${param.lastName}"
         />
@@ -162,10 +162,10 @@
       <label for="academicYear" class="c-field__label">Academic year</label>
       <select id="academicYear" name="academicYear" class="c-field__input">
         <option value="">Select...</option>
-        <option value="1" ${param.academicYear == '1' ? 'selected' : ''}>1 year</option>
-        <option value="2" ${param.academicYear == '2' ? 'selected' : ''}>2</option>
-        <option value="3" ${param.academicYear == '3' ? 'selected' : ''}>3</option>
-        <option value="4" ${param.academicYear == '4' ? 'selected' : ''}>4</option>
+        <option value="1" ${param.academicYear == '1' ? 'selected' : ''}>1st Year</option>
+        <option value="2" ${param.academicYear == '2' ? 'selected' : ''}>2nd Year</option>
+        <option value="3" ${param.academicYear == '3' ? 'selected' : ''}>3rd Year</option>
+        <option value="4" ${param.academicYear == '4' ? 'selected' : ''}>4th Year</option>
       </select>
       <p class="c-field__error" data-error-for="academicYear" aria-live="polite"></p>
     </div>
@@ -188,7 +188,7 @@
         id="universityIdNumber"
         name="universityIdNumber"
         class="c-field__input"
-        placeholder="Eg: 2013/CS/025"
+        placeholder="Eg: 2023/CS/025"
         autocomplete="off"
         value="${param.universityIdNumber}"
       />

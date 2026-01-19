@@ -476,7 +476,7 @@
                         id="phone"
                         class="c-input c-input--soft c-input--rect"
                         name="phone"
-                        value=""
+                        value="${sessionScope.authUser.phoneNumber}"
                         placeholder="+94 77 123 4567"
                       />
                     </div>

@@ -11,6 +11,11 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+@jakarta.servlet.annotation.MultipartConfig(
+    fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+    maxFileSize = 1024 * 1024 * 10,      // 10MB
+    maxRequestSize = 1024 * 1024 * 50    // 50MB
+)
 @WebServlet(name = "studentProfileSettings", urlPatterns = "/student/profile-settings")
 public class StudentSettingsServlet extends HttpServlet {
     
@@ -73,10 +78,26 @@ public class StudentSettingsServlet extends HttpServlet {
             }
         }
 
-        // Save to DB
+        // Handle Profile Image Upload
+        try {
+            jakarta.servlet.http.Part filePart = req.getPart("profileImage");
+            if (filePart != null && filePart.getSize() > 0) {
+                 // Save to DB as BLOB
+                 try (java.io.InputStream inputStream = filePart.getInputStream()) {
+                     userDAO.updateProfileImage(user.getId(), inputStream);
+                 }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Don't fail the rest of the update
+        }
+
+        // Save other fields to DB
         userDAO.update(user);
         
-        // Update session
+        // Update session - re-fetch to ensure consistency if needed, 
+        // but for profile pic, the URL generation is dynamic now.
+        // We might want to reload the user from DB to be safe, or just update the current object fields.
         session.setAttribute("authUser", user);
 
         // Redirect with success

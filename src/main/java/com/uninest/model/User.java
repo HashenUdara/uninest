@@ -106,6 +106,17 @@ public class User {
     public String getFaculty() { return faculty; }
     public void setFaculty(String faculty) { this.faculty = faculty; }
 
+    private String profilePicture;
+
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
+    public String getProfilePicture() { return profilePicture; }
+    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
+
+    public String getProfilePictureUrl() {
+        // Return dynamic URL to servlet that serves from DB BLOB
+        // Add timestamp to prevent caching issues when image is updated
+        return "/student/profile-image?id=" + this.id + "&t=" + System.currentTimeMillis();
+    }
 }

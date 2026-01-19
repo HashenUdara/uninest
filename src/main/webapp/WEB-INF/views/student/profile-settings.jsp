@@ -398,13 +398,22 @@
               <div class="k-profile-header">
                 <div class="k-profile-avatar">
                   <img
-                    src="https://i.pravatar.cc/300?img=12"
+                    src="${pageContext.request.contextPath}${sessionScope.authUser.profilePictureUrl}"
+                    id="profileImagePreview"
                     alt="${sessionScope.authUser.firstName} ${sessionScope.authUser.lastName}"
                     class="k-profile-avatar__image"
                   />
-                  <button class="k-profile-avatar__edit" title="Change avatar">
+                  <button type="button" class="k-profile-avatar__edit" title="Change avatar" onclick="document.getElementById('profileUploadInput').click()">
                     <i data-lucide="camera"></i>
                   </button>
+                  <input 
+                    type="file" 
+                    id="profileUploadInput" 
+                    name="profileImage" 
+                    accept="image/*" 
+                    style="display: none;" 
+                    onchange="previewImage(this)"
+                  >
                 </div>
                 <div class="k-profile-info">
                   <h2>${sessionScope.authUser.firstName} ${sessionScope.authUser.lastName}</h2>
@@ -426,7 +435,7 @@
                   </p>
                 </div>
 
-                <form action="${pageContext.request.contextPath}/student/profile-settings" method="post">
+                <form action="${pageContext.request.contextPath}/student/profile-settings" method="post" enctype="multipart/form-data">
                   <div class="k-form-grid">
                     <div class="c-field">
                       <label for="first-name" class="c-label">
@@ -786,9 +795,42 @@
 
       function showToast(msg) {
         const toasts = document.querySelector(".c-toasts");
-        if (!toasts) return;
+        if (!toasts) {
+             const t = document.createElement('div');
+             t.style.position = 'fixed';
+             t.style.bottom = '20px';
+             t.style.right = '20px';
+             t.style.backgroundColor = '#333';
+             t.style.color = 'white';
+             t.style.padding = '12px 24px';
+             t.style.borderRadius = '4px';
+             t.style.zIndex = '9999';
+             t.innerText = msg;
+             document.body.appendChild(t);
+             setTimeout(() => t.remove(), 4000);
+             return;
+        }
         const item = document.createElement("div");
         item.className = "c-toast";
+      }
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('success')) {
+         showToast('Settings saved successfully!');
+      }
+      if (urlParams.has('error')) {
+         showToast(urlParams.get('error'));
+      }
+
+      function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profileImagePreview').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+      }
         item.textContent = msg;
         toasts.appendChild(item);
         setTimeout(() => {

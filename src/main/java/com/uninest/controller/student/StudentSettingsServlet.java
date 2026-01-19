@@ -89,7 +89,8 @@ public class StudentSettingsServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            // Don't fail the rest of the update
+            resp.sendRedirect(req.getContextPath() + "/student/profile-settings?error=Image Upload Failed: " + e.getMessage());
+            return;
         }
 
         // Save other fields to DB

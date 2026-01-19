@@ -413,6 +413,7 @@
                     accept="image/*" 
                     style="display: none;" 
                     onchange="previewImage(this)"
+                    form="profileForm"
                   >
                 </div>
                 <div class="k-profile-info">
@@ -435,7 +436,7 @@
                   </p>
                 </div>
 
-                <form action="${pageContext.request.contextPath}/student/profile-settings" method="post" enctype="multipart/form-data">
+                <form id="profileForm" action="${pageContext.request.contextPath}/student/profile-settings" method="post" enctype="multipart/form-data">
                   <div class="k-form-grid">
                     <div class="c-field">
                       <label for="first-name" class="c-label">

@@ -56,7 +56,12 @@ public class StudentSettingsServlet extends HttpServlet {
         }
 
         if (phone != null) {
-            user.setPhoneNumber(phone.trim());
+            String trimmedPhone = phone.trim();
+            if (trimmedPhone.length() > 10) {
+                 resp.sendRedirect(req.getContextPath() + "/student/profile-settings?error=Phone number too long");
+                 return;
+            }
+            user.setPhoneNumber(trimmedPhone);
         }
 
         if (yearStr != null && !yearStr.isBlank()) {

@@ -399,7 +399,7 @@
                 <div class="k-profile-avatar">
                   <img
                     src="https://i.pravatar.cc/300?img=12"
-                    alt="Kavindu Perera"
+                    alt="${sessionScope.authUser.firstName} ${sessionScope.authUser.lastName}"
                     class="k-profile-avatar__image"
                   />
                   <button class="k-profile-avatar__edit" title="Change avatar">
@@ -407,7 +407,7 @@
                   </button>
                 </div>
                 <div class="k-profile-info">
-                  <h2>Kavindu Perera</h2>
+                  <h2>${sessionScope.authUser.firstName} ${sessionScope.authUser.lastName}</h2>
                   <div class="k-profile-meta">
                     <div class="k-profile-meta__item">
                       <i data-lucide="mail"></i>
@@ -477,7 +477,10 @@
                         class="c-input c-input--soft c-input--rect"
                         name="phone"
                         value="${sessionScope.authUser.phoneNumber}"
-                        placeholder="+94 77 123 4567"
+                        placeholder="077 123 4567"
+                        maxlength="10"
+                        pattern="[0-9]{10}"
+                        title="Phone number must be 10 digits"
                       />
                     </div>
 

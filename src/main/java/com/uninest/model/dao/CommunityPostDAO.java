@@ -85,7 +85,7 @@ public class CommunityPostDAO {
     public Optional<CommunityPost> findByIdWithAuthor(int id) {
         String sql = """
                 SELECT p.*,
-                       u.name AS author_name,
+                       CONCAT(u.first_name, ' ', u.last_name) AS author_name,
                        (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS like_count,
                        (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
                 FROM community_posts p
@@ -165,7 +165,7 @@ public class CommunityPostDAO {
     public List<CommunityPost> findByCommunityIdWithAuthor(int communityId) {
         String sql = """
                 SELECT p.*,
-                       u.name AS author_name,
+                       CONCAT(u.first_name, ' ', u.last_name) AS author_name,
                        (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS like_count,
                        (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
                 FROM community_posts p
@@ -239,7 +239,7 @@ public class CommunityPostDAO {
     public List<CommunityPost> findDeletedByCommunityId(int communityId) {
         String sql = """
                 SELECT p.*,
-                       u.name AS author_name,
+                       CONCAT(u.first_name, ' ', u.last_name) AS author_name,
                        ma.reason AS deletion_reason
                 FROM community_posts p
                 JOIN users u ON p.user_id = u.id
@@ -290,7 +290,7 @@ public class CommunityPostDAO {
     public List<CommunityPost> findPinnedByCommunityId(int communityId) {
         String sql = """
                 SELECT p.*,
-                       u.name AS author_name,
+                       CONCAT(u.first_name, ' ', u.last_name) AS author_name,
                        (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS like_count,
                        (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
                 FROM community_posts p
@@ -324,7 +324,7 @@ public class CommunityPostDAO {
     public List<CommunityPost> findReportedPostsByCommunityId(int communityId) {
         String sql = """
                 SELECT p.*,
-                       u.name AS author_name,
+                       CONCAT(u.first_name, ' ', u.last_name) AS author_name,
                        (SELECT COUNT(*) FROM community_post_reports WHERE post_id = p.id AND status = 'pending') AS report_count
                 FROM community_posts p
                 JOIN users u ON p.user_id = u.id

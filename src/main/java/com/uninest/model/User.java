@@ -3,7 +3,8 @@ package com.uninest.model;
 public class User {
     private int id;
     private String email;
-    private String name; // User's full name
+    private String firstName;
+    private String lastName;
     private String passwordHash;
     private String roleName; // Role name as string (student, moderator, admin)
     private Integer communityId; // null until student joins or moderator's community approved
@@ -29,8 +30,38 @@ public class User {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
     
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    // Compatibility method for existing views
+    public String getName() { 
+        if (firstName == null && lastName == null) return "";
+        if (firstName == null) return lastName;
+        if (lastName == null) return firstName;
+        return firstName + " " + lastName; 
+    }
+    
+    // Explicit setter removed favor of setFirstName/setLastName
+    // If needed for legacy mapping, can parse, but better to fix call sites.
+    @Deprecated
+    public void setName(String name) {
+        if (name == null) {
+            this.firstName = null;
+            this.lastName = null;
+            return;
+        }
+        int idx = name.lastIndexOf(' ');
+        if (idx == -1) {
+            this.firstName = name;
+            this.lastName = "";
+        } else {
+            this.firstName = name.substring(0, idx);
+            this.lastName = name.substring(idx + 1);
+        }
+    }
     
     public String getPasswordHash() { return passwordHash; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }

@@ -60,7 +60,7 @@ public class PostReportDAO {
     }
 
     public List<PostReport> findReportsByPostId(int postId) {
-        String sql = "SELECT r.*, u.fullname as reporter_name " +
+        String sql = "SELECT r.*, CONCAT(u.first_name, ' ', u.last_name) as reporter_name " +
                 "FROM community_post_reports r " +
                 "JOIN users u ON r.reporter_user_id = u.id " +
                 "WHERE r.post_id = ? ORDER BY r.created_at DESC";

@@ -78,23 +78,38 @@
       <div class="c-field__error" style="text-align: center; font-size: var(--fs-sm); margin-bottom: var(--space-4);">${error}</div>
     </c:if>
     <form class="c-auth__form js-auth-form"  method="post" action="${pageContext.request.contextPath}/signup" novalidate>
-    <div class="c-field">
-      <label for="fullName" class="c-field__label">Full Name</label>
-      <input
-        type="text"
-        id="fullName"
-        name="fullName"
-        class="c-field__input"
-        placeholder="Enter your full name"
-        required
-        autocomplete="name"
-        autofocus
-        value="${param.fullName}"
-      />
-      <p class="c-field__error" data-error-for="fullName" aria-live="polite"></p>
+    <div style="display: flex; gap: 1rem; grid-column: 1 / -1;">
+      <div class="c-field" style="flex: 1;">
+        <label for="firstName" class="c-field__label">First Name</label>
+        <input
+          type="text"
+          id="firstName"
+          name="firstName"
+          class="c-field__input"
+          placeholder="e.g. John"
+          autocomplete="given-name"
+          value="${param.firstName}"
+          autofocus
+        />
+        <p class="c-field__error" data-error-for="firstName" aria-live="polite"></p>
+      </div>
+      
+      <div class="c-field" style="flex: 1;">
+        <label for="lastName" class="c-field__label">Last Name</label>
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          class="c-field__input"
+          placeholder="e.g. Doe"
+          autocomplete="family-name"
+          value="${param.lastName}"
+        />
+        <p class="c-field__error" data-error-for="lastName" aria-live="polite"></p>
+      </div>
     </div>
     
-    <div class="c-field">
+    <div class="c-field" style="grid-column: 1 / -1;">
       <label for="email" class="c-field__label">Email</label>
       <input
         type="email"

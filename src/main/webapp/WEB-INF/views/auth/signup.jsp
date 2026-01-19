@@ -78,23 +78,38 @@
       <div class="c-field__error" style="text-align: center; font-size: var(--fs-sm); margin-bottom: var(--space-4);">${error}</div>
     </c:if>
     <form class="c-auth__form js-auth-form"  method="post" action="${pageContext.request.contextPath}/signup" novalidate>
-    <div class="c-field">
-      <label for="fullName" class="c-field__label">Full Name</label>
-      <input
-        type="text"
-        id="fullName"
-        name="fullName"
-        class="c-field__input"
-        placeholder="Enter your full name"
-        required
-        autocomplete="name"
-        autofocus
-        value="${param.fullName}"
-      />
-      <p class="c-field__error" data-error-for="fullName" aria-live="polite"></p>
+    <div style="display: flex; gap: 1rem; grid-column: 1 / -1;">
+      <div class="c-field" style="flex: 1;">
+        <label for="firstName" class="c-field__label">First Name</label>
+        <input
+          type="text"
+          id="firstName"
+          name="firstName"
+          class="c-field__input"
+          placeholder="e.g. Amal"
+          autocomplete="given-name"
+          value="${param.firstName}"
+          autofocus
+        />
+        <p class="c-field__error" data-error-for="firstName" aria-live="polite"></p>
+      </div>
+      
+      <div class="c-field" style="flex: 1;">
+        <label for="lastName" class="c-field__label">Last Name</label>
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          class="c-field__input"
+          placeholder="e.g. Perera"
+          autocomplete="family-name"
+          value="${param.lastName}"
+        />
+        <p class="c-field__error" data-error-for="lastName" aria-live="polite"></p>
+      </div>
     </div>
     
-    <div class="c-field">
+    <div class="c-field" style="grid-column: 1 / -1;">
       <label for="email" class="c-field__label">Email</label>
       <input
         type="email"
@@ -147,10 +162,10 @@
       <label for="academicYear" class="c-field__label">Academic year</label>
       <select id="academicYear" name="academicYear" class="c-field__input">
         <option value="">Select...</option>
-        <option value="1" ${param.academicYear == '1' ? 'selected' : ''}>1 year</option>
-        <option value="2" ${param.academicYear == '2' ? 'selected' : ''}>2</option>
-        <option value="3" ${param.academicYear == '3' ? 'selected' : ''}>3</option>
-        <option value="4" ${param.academicYear == '4' ? 'selected' : ''}>4</option>
+        <option value="1" ${param.academicYear == '1' ? 'selected' : ''}>1st Year</option>
+        <option value="2" ${param.academicYear == '2' ? 'selected' : ''}>2nd Year</option>
+        <option value="3" ${param.academicYear == '3' ? 'selected' : ''}>3rd Year</option>
+        <option value="4" ${param.academicYear == '4' ? 'selected' : ''}>4th Year</option>
       </select>
       <p class="c-field__error" data-error-for="academicYear" aria-live="polite"></p>
     </div>
@@ -164,6 +179,34 @@
         </c:forEach>
       </select>
       <p class="c-field__error" data-error-for="university" aria-live="polite"></p>
+    </div>
+
+    <div class="c-field">
+      <label for="universityIdNumber" class="c-field__label">University ID</label>
+      <input
+        type="text"
+        id="universityIdNumber"
+        name="universityIdNumber"
+        class="c-field__input"
+        placeholder="Eg: 2023/CS/025"
+        autocomplete="off"
+        value="${param.universityIdNumber}"
+      />
+      <p class="c-field__error" data-error-for="universityIdNumber" aria-live="polite"></p>
+    </div>
+
+    <div class="c-field">
+      <label for="faculty" class="c-field__label">Faculty</label>
+      <input
+        type="text"
+        id="faculty"
+        name="faculty"
+        class="c-field__input"
+        placeholder="Eg: Faculty of Arts"
+        autocomplete="off"
+        value="${param.faculty}"
+      />
+      <p class="c-field__error" data-error-for="faculty" aria-live="polite"></p>
     </div>
 
     <div class="c-role-select">

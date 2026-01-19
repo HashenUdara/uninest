@@ -411,7 +411,7 @@
                   <div class="k-profile-meta">
                     <div class="k-profile-meta__item">
                       <i data-lucide="mail"></i>
-                      kavindu.perera@university.edu
+                      ${sessionScope.authUser.email}
                     </div>
                   </div>
                 </div>
@@ -426,7 +426,7 @@
                   </p>
                 </div>
 
-                <form>
+                <form action="${pageContext.request.contextPath}/student/profile-settings" method="post">
                   <div class="k-form-grid">
                     <div class="c-field">
                       <label for="first-name" class="c-label">
@@ -436,7 +436,8 @@
                         type="text"
                         id="first-name"
                         class="c-input c-input--soft c-input--rect"
-                        value="Kavindu"
+                        name="firstName"
+                        value="${sessionScope.authUser.firstName}"
                         required
                       />
                     </div>
@@ -449,7 +450,8 @@
                         type="text"
                         id="last-name"
                         class="c-input c-input--soft c-input--rect"
-                        value="Perera"
+                        name="lastName"
+                        value="${sessionScope.authUser.lastName}"
                         required
                       />
                     </div>
@@ -462,8 +464,8 @@
                         type="email"
                         id="email"
                         class="c-input c-input--soft c-input--rect"
-                        value="kavindu.perera@university.edu"
-                        required
+                        value="${sessionScope.authUser.email}"
+                        readonly
                       />
                     </div>
 
@@ -473,7 +475,9 @@
                         type="tel"
                         id="phone"
                         class="c-input c-input--soft c-input--rect"
-                        value="+94 77 123 4567"
+                        name="phone"
+                        value=""
+                        placeholder="+94 77 123 4567"
                       />
                     </div>
 
@@ -483,7 +487,8 @@
                         type="text"
                         id="student-id"
                         class="c-input c-input--soft c-input--rect"
-                        value="CS/2023/001"
+                        name="universityIdNumber"
+                        value="${sessionScope.authUser.universityIdNumber}"
                         readonly
                         style="background: var(--color-surface)"
                       />
@@ -494,11 +499,12 @@
                       <select
                         id="year"
                         class="c-input c-input--soft c-input--rect"
+                        name="academicYear"
                       >
-                        <option value="1">1st Year</option>
-                        <option value="2" selected>2nd Year</option>
-                        <option value="3">3rd Year</option>
-                        <option value="4">4th Year</option>
+                        <option value="1" ${sessionScope.authUser.academicYear == 1 ? 'selected' : ''}>1st Year</option>
+                        <option value="2" ${sessionScope.authUser.academicYear == 2 ? 'selected' : ''}>2nd Year</option>
+                        <option value="3" ${sessionScope.authUser.academicYear == 3 ? 'selected' : ''}>3rd Year</option>
+                        <option value="4" ${sessionScope.authUser.academicYear == 4 ? 'selected' : ''}>4th Year</option>
                       </select>
                     </div>
                   </div>
@@ -751,10 +757,10 @@
         // Handle form submissions
         const forms = document.querySelectorAll("form");
         forms.forEach((form) => {
-          form.addEventListener("submit", function (e) {
-            e.preventDefault();
-            showToast("Settings saved successfully!");
-          });
+          // form.addEventListener("submit", function (e) {
+             // e.preventDefault();
+             // showToast("Settings saved successfully!");
+           // });
         });
       });
 
@@ -787,5 +793,13 @@
         }, 3000);
       }
     </script>
+    
+    <c:if test="${param.success eq 'true'}">
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                showToast("Settings saved successfully!");
+            });
+        </script>
+    </c:if>
        
 </layout:student-dashboard>

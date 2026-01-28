@@ -24,6 +24,8 @@
                   color: var(--color-brand);
                   border: 1px solid rgba(84, 44, 245, 0.2);
                   margin-left: auto;
+                  white-space: nowrap; /* Prevent text wrapping */
+                  flex-shrink: 0; /* Prevent badge from shrinking */
                 }
               </style>
               <header class="c-page__header">

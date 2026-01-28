@@ -394,9 +394,23 @@
                   tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading subjects...</td></tr>';
 
                   fetch('${pageContext.request.contextPath}/student/api/subjects?year=' + y + '&semester=' + s)
-                    .then(res => res.json())
+                    .then(res => {
+                        if (res.status === 401) {
+                            throw new Error("Session expired. Please login again.");
+                        }
+                        if (!res.ok) {
+                            throw new Error("Server returned " + res.status);
+                        }
+                        return res.text().then(text => {
+                            try {
+                                return JSON.parse(text);
+                            } catch (e) {
+                                throw new Error("Invalid response format");
+                            }
+                        });
+                    })
                     .then(subjects => {
-                      if (subjects.length === 0) {
+                      if (!Array.isArray(subjects) || subjects.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No subjects found for this semester.</td></tr>';
                         return;
                       }
@@ -433,7 +447,13 @@
                     })
                     .catch(err => {
                       console.error(err);
-                      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:red;">Error loading subjects.</td></tr>';
+                      let msg = "Error loading subjects.";
+                      if (err.message.includes("Session expired")) {
+                          msg = 'Session expired. <a href="${pageContext.request.contextPath}/login">Login</a>';
+                      } else if (err.message.includes("Server returned")) {
+                         msg = err.message;
+                      }
+                      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:red;">' + msg + '</td></tr>';
                     });
                 }
 

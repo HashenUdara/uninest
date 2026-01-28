@@ -15,12 +15,12 @@ import java.util.Map;
  * No business logic - just routing to views.
  */
 @WebServlet(urlPatterns = {
-        "/student/community",
-        "/student/community/new-post",
-        "/student/community/post-details",
-        "/student/community/subject",
-        "/student/community/my-posts",
-        "/student/community/edit-post",
+        // "/student/community",
+        // "/student/community/new-post",
+        // "/student/community/post-details",
+        // "/student/community/subject",
+        // "/student/community/my-posts",
+        // "/student/community/edit-post",
 
         "/student/progress-analysis",
 
@@ -31,11 +31,11 @@ import java.util.Map;
         "/student/kuppi-sessions/kuppi-apply-conductor",
         "/student/kuppi-sessions/request",
         "/student/kuppi-sessions/my-sessions",
-        "/student/profile-settings",
+        // "/student/profile-settings",
         "/student/quizzes",
 
-        "/admin/profile-settings",
-        "/moderator/profile-settings"
+        // "/admin/profile-settings",
+        // "/moderator/profile-settings"
 
 })
 public class DemoServlet extends HttpServlet {

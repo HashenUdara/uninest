@@ -109,7 +109,7 @@ tagdir="/WEB-INF/tags/dashboard" %>
                 class="c-input c-input--soft c-input--rect">
                 <option value="Common" selected>Common (General Discussion)</option>
                 <c:forEach var="subject" items="${subjects}">
-                  <option value="${subject.code}">
+                  <option value="${subject.code} - ${subject.name}">
                     ${subject.code} - ${subject.name}
                   </option>
                 </c:forEach>

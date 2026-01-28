@@ -126,8 +126,9 @@
                       Common (General Discussion)
                     </option>
                     <c:forEach var="subject" items="${subjects}">
-                      <option value="${subject.code}" ${post.topic == subject.code ? 'selected' : ''}>
-                        ${subject.code} - ${subject.name}
+                      <c:set var="fullTopic" value="${subject.code} - ${subject.name}" />
+                      <option value="${fullTopic}" ${post.topic == fullTopic ? 'selected' : ''}>
+                        ${fullTopic}
                       </option>
                     </c:forEach>
                   </select>

@@ -165,6 +165,12 @@
                   <span>Code</span>
                 </button>
               </th>
+              <th>Credits</th> <!--credits-->
+              <th aria-sort="none">
+                <button type="button" class="c-table-sort js-sort" data-key="credits">
+                  <span>Credits</span>
+                </button>
+              </th>
               <th aria-sort="none">
                 <button type="button" class="c-table-sort js-sort" data-key="year">
                   <span>Academic year</span>
@@ -185,10 +191,11 @@
           </thead>
           <tbody>
             <c:forEach items="${subjects}" var="subject">
-              <tr data-name="${subject.name}" data-code="${subject.code}" data-description="${subject.description}" style="cursor: pointer;" onclick="window.location.href='${pageContext.request.contextPath}/moderator/topics?subjectId=${subject.subjectId}'">
+              <tr data-name="${subject.name}" data-code="${subject.code}" data-credits="${subject.credits}" data-description="${subject.description}" style="cursor: pointer;" onclick="window.location.href='${pageContext.request.contextPath}/moderator/topics?subjectId=${subject.subjectId}'">
                 <td>${subject.name}</td>
                 <td>${subject.description != null ? subject.description : '-'}</td>
                 <td>${subject.code}</td>
+                <td>${subject.credits} Credits</td>  <!-- credits-->
                 <td>Year ${subject.academicYear}</td>
                 <td>Semester ${subject.semester}</td>
                 <td><span class="c-status is-${subject.status}">${subject.status}</span></td>

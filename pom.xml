@@ -50,11 +50,16 @@
       <artifactId>mysql-connector-j</artifactId>
       <version>9.0.0</version>
     </dependency>
-      <!-- Password hashing -->
       <dependency>
         <groupId>org.mindrot</groupId>
         <artifactId>jbcrypt</artifactId>
         <version>0.4</version>
+      </dependency>
+      <!-- Gson for JSON serialization -->
+      <dependency>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+      <version>2.10.1</version> <!-- Ensuring Gson 2.10.1 is loaded -->
       </dependency>
   </dependencies>
     <build>

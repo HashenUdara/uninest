@@ -223,7 +223,6 @@
                             <th>Course Name</th>
                             <th>Grade</th>
                             <th>Credits</th>
-                            <th>Course Type</th>
                           </tr>
                         </thead>
                         <tbody id="gpa-rows">
@@ -391,7 +390,7 @@
                   const s = semSel.value;
                   if (!y || !s) return;
 
-                  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading subjects...</td></tr>';
+                  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading subjects...</td></tr>';
 
                   fetch('${pageContext.request.contextPath}/student/api/subjects?year=' + y + '&semester=' + s)
                     .then(res => {
@@ -411,7 +410,7 @@
                     })
                     .then(subjects => {
                       if (!Array.isArray(subjects) || subjects.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No subjects found for this semester.</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No subjects found for this semester.</td></tr>';
                         return;
                       }
 
@@ -432,7 +431,6 @@
                         '</select>' +
                         '</td>' +
                         '<td>' + subj.credits + '</td>' +
-                        '<td>Regular</td>' +
                         '</tr>'
                       ).join("");
 
@@ -453,7 +451,7 @@
                       } else if (err.message.includes("Server returned")) {
                          msg = err.message;
                       }
-                      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:red;">' + msg + '</td></tr>';
+                      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">' + msg + '</td></tr>';
                     });
                 }
 

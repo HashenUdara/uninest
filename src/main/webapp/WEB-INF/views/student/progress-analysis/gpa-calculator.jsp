@@ -187,6 +187,8 @@
               </div>
             </c:if>
 
+            <div id="gpa-alert-container"
+              style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;"></div>
             <div class="comm-layout">
               <div class="c-page">
                 <header class="c-page__header">
@@ -392,52 +394,62 @@
 
                   tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading subjects...</td></tr>';
 
-                  fetch('${pageContext.request.contextPath}/student/api/subjects?year=' + y + '&semester=' + s)
-                    .then(res => {
-                        if (res.status === 401) {
-                            throw new Error("Session expired. Please login again.");
-                        }
-                        if (!res.ok) {
-                            throw new Error("Server returned " + res.status);
-                        }
-                        return res.text().then(text => {
-                            try {
-                                return JSON.parse(text);
-                            } catch (e) {
-                                throw new Error("Invalid response format");
-                            }
-                        });
-                    })
-                    .then(subjects => {
+                  // Fetch both subjects and saved grades
+                  Promise.all([
+                    fetch('${pageContext.request.contextPath}/student/api/subjects?year=' + y + '&semester=' + s)
+                      .then(res => {
+                        if (res.status === 401) throw new Error("Session expired. Please login again.");
+                        if (!res.ok) throw new Error("Server returned " + res.status);
+                        return res.json();
+                      }),
+                    fetch('${pageContext.request.contextPath}/student/api/gpa/load?year=' + y + '&semester=' + s)
+                      .then(res => res.json())
+                      .catch(err => {
+                        console.warn("Failed to load saved grades", err);
+                        return [];
+                      })
+                  ])
+                    .then(([subjects, savedGrades]) => {
                       if (!Array.isArray(subjects) || subjects.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No subjects found for this semester.</td></tr>';
                         return;
                       }
 
-                      const grades = loadGrades();
+                      // Create map of saved grades for easy lookup
+                      const gradeMap = {};
+                      if (Array.isArray(savedGrades)) {
+                        savedGrades.forEach(entry => {
+                          gradeMap[entry.courseName] = entry.grade;
+                        });
+                      }
+
+                      const grades = loadGrades(); // Still check local storage fallback
                       const termKey = y + '-' + s;
                       const termGrades = grades[termKey] || {};
 
-                      tbody.innerHTML = subjects.map((subj, idx) =>
-                        '<tr data-code="' + subj.code + '" data-credits="' + subj.credits + '">' +
-                        '<td>' + (idx + 1) + '</td>' +
-                        '<td>' +
-                        '<div style="font-weight:500;">' + subj.code + '</div>' +
-                        '<div class="u-text-muted" style="font-size:0.9em;">' + subj.name + '</div>' +
-                        '</td>' +
-                        '<td>' +
-                        '<select class="c-input c-input--table js-grade-select">' +
-                        getGradeOptions(termGrades[subj.code]) +
-                        '</select>' +
-                        '</td>' +
-                        '<td>' + subj.credits + '</td>' +
-                        '</tr>'
-                      ).join("");
+                      tbody.innerHTML = subjects.map((subj, idx) => {
+                        // Priority: DB Saved Grade > Local Storage > Empty
+                        const savedGrade = gradeMap[subj.code] || termGrades[subj.code];
+
+                        return '<tr data-code="' + subj.code + '" data-credits="' + subj.credits + '">' +
+                          '<td>' + (idx + 1) + '</td>' +
+                          '<td>' +
+                          '<div style="font-weight:500;">' + subj.code + '</div>' +
+                          '<div class="u-text-muted" style="font-size:0.9em;">' + subj.name + '</div>' +
+                          '</td>' +
+                          '<td>' +
+                          '<select class="c-input c-input--table js-grade-select">' +
+                          getGradeOptions(savedGrade) +
+                          '</select>' +
+                          '</td>' +
+                          '<td>' + subj.credits + '</td>' +
+                          '</tr>';
+                      }).join("");
 
                       // Re-bind events
                       tbody.querySelectorAll(".js-grade-select").forEach(sel => {
                         sel.addEventListener("change", () => {
-                          saveCurrentState();
+                          saveCurrentState(); // Update local storage
                           calcGpa();
                         });
                       });
@@ -447,9 +459,9 @@
                       console.error(err);
                       let msg = "Error loading subjects.";
                       if (err.message.includes("Session expired")) {
-                          msg = 'Session expired. <a href="${pageContext.request.contextPath}/login">Login</a>';
+                        msg = 'Session expired. <a href="${pageContext.request.contextPath}/login">Login</a>';
                       } else if (err.message.includes("Server returned")) {
-                         msg = err.message;
+                        msg = err.message;
                       }
                       tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">' + msg + '</td></tr>';
                     });
@@ -496,6 +508,90 @@
                   // For this task, we focus on fetching and displaying subjects.
                   console.log("Current Term GPA:", gpa);
                 }
+
+                function showAlert(message, type) {
+                  const container = document.getElementById("gpa-alert-container");
+                  const alert = document.createElement("div");
+                  // Basic styles for alert since c-alert might not support dynamic insertion smoothly without complex JS
+                  // Using inline styles for reliability
+                  const colors = {
+                    success: { bg: '#d1fae5', text: '#065f46', border: '#34d399' },
+                    danger: { bg: '#fee2e2', text: '#991b1b', border: '#f87171' },
+                    warning: { bg: '#fef3c7', text: '#92400e', border: '#fbbf24' }
+                  };
+                  const style = colors[type] || colors.success;
+
+                  alert.style.cssText = 'background: ' + style.bg + '; color: ' + style.text + '; border: 1px solid ' + style.border + '; padding: 12px 16px; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); opacity: 0; transition: opacity 0.3s ease-in-out;';
+                  alert.innerHTML = '<div style="display:flex; align-items:center; gap:8px;"><span>' + message + '</span></div>';
+
+                  container.appendChild(alert);
+
+                  // Trigger reflow
+                  requestAnimationFrame(() => {
+                    alert.style.opacity = '1';
+                  });
+
+                  setTimeout(() => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 300);
+                  }, 3000);
+                }
+
+                saveBtn.addEventListener("click", function () {
+                  const y = yearSel.value;
+                  const s = semSel.value;
+                  const entries = [];
+
+                  tbody.querySelectorAll("tr").forEach(tr => {
+                    const code = tr.getAttribute("data-code");
+                    const credits = tr.getAttribute("data-credits");
+                    const gradeVal = tr.querySelector(".js-grade-select").value;
+
+                    if (gradeVal) {
+                      entries.push({
+                        courseName: code,
+                        grade: gradeVal,
+                        credits: parseInt(credits)
+                      });
+                    }
+                  });
+
+                  if (entries.length === 0) {
+                    showAlert("Please select at least one grade to save.", "warning");
+                    return;
+                  }
+
+                  // Show loading
+                  const originalText = saveBtn.innerHTML;
+                  saveBtn.disabled = true;
+                  saveBtn.innerHTML = 'Saving...';
+
+                  fetch('${pageContext.request.contextPath}/student/api/gpa/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      year: parseInt(y),
+                      semester: parseInt(s),
+                      entries: entries
+                    })
+                  })
+                    .then(res => res.json())
+                    .then(data => {
+                      if (data.success) {
+                        showAlert(data.message || "GPA records saved successfully!", "success");
+                      } else {
+                        showAlert(data.message || "Failed to save records.", "danger");
+                      }
+                    })
+                    .catch(err => {
+                      console.error(err);
+                      showAlert("Error saving records: " + err.message, "danger");
+                    })
+                    .finally(() => {
+                      saveBtn.disabled = false;
+                      saveBtn.innerHTML = originalText;
+                    });
+                });
 
                 yearSel.addEventListener("change", fetchAndRender);
                 semSel.addEventListener("change", fetchAndRender);

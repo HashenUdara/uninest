@@ -40,8 +40,7 @@
     rgba(0, 0, 0, 0.1) 0px 1px 3px -1px;
 }
 .c-post__head {
-  display: grid;
-  grid-template-columns: 36px 1fr;
+  display: flex;
   gap: var(--space-3);
   align-items: center;
   margin-bottom: var(--space-3);
@@ -440,9 +439,7 @@
     color: var(--color-brand) !important;
 }
 
-.c-post--mine .c-post__head {
-  grid-template-columns: 36px 1fr auto;
-}
+
 
 /* Pinned Posts Section */
 .c-pinned-section {
@@ -515,4 +512,20 @@
 
 .js-pin-post.is-pinned {
     color: var(--color-brand) !important;
+}
+
+/* Topic Badge */
+.c-topic-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    background: linear-gradient(135deg, rgba(84, 44, 245, 0.1) 0%, rgba(84, 44, 245, 0.05) 100%);
+    color: var(--color-brand);
+    border: 1px solid rgba(84, 44, 245, 0.2);
+    margin-left: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
 }

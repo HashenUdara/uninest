@@ -13,20 +13,6 @@
                   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
                   gap: var(--space-4);
                 }
-                .c-topic-badge {
-                  display: inline-flex;
-                  align-items: center;
-                  padding: 4px 12px;
-                  border-radius: var(--radius-pill);
-                  font-size: var(--fs-xs);
-                  font-weight: var(--fw-semibold);
-                  background: linear-gradient(135deg, rgba(84, 44, 245, 0.1) 0%, rgba(84, 44, 245, 0.05) 100%);
-                  color: var(--color-brand);
-                  border: 1px solid rgba(84, 44, 245, 0.2);
-                  margin-left: auto;
-                  white-space: nowrap; /* Prevent text wrapping */
-                  flex-shrink: 0; /* Prevent badge from shrinking */
-                }
               </style>
               <header class="c-page__header">
                 <nav class="c-breadcrumbs" aria-label="Breadcrumb">
@@ -102,7 +88,7 @@
                                 <img alt="${post.authorName}"
                                   src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3E${fn:toUpperCase(initials)}%3C/text%3E%3C/svg%3E" />
                               </div>
-                              <div>
+                              <div style="flex: 1">
                                 <strong>${post.authorName}</strong>
                                 <div class="c-post__meta">
                                   <fmt:formatDate value="${post.createdAt}" pattern="MMM d, yyyy" />
@@ -110,7 +96,7 @@
                                     Pinned</span>
                                 </div>
                               </div>
-                              <c:if test="${not empty post.topic && post.topic != 'Common'}">
+                              <c:if test="${not empty post.topic}">
                                 <span class="c-topic-badge">${post.topic}</span>
                               </c:if>
                             </div>
@@ -184,7 +170,7 @@
                                   <img alt="${post.authorName}"
                                     src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3E${fn:toUpperCase(initials)}%3C/text%3E%3C/svg%3E" />
                                 </div>
-                                <div>
+                                <div style="flex: 1">
                                   <strong>${post.authorName}</strong>
                                   <div class="c-post__meta">
                                     <fmt:formatDate value="${post.createdAt}" pattern="MMM d, yyyy" />
@@ -194,7 +180,7 @@
                                     </c:if>
                                   </div>
                                 </div>
-                                <c:if test="${not empty post.topic && post.topic != 'Common'}">
+                                <c:if test="${not empty post.topic}">
                                   <span class="c-topic-badge">${post.topic}</span>
                                 </c:if>
                               </div>

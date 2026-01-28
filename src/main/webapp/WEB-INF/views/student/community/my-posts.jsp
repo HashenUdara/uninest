@@ -215,6 +215,9 @@
                             <div class="c-post__meta">
                               <fmt:formatDate value="${post.createdAt}" pattern="MMM d, yyyy"/>
                             </div>
+                            <c:if test="${not empty post.topic}">
+                              <span class="c-topic-badge">${post.topic}</span>
+                            </c:if>
                           </div>
                           <c:if test="${!post.deleted}">
                               <div class="c-post__manage">

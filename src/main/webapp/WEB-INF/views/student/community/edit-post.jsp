@@ -118,22 +118,18 @@
                     ><c:out value="${post.content}"/></textarea>
                   </div>
 
+
                 <div class="c-field">
-                  <label for="post-subject" class="c-label">Subject</label>
-                  <select
-                    id="post-subject"
-                    class="c-input c-input--soft c-input--rect"
-                  >
-                    <option value="">Select a subject</option>
-                    <option value="CS204">CS204 - Data Structures</option>
-                    <option value="CS301">CS301 - Algorithms</option>
-                    <option value="CS123">
-                      CS123 - Programming Fundamentals
+                  <label for="post-topic" class="c-label">Topic/Subject (Optional)</label>
+                  <select id="post-topic" name="topic" class="c-input c-input--soft c-input--rect">
+                    <option value="Common" ${post.topic == 'Common' || empty post.topic ? 'selected' : ''}>
+                      Common (General Discussion)
                     </option>
-                    <option value="CS205">CS205 - Operating Systems</option>
-                    <option value="MA201">MA201 - Calculus II</option>
-                    <option value="ENG101">ENG101 - English Composition</option>
-                    <option value="PHY110">PHY110 - Physics I</option>
+                    <c:forEach var="subject" items="${subjects}">
+                      <option value="${subject.code}" ${post.topic == subject.code ? 'selected' : ''}>
+                        ${subject.code} - ${subject.name}
+                      </option>
+                    </c:forEach>
                   </select>
                 </div>
 

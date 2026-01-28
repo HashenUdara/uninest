@@ -102,6 +102,21 @@ tagdir="/WEB-INF/tags/dashboard" %>
             </div>
 
             <div class="c-field">
+              <label for="post-topic" class="c-label">Topic/Subject (Optional)</label>
+              <select 
+                id="post-topic" 
+                name="topic" 
+                class="c-input c-input--soft c-input--rect">
+                <option value="Common" selected>Common (General Discussion)</option>
+                <c:forEach var="subject" items="${subjects}">
+                  <option value="${subject.code}">
+                    ${subject.code} - ${subject.name}
+                  </option>
+                </c:forEach>
+              </select>
+            </div>
+
+            <div class="c-field">
               <label for="post-desc" class="c-label">Content</label>
               <textarea
                 id="post-desc"

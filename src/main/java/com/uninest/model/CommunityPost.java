@@ -10,6 +10,7 @@ public class CommunityPost {
     private int id;
     private int userId;
     private int communityId;
+    private String topic;
     private String title;
     private String content;
     private String imageUrl;
@@ -51,6 +52,14 @@ public class CommunityPost {
 
     public void setCommunityId(int communityId) {
         this.communityId = communityId;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 
     public String getTitle() {

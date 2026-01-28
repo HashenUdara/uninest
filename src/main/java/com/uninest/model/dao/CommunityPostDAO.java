@@ -21,6 +21,7 @@ public class CommunityPostDAO {
         post.setId(rs.getInt("id"));
         post.setUserId(rs.getInt("user_id"));
         post.setCommunityId(rs.getInt("community_id"));
+        post.setTopic(rs.getString("topic"));
         post.setTitle(rs.getString("title"));
         post.setContent(rs.getString("content"));
         post.setImageUrl(rs.getString("image_url"));
@@ -39,14 +40,15 @@ public class CommunityPostDAO {
      * @return The generated post ID
      */
     public int create(CommunityPost post) {
-        String sql = "INSERT INTO community_posts(user_id, community_id, title, content, image_url) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO community_posts(user_id, community_id, topic, title, content, image_url) VALUES(?,?,?,?,?,?)";
         try (Connection con = DBConnection.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, post.getUserId());
             ps.setInt(2, post.getCommunityId());
-            ps.setString(3, post.getTitle());
-            ps.setString(4, post.getContent());
-            ps.setString(5, post.getImageUrl());
+            ps.setString(3, post.getTopic());
+            ps.setString(4, post.getTitle());
+            ps.setString(5, post.getContent());
+            ps.setString(6, post.getImageUrl());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
@@ -200,13 +202,14 @@ public class CommunityPostDAO {
      * @return true if update was successful, false otherwise
      */
     public boolean update(CommunityPost post) {
-        String sql = "UPDATE community_posts SET title = ?, content = ?, image_url = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+        String sql = "UPDATE community_posts SET topic = ?, title = ?, content = ?, image_url = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
         try (Connection con = DBConnection.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, post.getTitle());
-            ps.setString(2, post.getContent());
-            ps.setString(3, post.getImageUrl());
-            ps.setInt(4, post.getId());
+            ps.setString(1, post.getTopic());
+            ps.setString(2, post.getTitle());
+            ps.setString(3, post.getContent());
+            ps.setString(4, post.getImageUrl());
+            ps.setInt(5, post.getId());
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {

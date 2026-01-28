@@ -1,8 +1,10 @@
 package com.uninest.controller.student;
 
 import com.uninest.model.CommunityPost;
+import com.uninest.model.Subject;
 import com.uninest.model.User;
 import com.uninest.model.dao.CommunityPostDAO;
+import com.uninest.model.dao.SubjectDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -78,6 +80,13 @@ public class EditPostServlet extends HttpServlet {
             return;
         }
         
+        // Fetch subjects for the user's community and academic year
+        SubjectDAO subjectDAO = new SubjectDAO();
+        List<Subject> subjects = subjectDAO.findByCommunityAndYear(
+            user.getCommunityId(), 
+            user.getAcademicYear()
+        );
+        req.setAttribute("subjects", subjects);
         req.setAttribute("post", post);
         req.getRequestDispatcher("/WEB-INF/views/student/community/edit-post.jsp").forward(req, resp);
     }
@@ -118,6 +127,12 @@ public class EditPostServlet extends HttpServlet {
             // Get form parameters
             String title = req.getParameter("title");
             String content = req.getParameter("content");
+            String topic = req.getParameter("topic");
+            
+            // If topic is null or empty, default to "Common"
+            if (topic == null || topic.trim().isEmpty()) {
+                topic = "Common";
+            }
             
             // Validate required fields
             if (title == null || title.trim().isEmpty()) {
@@ -168,6 +183,7 @@ public class EditPostServlet extends HttpServlet {
             }
             
             // Update post fields
+            post.setTopic(topic);
             post.setTitle(title.trim());
             post.setContent(content.trim());
             

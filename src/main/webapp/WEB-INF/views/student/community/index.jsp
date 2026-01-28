@@ -13,6 +13,18 @@
                   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
                   gap: var(--space-4);
                 }
+                .c-topic-badge {
+                  display: inline-flex;
+                  align-items: center;
+                  padding: 4px 12px;
+                  border-radius: var(--radius-pill);
+                  font-size: var(--fs-xs);
+                  font-weight: var(--fw-semibold);
+                  background: linear-gradient(135deg, rgba(84, 44, 245, 0.1) 0%, rgba(84, 44, 245, 0.05) 100%);
+                  color: var(--color-brand);
+                  border: 1px solid rgba(84, 44, 245, 0.2);
+                  margin-left: auto;
+                }
               </style>
               <header class="c-page__header">
                 <nav class="c-breadcrumbs" aria-label="Breadcrumb">
@@ -96,9 +108,9 @@
                                     Pinned</span>
                                 </div>
                               </div>
-                              <div style="margin-left: auto; color: var(--color-brand); opacity: 0.8; display: none;">
-                                <i data-lucide="pin"></i>
-                              </div>
+                              <c:if test="${not empty post.topic && post.topic != 'Common'}">
+                                <span class="c-topic-badge">${post.topic}</span>
+                              </c:if>
                             </div>
                             <div class="c-post__body">
                               <h4 class="c-post__title">
@@ -180,6 +192,9 @@
                                     </c:if>
                                   </div>
                                 </div>
+                                <c:if test="${not empty post.topic && post.topic != 'Common'}">
+                                  <span class="c-topic-badge">${post.topic}</span>
+                                </c:if>
                               </div>
 
                               <div class="c-post__body">

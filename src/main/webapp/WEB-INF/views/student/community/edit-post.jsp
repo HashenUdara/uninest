@@ -58,7 +58,7 @@
               <nav class="c-tabs-line" aria-label="Filter">
                 <a href="${pageContext.request.contextPath}/student/community"  >Most Upvoted</a>
                 <a href="${pageContext.request.contextPath}/student/community" >Most Recent</a>
-                <a href="${pageContext.request.contextPath}/student/community" >Unanswered</a>
+
                 <a href="${pageContext.request.contextPath}/student/community/my-posts" class="is-active">My Posts</a>
               </nav>
               <!-- Filters -->

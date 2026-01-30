@@ -53,8 +53,7 @@
                       <a href="${pageContext.request.contextPath}/moderator/community?tab=reported"
                         class="${activeTab == 'reported' ? 'is-active' : ''}"
                         style="color: var(--color-warning);">Reported</a>
-                      <a href="${pageContext.request.contextPath}/moderator/community?tab=unanswered"
-                        class="${activeTab == 'unanswered' ? 'is-active' : ''}">Unanswered</a>
+
                       <a href="${pageContext.request.contextPath}/moderator/community?tab=deleted"
                         class="${activeTab == 'deleted' ? 'is-active' : ''}" style="color: var(--color-danger);">Deleted
                         Posts</a>

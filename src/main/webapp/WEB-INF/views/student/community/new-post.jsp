@@ -54,7 +54,7 @@ tagdir="/WEB-INF/tags/dashboard" %>
         <nav class="c-tabs-line" aria-label="Filter">
           <a href="#" class="is-active">Most Upvoted</a>
           <a href="#">Most Recent</a>
-          <a href="#">Unanswered</a>
+
           <a
             href="${pageContext.request.contextPath}/student/community/my-posts"
             >My Posts</a

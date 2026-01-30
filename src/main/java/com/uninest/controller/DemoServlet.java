@@ -30,7 +30,7 @@ import java.util.Map;
     "/student/kuppi-sessions/my-sessions",
     // "/student/kuppi-sessions/my-sessions", // Removed duplicate
     // "/student/profile-settings", // Handled by StudentSettingsServlet
-    "/student/quizzes",
+
 
     "/admin/profile-settings",
     "/moderator/profile-settings"
@@ -58,7 +58,7 @@ public class DemoServlet extends HttpServlet {
         // ROUTE_MAP.put("/student/profile-settings", "/WEB-INF/views/student/profile-settings.jsp"); // Moved to StudentSettingsServlet
         ROUTE_MAP.put("/admin/profile-settings", "/WEB-INF/views/admin/profile-settings.jsp");
         ROUTE_MAP.put("/moderator/profile-settings", "/WEB-INF/views/moderator/profile-settings.jsp");
-        ROUTE_MAP.put("/student/quizzes", "/WEB-INF/views/student/quizzes.jsp");
+
     }
     
 

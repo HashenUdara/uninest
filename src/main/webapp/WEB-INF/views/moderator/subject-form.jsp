@@ -259,6 +259,13 @@
                  placeholder="e.g., CS204" />
         </div>
 
+        <div class="c-form-group"> <!--credits -->
+          <label for="code" class="c-form-label">Credits</label>
+          <input type="text" id="credits" name="credits" class="c-input"
+                 value="${isEdit ? subject.credits : ''}"
+                 placeholder="e.g., 3" />
+        </div>
+
         <div class="c-form-group">
           <label for="description" class="c-form-label">Description</label>
           <textarea id="description" name="description" class="c-input" 

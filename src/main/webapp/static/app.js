@@ -464,8 +464,8 @@ function initOrgConfirm() {
     const titleText = approve
       ? "Approve organization"
       : reject
-      ? "Reject organization"
-      : "Delete organization";
+        ? "Reject organization"
+        : "Delete organization";
     const title = modal.querySelector("#confirm-title");
     if (title) title.textContent = titleText;
     modal.hidden = false;
@@ -891,9 +891,19 @@ function initCommunityFilters() {
     },
   };
 
-  const cfg = window.UniNest.gpaData || demoData;
-  const SCALE = cfg.scale || demoData.scale;
-  const YEARS = cfg.years || demoData.years;
+  // const cfg = window.UniNest.gpaData || demoData; // Moved to getCfg()
+  // const SCALE = cfg.scale || demoData.scale;
+  // const YEARS = cfg.years || demoData.years;
+
+  function getCfg() {
+    return window.UniNest.gpaData || demoData;
+  }
+  function getScale() {
+    return getCfg().scale || demoData.scale;
+  }
+  function getYears() {
+    return getCfg().years || demoData.years;
+  }
 
   const STORAGE_KEY = "uninest-gpa-grades"; // {year:{semester:{subject:"A"}}}
 
@@ -909,13 +919,13 @@ function initCommunityFilters() {
   }
 
   function gradeOptions() {
-    return Object.keys(SCALE)
+    return Object.keys(getScale())
       .map((g) => `<option value="${g}">${g}</option>`)
       .join("");
   }
 
   function getSubjects(year, semester) {
-    return YEARS?.[year]?.[semester] || [];
+    return getYears()?.[year]?.[semester] || [];
   }
 
   function calcGpaForList(list, selectedGrades) {
@@ -924,7 +934,7 @@ function initCommunityFilters() {
     for (const subj of list) {
       const letter = selectedGrades?.[subj.name];
       if (!letter) continue; // not graded yet
-      const pts = SCALE[letter] ?? 0;
+      const pts = getScale()[letter] ?? 0;
       const c = Number(subj.credits) || 0;
       qp += pts * c;
       cr += c;
@@ -937,11 +947,11 @@ function initCommunityFilters() {
     const semSel = root.querySelector(".js-gpa-semester");
     if (!yearSel || !semSel) return { yearSel, semSel };
     // Populate years
-    yearSel.innerHTML = Object.keys(YEARS)
+    yearSel.innerHTML = Object.keys(getYears())
       .sort()
       .map((y) => `<option value="${y}">${y}</option>`)
       .join("");
-    const defaultYear = yearSel.value || Object.keys(YEARS)[0];
+    const defaultYear = yearSel.value || Object.keys(getYears())[0];
     populateSemesters(defaultYear);
 
     yearSel.addEventListener("change", () => {
@@ -955,7 +965,7 @@ function initCommunityFilters() {
     });
 
     function populateSemesters(year) {
-      const terms = Object.keys(YEARS[year] || {});
+      const terms = Object.keys(getYears()[year] || {});
       semSel.innerHTML = terms
         .map((t) => `<option value="${t}">${t}</option>`)
         .join("");
@@ -983,9 +993,9 @@ function initCommunityFilters() {
             <select class="c-input c-input--table js-letter" aria-label="Grade letter">
               <option value="" ${value === "" ? "selected" : ""}>–</option>
               ${gradeOptions().replace(
-                `value="${value}"`,
-                `value="${value}" selected`
-              )}
+          `value="${value}"`,
+          `value="${value}" selected`
+        )}
             </select>
           </td>
           <td>${s.credits}</td>
@@ -1027,7 +1037,7 @@ function initCommunityFilters() {
     const store = loadGrades();
     const current = store?.[year] || {};
 
-    const terms = Object.keys(YEARS?.[year] || {});
+    const terms = Object.keys(getYears()?.[year] || {});
     let cumQP = 0,
       cumCR = 0;
     terms.forEach((t) => {
@@ -1039,7 +1049,7 @@ function initCommunityFilters() {
       list.forEach((subj) => {
         const letter = current[t]?.[subj.name];
         if (!letter) return;
-        const pts = SCALE[letter] ?? 0;
+        const pts = getScale()[letter] ?? 0;
         const c = Number(subj.credits) || 0;
         cumQP += pts * c;
         cumCR += c;
@@ -1061,7 +1071,7 @@ function initCommunityFilters() {
   function renderScaleTable(root) {
     const body = root.querySelector("#gpa-scale-body");
     if (!body) return;
-    const entries = Object.entries(SCALE).sort((a, b) => {
+    const entries = Object.entries(getScale()).sort((a, b) => {
       // Sort by points desc; for equal points, shorter label (A+ before A-) first
       if (b[1] !== a[1]) return b[1] - a[1];
       return a[0].length - b[0].length;

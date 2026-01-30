@@ -43,33 +43,67 @@ public class GpaEntryDAO {
     }
 
     public boolean saveOrUpdate(GpaEntry entry) {
-        // Uses ON DUPLICATE KEY UPDATE to handle UPSERT since we have a unique key on
-        // (student, year, sem, course)
-        String sql = "INSERT INTO gpa_entries (student_id, academic_year, semester, course_name, grade, credits) " +
-                "VALUES (?, ?, ?, ?, ?, ?) " +
-                "ON DUPLICATE KEY UPDATE grade = VALUES(grade), credits = VALUES(credits)";
+        // Robust UPSERT logic: Check if exists, then UPDATE or INSERT
+        // This handles cases where the UNIQUE constraint might be missing in the
+        // database
 
-        try (Connection con = DBConnection.getConnection();
-                PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, entry.getStudentId());
-            ps.setInt(2, entry.getAcademicYear());
-            ps.setInt(3, entry.getSemester());
-            ps.setString(4, entry.getCourseName());
-            ps.setString(5, entry.getGrade());
-            ps.setInt(6, entry.getCredits());
+        String checkSql = "SELECT id FROM gpa_entries WHERE student_id = ? AND academic_year = ? AND semester = ? AND course_name = ?";
+        String updateSql = "UPDATE gpa_entries SET grade = ?, credits = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+        String insertSql = "INSERT INTO gpa_entries (student_id, academic_year, semester, course_name, grade, credits) VALUES (?, ?, ?, ?, ?, ?)";
 
-            int rows = ps.executeUpdate();
-            if (rows > 0) {
-                // If inserted, we might want to get the ID, but for bulk save it's less
-                // critical
-                try (ResultSet keys = ps.getGeneratedKeys()) {
-                    if (keys.next()) {
-                        entry.setId(keys.getInt(1));
+        try (Connection con = DBConnection.getConnection()) {
+            // 1. Check if exists
+            int existingId = -1;
+            try (PreparedStatement checkPs = con.prepareStatement(checkSql)) {
+                checkPs.setInt(1, entry.getStudentId());
+                checkPs.setInt(2, entry.getAcademicYear());
+                checkPs.setInt(3, entry.getSemester());
+                checkPs.setString(4, entry.getCourseName());
+
+                try (ResultSet rs = checkPs.executeQuery()) {
+                    if (rs.next()) {
+                        existingId = rs.getInt("id");
                     }
                 }
-                return true;
+            }
+
+            // 2. Update or Insert
+            if (existingId != -1) {
+                // UPDATE
+                try (PreparedStatement updatePs = con.prepareStatement(updateSql)) {
+                    updatePs.setString(1, entry.getGrade());
+                    updatePs.setInt(2, entry.getCredits());
+                    updatePs.setInt(3, existingId);
+
+                    int rows = updatePs.executeUpdate();
+                    if (rows > 0) {
+                        entry.setId(existingId);
+                        return true;
+                    }
+                }
+            } else {
+                // INSERT
+                try (PreparedStatement insertPs = con.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+                    insertPs.setInt(1, entry.getStudentId());
+                    insertPs.setInt(2, entry.getAcademicYear());
+                    insertPs.setInt(3, entry.getSemester());
+                    insertPs.setString(4, entry.getCourseName());
+                    insertPs.setString(5, entry.getGrade());
+                    insertPs.setInt(6, entry.getCredits());
+
+                    int rows = insertPs.executeUpdate();
+                    if (rows > 0) {
+                        try (ResultSet keys = insertPs.getGeneratedKeys()) {
+                            if (keys.next()) {
+                                entry.setId(keys.getInt(1));
+                            }
+                        }
+                        return true;
+                    }
+                }
             }
             return false;
+
         } catch (SQLException e) {
             throw new RuntimeException("Error saving GPA entry", e);
         }

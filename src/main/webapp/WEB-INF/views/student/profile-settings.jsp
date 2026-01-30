@@ -398,20 +398,30 @@
               <div class="k-profile-header">
                 <div class="k-profile-avatar">
                   <img
-                    src="https://i.pravatar.cc/300?img=12"
-                    alt="Kavindu Perera"
+                    src="${pageContext.request.contextPath}${sessionScope.authUser.profilePictureUrl}"
+                    id="profileImagePreview"
+                    alt="${sessionScope.authUser.firstName} ${sessionScope.authUser.lastName}"
                     class="k-profile-avatar__image"
                   />
-                  <button class="k-profile-avatar__edit" title="Change avatar">
+                  <button type="button" class="k-profile-avatar__edit" title="Change avatar" onclick="document.getElementById('profileUploadInput').click()">
                     <i data-lucide="camera"></i>
                   </button>
+                  <input 
+                    type="file" 
+                    id="profileUploadInput" 
+                    name="profileImage" 
+                    accept="image/*" 
+                    style="display: none;" 
+                    onchange="previewImage(this)"
+                    form="profileForm"
+                  >
                 </div>
                 <div class="k-profile-info">
-                  <h2>Kavindu Perera</h2>
+                  <h2>${sessionScope.authUser.firstName} ${sessionScope.authUser.lastName}</h2>
                   <div class="k-profile-meta">
                     <div class="k-profile-meta__item">
                       <i data-lucide="mail"></i>
-                      kavindu.perera@university.edu
+                      ${sessionScope.authUser.email}
                     </div>
                   </div>
                 </div>
@@ -426,7 +436,7 @@
                   </p>
                 </div>
 
-                <form>
+                <form id="profileForm" action="${pageContext.request.contextPath}/student/profile-settings" method="post" enctype="multipart/form-data">
                   <div class="k-form-grid">
                     <div class="c-field">
                       <label for="first-name" class="c-label">
@@ -436,7 +446,8 @@
                         type="text"
                         id="first-name"
                         class="c-input c-input--soft c-input--rect"
-                        value="Kavindu"
+                        name="firstName"
+                        value="${sessionScope.authUser.firstName}"
                         required
                       />
                     </div>
@@ -449,7 +460,8 @@
                         type="text"
                         id="last-name"
                         class="c-input c-input--soft c-input--rect"
-                        value="Perera"
+                        name="lastName"
+                        value="${sessionScope.authUser.lastName}"
                         required
                       />
                     </div>
@@ -462,8 +474,8 @@
                         type="email"
                         id="email"
                         class="c-input c-input--soft c-input--rect"
-                        value="kavindu.perera@university.edu"
-                        required
+                        value="${sessionScope.authUser.email}"
+                        readonly
                       />
                     </div>
 
@@ -473,7 +485,12 @@
                         type="tel"
                         id="phone"
                         class="c-input c-input--soft c-input--rect"
-                        value="+94 77 123 4567"
+                        name="phone"
+                        value="${sessionScope.authUser.phoneNumber}"
+                        placeholder="077 123 4567"
+                        maxlength="10"
+                        pattern="[0-9]{10}"
+                        title="Phone number must be 10 digits"
                       />
                     </div>
 
@@ -483,7 +500,8 @@
                         type="text"
                         id="student-id"
                         class="c-input c-input--soft c-input--rect"
-                        value="CS/2023/001"
+                        name="universityIdNumber"
+                        value="${sessionScope.authUser.universityIdNumber}"
                         readonly
                         style="background: var(--color-surface)"
                       />
@@ -494,11 +512,12 @@
                       <select
                         id="year"
                         class="c-input c-input--soft c-input--rect"
+                        name="academicYear"
                       >
-                        <option value="1">1st Year</option>
-                        <option value="2" selected>2nd Year</option>
-                        <option value="3">3rd Year</option>
-                        <option value="4">4th Year</option>
+                        <option value="1" ${sessionScope.authUser.academicYear == 1 ? 'selected' : ''}>1st Year</option>
+                        <option value="2" ${sessionScope.authUser.academicYear == 2 ? 'selected' : ''}>2nd Year</option>
+                        <option value="3" ${sessionScope.authUser.academicYear == 3 ? 'selected' : ''}>3rd Year</option>
+                        <option value="4" ${sessionScope.authUser.academicYear == 4 ? 'selected' : ''}>4th Year</option>
                       </select>
                     </div>
                   </div>
@@ -751,10 +770,10 @@
         // Handle form submissions
         const forms = document.querySelectorAll("form");
         forms.forEach((form) => {
-          form.addEventListener("submit", function (e) {
-            e.preventDefault();
-            showToast("Settings saved successfully!");
-          });
+          // form.addEventListener("submit", function (e) {
+             // e.preventDefault();
+             // showToast("Settings saved successfully!");
+           // });
         });
       });
 
@@ -777,9 +796,42 @@
 
       function showToast(msg) {
         const toasts = document.querySelector(".c-toasts");
-        if (!toasts) return;
+        if (!toasts) {
+             const t = document.createElement('div');
+             t.style.position = 'fixed';
+             t.style.bottom = '20px';
+             t.style.right = '20px';
+             t.style.backgroundColor = '#333';
+             t.style.color = 'white';
+             t.style.padding = '12px 24px';
+             t.style.borderRadius = '4px';
+             t.style.zIndex = '9999';
+             t.innerText = msg;
+             document.body.appendChild(t);
+             setTimeout(() => t.remove(), 4000);
+             return;
+        }
         const item = document.createElement("div");
         item.className = "c-toast";
+      }
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('success')) {
+         showToast('Settings saved successfully!');
+      }
+      if (urlParams.has('error')) {
+         showToast(urlParams.get('error'));
+      }
+
+      function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profileImagePreview').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+      }
         item.textContent = msg;
         toasts.appendChild(item);
         setTimeout(() => {
@@ -787,5 +839,13 @@
         }, 3000);
       }
     </script>
+    
+    <c:if test="${param.success eq 'true'}">
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                showToast("Settings saved successfully!");
+            });
+        </script>
+    </c:if>
        
 </layout:student-dashboard>

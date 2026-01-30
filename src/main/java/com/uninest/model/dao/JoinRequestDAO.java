@@ -48,7 +48,7 @@ public class JoinRequestDAO {
     }
 
     public Optional<JoinRequest> findById(int id) {
-        String sql = "SELECT jr.*, u.name AS user_name, u.email AS user_email, u.academic_year AS user_academic_year, " +
+        String sql = "SELECT jr.*, CONCAT(u.first_name, ' ', u.last_name) AS user_name, u.email AS user_email, u.academic_year AS user_academic_year, " +
                 "uni.name AS university_name, c.title AS community_title " +
                 "FROM community_join_requests jr " +
                 "JOIN users u ON jr.user_id = u.id " +
@@ -70,7 +70,7 @@ public class JoinRequestDAO {
     }
 
     public List<JoinRequest> findByCommunityAndStatus(int communityId, String status) {
-        String sql = "SELECT jr.*, u.name AS user_name, u.email AS user_email, u.academic_year AS user_academic_year, " +
+        String sql = "SELECT jr.*, CONCAT(u.first_name, ' ', u.last_name) AS user_name, u.email AS user_email, u.academic_year AS user_academic_year, " +
                 "uni.name AS university_name, c.title AS community_title " +
                 "FROM community_join_requests jr " +
                 "JOIN users u ON jr.user_id = u.id " +
@@ -119,7 +119,7 @@ public class JoinRequestDAO {
     }
 
     public Optional<JoinRequest> findPendingRequestByUserAndCommunity(int userId, int communityId) {
-        String sql = "SELECT jr.*, u.name AS user_name, u.email AS user_email, u.academic_year AS user_academic_year, " +
+        String sql = "SELECT jr.*, CONCAT(u.first_name, ' ', u.last_name) AS user_name, u.email AS user_email, u.academic_year AS user_academic_year, " +
                 "uni.name AS university_name, c.title AS community_title " +
                 "FROM community_join_requests jr " +
                 "JOIN users u ON jr.user_id = u.id " +
@@ -142,7 +142,7 @@ public class JoinRequestDAO {
     }
 
     public Optional<JoinRequest> findPendingRequestByUser(int userId) {
-        String sql = "SELECT jr.*, u.name AS user_name, u.email AS user_email, u.academic_year AS user_academic_year, " +
+        String sql = "SELECT jr.*, CONCAT(u.first_name, ' ', u.last_name) AS user_name, u.email AS user_email, u.academic_year AS user_academic_year, " +
                 "uni.name AS university_name, c.title AS community_title " +
                 "FROM community_join_requests jr " +
                 "JOIN users u ON jr.user_id = u.id " +

@@ -58,7 +58,7 @@
               <nav class="c-tabs-line" aria-label="Filter">
                 <a href="${pageContext.request.contextPath}/student/community"  >Most Upvoted</a>
                 <a href="${pageContext.request.contextPath}/student/community" >Most Recent</a>
-                <a href="${pageContext.request.contextPath}/student/community" >Unanswered</a>
+
                 <a href="${pageContext.request.contextPath}/student/community/my-posts" class="is-active">My Posts</a>
               </nav>
               <!-- Filters -->
@@ -90,99 +90,94 @@
                   Edit Your Post
                 </h2>
 
-                <div class="c-field">
-                  <label for="post-title" class="c-label">Post Title</label>
-                  <input
-                    id="post-title"
-                    class="c-input c-input--soft c-input--rect"
-                    type="text"
-                    placeholder="Enter post title"
-                    value=""
-                  />
-                </div>
+                <form action="${pageContext.request.contextPath}/student/community/edit-post?id=${post.id}" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="id" value="${post.id}" />
+                  
+                  <div class="c-field">
+                    <label for="post-title" class="c-label">Post Title</label>
+                    <input
+                      id="post-title"
+                      name="title"
+                      class="c-input c-input--soft c-input--rect"
+                      type="text"
+                      placeholder="Enter post title"
+                      value="${post.title}"
+                      required
+                    />
+                  </div>
+
+                  <div class="c-field">
+                    <label for="post-desc" class="c-label">Description</label>
+                    <textarea
+                      id="post-desc"
+                      name="content"
+                      class="c-textarea c-textarea--soft"
+                      rows="6"
+                      placeholder="Write a description"
+                      required
+                    ><c:out value="${post.content}"/></textarea>
+                  </div>
+
 
                 <div class="c-field">
-                  <label for="post-desc" class="c-label">Description</label>
-                  <textarea
-                    id="post-desc"
-                    class="c-textarea c-textarea--soft"
-                    rows="6"
-                    placeholder="Write a description"
-                  ></textarea>
-                </div>
-
-                <div class="c-field">
-                  <label for="post-subject" class="c-label">Subject</label>
-                  <select
-                    id="post-subject"
-                    class="c-input c-input--soft c-input--rect"
-                  >
-                    <option value="">Select a subject</option>
-                    <option value="CS204">CS204 - Data Structures</option>
-                    <option value="CS301">CS301 - Algorithms</option>
-                    <option value="CS123">
-                      CS123 - Programming Fundamentals
+                  <label for="post-topic" class="c-label">Topic/Subject (Optional)</label>
+                  <select id="post-topic" name="topic" class="c-input c-input--soft c-input--rect">
+                    <option value="Common" ${post.topic == 'Common' || empty post.topic ? 'selected' : ''}>
+                      Common (General Discussion)
                     </option>
-                    <option value="CS205">CS205 - Operating Systems</option>
-                    <option value="MA201">MA201 - Calculus II</option>
-                    <option value="ENG101">ENG101 - English Composition</option>
-                    <option value="PHY110">PHY110 - Physics I</option>
+                    <c:forEach var="subject" items="${subjects}">
+                      <c:set var="fullTopic" value="${subject.code} - ${subject.name}" />
+                      <option value="${fullTopic}" ${post.topic == fullTopic ? 'selected' : ''}>
+                        ${fullTopic}
+                      </option>
+                    </c:forEach>
                   </select>
                 </div>
 
-                <div
-                  class="c-field"
-                  id="current-image-wrap"
-                  style="display: none"
-                >
-                  <label class="c-label">Current Image</label>
-                  <div
-                    id="current-image"
-                    style="
-                      border: 1px solid var(--c-border);
-                      border-radius: var(--radius-2);
-                      overflow: hidden;
-                      max-width: 400px;
-                    "
-                  >
-                    <img
-                      src=""
-                      alt="Current post image"
-                      style="width: 100%; display: block"
-                    />
-                  </div>
-                  <button
-                    id="remove-image"
-                    class="c-btn c-btn--ghost c-btn--sm"
-                    type="button"
-                    style="margin-top: var(--space-2)"
-                  >
-                    <i data-lucide="trash-2"></i> Remove Image
-                  </button>
-                </div>
+                  <c:if test="${not empty post.imageUrl}">
+                    <div class="c-field" id="current-image-wrap">
+                      <label class="c-label">Current Image</label>
+                      <div
+                        id="current-image"
+                        style="
+                          border: 1px solid var(--c-border);
+                          border-radius: var(--radius-2);
+                          overflow: hidden;
+                          max-width: 400px;
+                        "
+                      >
+                        <img
+                          src="${pageContext.request.contextPath}/uploads/${post.imageUrl}"
+                          alt="Current post image"
+                          style="width: 100%; display: block"
+                        />
+                      </div>
+                    </div>
+                  </c:if>
 
-                <div class="c-field">
-                  <label class="c-label">Upload New Image (Optional)</label>
-                  <div class="c-dropzone" id="dropzone">
-                    <input
-                      id="upload-input"
-                      type="file"
-                      accept="image/*"
-                      hidden
-                    />
-                    <div class="c-dropzone__inner">
-                      <strong>Upload an image</strong>
-                      <span class="u-text-muted" style="font-size: var(--fs-sm)"
-                        >Browse Files</span
-                      >
-                      <label
-                        for="upload-input"
-                        class="c-btn c-btn--secondary c-dropzone__btn"
-                        >Upload</label
-                      >
+                  <div class="c-field">
+                    <label class="c-label">Upload New Image (Optional)</label>
+                    <div class="c-dropzone" id="dropzone">
+                      <input
+                        id="upload-input"
+                        name="image"
+                        type="file"
+                        accept="image/*"
+                        hidden
+                      />
+                      <div class="c-dropzone__inner">
+                        <strong>Upload an image</strong>
+                        <span class="u-text-muted" style="font-size: var(--fs-sm)"
+                          >Browse Files</span
+                        >
+                        <label
+                          for="upload-input"
+                          class="c-btn c-btn--secondary c-dropzone__btn"
+                          >Upload</label
+                        >
+                      </div>
                     </div>
                   </div>
-                </div>
 
                 <div class="c-field" id="progress-wrap" style="display: none">
                   <div
@@ -208,17 +203,18 @@
                   </div>
                 </div>
 
-                <div class="c-form-actions">
-                  <a
-                    href="${pageContext.request.contextPath}/student/community/my-posts"
-                    class="c-btn c-btn--ghost"
-                    role="button"
-                    >Cancel</a
-                  >
-                  <button class="c-btn js-save-post" type="button">
-                    Save Changes
-                  </button>
-                </div>
+                  <div class="c-form-actions">
+                    <a
+                      href="${pageContext.request.contextPath}/student/community/my-posts"
+                      class="c-btn c-btn--ghost"
+                      role="button"
+                      >Cancel</a
+                    >
+                    <button class="c-btn" type="submit">
+                      Save Changes
+                    </button>
+                  </div>
+                </form>
               </article>
             </section>
             
@@ -337,63 +333,7 @@
 
         const toasts = document.querySelector(".c-toasts");
 
-        // Mock post data (would come from backend in real app)
-        const postData = {
-          1: {
-            title: "CS204 Lab 3 Help Needed",
-            description:
-              "Anyone has tips for CS204 lab 3? I'm stuck on the stack implementation edge cases. Would really appreciate some guidance on handling null pointers!",
-            subject: "CS204",
-            image: null,
-          },
-          2: {
-            title: "Dynamic Programming Notes",
-            description:
-              "My notes on dynamic programming patterns - hope this helps someone preparing for the exam!",
-            subject: "CS301",
-            image: "${pageContext.request.contextPath}/static/img/1.avif",
-          },
-          3: {
-            title: "Study Group for Final Project",
-            description:
-              "Looking for study partners for the final project. Anyone interested in forming a team?",
-            subject: "CS123",
-            image: null,
-          },
-        };
-
-        // Get post ID from URL
-        const params = new URLSearchParams(window.location.search);
-        const postId = params.get("id");
-        const post = postData[postId];
-
-        if (post) {
-          // Pre-fill form
-          document.getElementById("post-title").value = post.title || "";
-          document.getElementById("post-desc").value = post.description || "";
-          document.getElementById("post-subject").value = post.subject || "";
-
-          // Show current image if exists
-          if (post.image) {
-            const currentImageWrap =
-              document.getElementById("current-image-wrap");
-            const currentImageEl = document.querySelector("#current-image img");
-            if (currentImageEl) currentImageEl.src = post.image;
-            if (currentImageWrap) currentImageWrap.style.display = "block";
-          }
-        }
-
-        // Remove image button
-        document
-          .getElementById("remove-image")
-          ?.addEventListener("click", () => {
-            const currentImageWrap =
-              document.getElementById("current-image-wrap");
-            if (currentImageWrap) currentImageWrap.style.display = "none";
-            showToast("Image removed");
-          });
-
-        // Upload new image
+        // File upload preview
         const input = document.getElementById("upload-input");
         const progressWrap = document.getElementById("progress-wrap");
         const bar = progressWrap?.querySelector(".c-progress__bar");
@@ -402,41 +342,10 @@
         if (input && progressWrap && bar && pctText) {
           input.addEventListener("change", () => {
             if (!input.files || input.files.length === 0) return;
-            progressWrap.style.display = "block";
-            // Demo: animate to 100%
-            let value = 0;
-            const timer = setInterval(() => {
-              value += 10;
-              if (value >= 100) {
-                value = 100;
-                clearInterval(timer);
-                showToast("Image uploaded successfully");
-              }
-              bar.style.width = value + "%";
-              pctText.textContent = String(value);
-              progressWrap.setAttribute("aria-valuenow", String(value));
-            }, 100);
+            // Show file selected feedback
+            showToast("Image selected: " + input.files[0].name);
           });
         }
-
-        // Save button
-        document
-          .querySelector(".js-save-post")
-          ?.addEventListener("click", () => {
-            const title = document.getElementById("post-title")?.value.trim();
-            const desc = document.getElementById("post-desc")?.value.trim();
-            const subject = document.getElementById("post-subject")?.value;
-
-            if (!title || !desc || !subject) {
-              showToast("Please fill in all required fields");
-              return;
-            }
-
-            showToast("Post updated successfully!");
-            setTimeout(() => {
-              window.location.href = "community-my-posts.html";
-            }, 1000);
-          });
 
         function showToast(msg) {
           if (!toasts) return;
@@ -447,6 +356,12 @@
           setTimeout(() => {
             item.remove();
           }, 2500);
+        }
+
+        // Show success message if redirected with success param
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("update") === "success") {
+          showToast("Post updated successfully!");
         }
       });
     </script>

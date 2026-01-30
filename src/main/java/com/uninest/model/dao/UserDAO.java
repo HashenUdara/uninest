@@ -9,7 +9,7 @@ import java.util.Optional;
 public class UserDAO {
 
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, " +
+        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, u.phone_number, u.profile_picture, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
@@ -31,17 +31,22 @@ public class UserDAO {
     }
 
     public void create(User user) {
-        String sql = "INSERT INTO users(email, name, password_hash, role_id, community_id, academic_year, university_id) " +
-                "VALUES(?,?,?,(SELECT id FROM roles WHERE name = ?),?,?,?)";
+        String sql = "INSERT INTO users(email, first_name, last_name, password_hash, role_id, community_id, academic_year, university_id, university_id_number, faculty, phone_number, profile_picture) " +
+                "VALUES(?,?,?,?,(SELECT id FROM roles WHERE name = ?),?,?,?,?,?,?,?)";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getEmail());
-            if (user.getName() == null) ps.setNull(2, Types.VARCHAR); else ps.setString(2, user.getName());
-            ps.setString(3, user.getPasswordHash());
-            ps.setString(4, user.getRole());
-            if (user.getCommunityId() == null) ps.setNull(5, Types.INTEGER); else ps.setInt(5, user.getCommunityId());
-            if (user.getAcademicYear() == null) ps.setNull(6, Types.TINYINT); else ps.setInt(6, user.getAcademicYear());
-            if (user.getUniversityId() == null) ps.setNull(7, Types.INTEGER); else ps.setInt(7, user.getUniversityId());
+            ps.setString(2, user.getFirstName());
+            ps.setString(3, user.getLastName());
+            ps.setString(4, user.getPasswordHash());
+            ps.setString(5, user.getRole());
+            if (user.getCommunityId() == null) ps.setNull(6, Types.INTEGER); else ps.setInt(6, user.getCommunityId());
+            if (user.getAcademicYear() == null) ps.setNull(7, Types.TINYINT); else ps.setInt(7, user.getAcademicYear());
+            if (user.getUniversityId() == null) ps.setNull(8, Types.INTEGER); else ps.setInt(8, user.getUniversityId());
+            if (user.getUniversityIdNumber() == null) ps.setNull(9, Types.VARCHAR); else ps.setString(9, user.getUniversityIdNumber());
+            if (user.getFaculty() == null) ps.setNull(10, Types.VARCHAR); else ps.setString(10, user.getFaculty());
+            if (user.getPhoneNumber() == null) ps.setNull(11, Types.VARCHAR); else ps.setString(11, user.getPhoneNumber());
+            if (user.getProfilePicture() == null) ps.setNull(12, Types.VARCHAR); else ps.setString(12, user.getProfilePicture());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) user.setId(keys.getInt(1));
@@ -110,7 +115,8 @@ public class UserDAO {
                 rs.getString("password_hash"),
                 rs.getString("role_name")
         );
-        u.setName(rs.getString("name"));
+        u.setFirstName(rs.getString("first_name"));
+        u.setLastName(rs.getString("last_name"));
         int commId = rs.getInt("community_id");
         u.setCommunityId(rs.wasNull() ? null : commId);
         u.setCommunityName(rs.getString("community_name"));
@@ -119,6 +125,10 @@ public class UserDAO {
         int uniId = rs.getInt("university_id");
         u.setUniversityId(rs.wasNull() ? null : uniId);
         u.setUniversityName(rs.getString("university_name"));
+        u.setUniversityIdNumber(rs.getString("university_id_number"));
+        u.setFaculty(rs.getString("faculty"));
+        u.setPhoneNumber(rs.getString("phone_number"));
+        u.setProfilePicture(rs.getString("profile_picture"));
         return u;
     }
 
@@ -135,7 +145,7 @@ public class UserDAO {
     }
 
     public java.util.List<User> findByRole(String roleName) {
-        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, " +
+        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, u.phone_number, u.profile_picture, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
@@ -158,13 +168,13 @@ public class UserDAO {
     }
 
     public java.util.List<User> searchUsers(String roleName, String searchTerm) {
-        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, " +
+        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, u.phone_number, u.profile_picture, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
                 "LEFT JOIN communities c ON u.community_id = c.id " +
                 "LEFT JOIN universities uni ON u.university_id = uni.id " +
-                "WHERE r.name = ? AND (u.email LIKE ? OR u.name LIKE ? OR uni.name LIKE ?) ORDER BY u.id DESC";
+                "WHERE r.name = ? AND (u.email LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ? OR uni.name LIKE ?) ORDER BY u.id DESC";
         java.util.List<User> users = new java.util.ArrayList<>();
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -173,6 +183,7 @@ public class UserDAO {
             ps.setString(2, pattern);
             ps.setString(3, pattern);
             ps.setString(4, pattern);
+            ps.setString(5, pattern);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     users.add(map(rs));
@@ -185,7 +196,7 @@ public class UserDAO {
     }
 
     public Optional<User> findById(int id) {
-        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, " +
+        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, u.phone_number, u.profile_picture, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
@@ -207,15 +218,20 @@ public class UserDAO {
     }
 
     public void update(User user) {
-        String sql = "UPDATE users SET email = ?, name = ?, community_id = ?, academic_year = ?, university_id = ? WHERE id = ?";
+        String sql = "UPDATE users SET email = ?, first_name = ?, last_name = ?, community_id = ?, academic_year = ?, university_id = ?, university_id_number = ?, faculty = ?, phone_number = ?, profile_picture = ? WHERE id = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, user.getEmail());
-            if (user.getName() == null) ps.setNull(2, Types.VARCHAR); else ps.setString(2, user.getName());
-            if (user.getCommunityId() == null) ps.setNull(3, Types.INTEGER); else ps.setInt(3, user.getCommunityId());
-            if (user.getAcademicYear() == null) ps.setNull(4, Types.TINYINT); else ps.setInt(4, user.getAcademicYear());
-            if (user.getUniversityId() == null) ps.setNull(5, Types.INTEGER); else ps.setInt(5, user.getUniversityId());
-            ps.setInt(6, user.getId());
+            ps.setString(2, user.getFirstName());
+            ps.setString(3, user.getLastName());
+            if (user.getCommunityId() == null) ps.setNull(4, Types.INTEGER); else ps.setInt(4, user.getCommunityId());
+            if (user.getAcademicYear() == null) ps.setNull(5, Types.TINYINT); else ps.setInt(5, user.getAcademicYear());
+            if (user.getUniversityId() == null) ps.setNull(6, Types.INTEGER); else ps.setInt(6, user.getUniversityId());
+            if (user.getUniversityIdNumber() == null) ps.setNull(7, Types.VARCHAR); else ps.setString(7, user.getUniversityIdNumber());
+            if (user.getFaculty() == null) ps.setNull(8, Types.VARCHAR); else ps.setString(8, user.getFaculty());
+            if (user.getPhoneNumber() == null) ps.setNull(9, Types.VARCHAR); else ps.setString(9, user.getPhoneNumber());
+            if (user.getProfilePicture() == null) ps.setNull(10, Types.VARCHAR); else ps.setString(10, user.getProfilePicture());
+            ps.setInt(11, user.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error updating user", e);
@@ -245,7 +261,7 @@ public class UserDAO {
     }
 
     public java.util.List<User> findByCommunityId(int communityId) {
-        String sql = "SELECT u.id, u.email, u.name, u.password_hash, u.community_id, u.academic_year, u.university_id, " +
+        String sql = "SELECT u.id, u.email, u.first_name, u.last_name, u.password_hash, u.community_id, u.academic_year, u.university_id, u.university_id_number, u.faculty, u.phone_number, u.profile_picture, " +
                 "r.name AS role_name, c.title AS community_name, uni.name AS university_name " +
                 "FROM users u " +
                 "JOIN roles r ON u.role_id = r.id " +
@@ -265,5 +281,39 @@ public class UserDAO {
             throw new RuntimeException("Error fetching users by community", e);
         }
         return users;
+    }
+    public void updateProfileImage(int userId, java.io.InputStream imageStream) {
+        String sql = "UPDATE users SET profile_picture_blob = ? WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            if (imageStream != null) {
+                ps.setBlob(1, imageStream);
+            } else {
+                ps.setNull(1, Types.BLOB);
+            }
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating profile image", e);
+        }
+    }
+
+    public byte[] getProfileImage(int userId) {
+        String sql = "SELECT profile_picture_blob FROM users WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Blob blob = rs.getBlob("profile_picture_blob");
+                    if (blob != null) {
+                        return blob.getBytes(1, (int) blob.length());
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching profile image", e);
+        }
+        return null;
     }
 }

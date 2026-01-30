@@ -244,7 +244,7 @@
                   <aside class="c-panel" style="height: fit-content">
                     <div class="c-panel__header">
                       <h3 class="c-section-title" style="margin: 0">
-                        Current GPA (optional)
+                        Current GPA
                       </h3>
                     </div>
                     <div class="u-stack-4">
@@ -354,6 +354,11 @@
                 const tbody = document.getElementById("gpa-rows");
                 const saveBtn = document.querySelector(".js-save-gpa");
 
+                // Summary elements
+                const cumGpaEls = document.querySelectorAll(".js-cum-gpa");
+                const gaugeRing = document.querySelector(".c-gauge__ring");
+                const summaryList = document.querySelector(".c-definition");
+
                 // Initialize selectors
                 const years = [1, 2, 3, 4];
                 const semesters = [1, 2];
@@ -450,10 +455,11 @@
                       tbody.querySelectorAll(".js-grade-select").forEach(sel => {
                         sel.addEventListener("change", () => {
                           saveCurrentState(); // Update local storage
-                          calcGpa();
+                          // calcGpa(); // Removed local only calc, rely on save to update persistent
                         });
                       });
-                      calcGpa();
+
+                      loadSummary(); // Load summary logic
                     })
                     .catch(err => {
                       console.error(err);
@@ -485,29 +491,41 @@
                   saveGrades(data);
                 }
 
-                function calcGpa() {
-                  // Simple calculation for current view (demo purpose, can be expanded)
-                  let totalPoints = 0;
-                  let totalCredits = 0;
+                function loadSummary() {
+                  fetch('${pageContext.request.contextPath}/student/api/gpa/summary')
+                    .then(res => res.json())
+                    .then(data => {
+                      // Update Cumulative
+                      cumGpaEls.forEach(el => el.textContent = data.cumulative);
 
-                  tbody.querySelectorAll("tr").forEach(tr => {
-                    const credits = parseFloat(tr.getAttribute("data-credits")) || 0;
-                    const val = tr.querySelector(".js-grade-select").value;
-                    const points = scale[val];
+                      // Update Gauge
+                      const pct = (parseFloat(data.cumulative) / 4.0) * 100;
+                      if (gaugeRing) gaugeRing.style.setProperty('--gpa-pct', pct + '%');
 
-                    if (val && points !== undefined) {
-                      totalPoints += points * credits;
-                      totalCredits += credits;
-                    }
-                  });
+                      // Update Term List
+                      if (data.terms && summaryList) {
+                        // Clear existing term rows (keep first child if it's cumulative, or rebuild all)
+                        // Best to rebuild the DL content from scratch or keep Cumulative static and append terms
+                        // Note: We use string concatenation to avoid JSP EL conflict
+                        let html =
+                          '<div class="c-definition__row">' +
+                          '<dt>Cumulative</dt>' +
+                          '<dd><span class="js-cum-gpa">' + data.cumulative + '</span></dd>' +
+                          '</div>';
 
-                  const gpa = totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : "0.00";
-
-                  // Update display (targeting the specific term span for now)
-                  // Note: A full implementation would calculate all terms. 
-                  // For this task, we focus on fetching and displaying subjects.
-                  console.log("Current Term GPA:", gpa);
+                        data.terms.forEach(term => {
+                          html +=
+                            '<div class="c-definition__row">' +
+                            '<dt>Year ' + term.year + ' Sem ' + term.semester + '</dt>' +
+                            '<dd><span>' + term.gpa + '</span></dd>' +
+                            '</div>';
+                        });
+                        summaryList.innerHTML = html;
+                      }
+                    })
+                    .catch(e => console.error("Error loading summary:", e));
                 }
+
 
                 function showAlert(message, type) {
                   const container = document.getElementById("gpa-alert-container");
@@ -579,6 +597,7 @@
                     .then(data => {
                       if (data.success) {
                         showAlert(data.message || "GPA records saved successfully!", "success");
+                        loadSummary(); // Refresh summary after save
                       } else {
                         showAlert(data.message || "Failed to save records.", "danger");
                       }
@@ -598,9 +617,8 @@
 
                 // Initial load
                 fetchAndRender();
-
-
-
+                // Also load summary initially regardless of table render? 
+                // fetchAndRender calls loadSummary inside it, so it's fine.
               });
             </script>
           </jsp:body>

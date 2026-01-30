@@ -42,6 +42,23 @@ public class GpaEntryDAO {
         return list;
     }
 
+    public List<GpaEntry> findAllByStudent(int studentId) {
+        String sql = "SELECT * FROM gpa_entries WHERE student_id = ? ORDER BY academic_year, semester";
+        List<GpaEntry> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, studentId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching student GPA history", e);
+        }
+        return list;
+    }
+
     public boolean saveOrUpdate(GpaEntry entry) {
         // Robust UPSERT logic: Check if exists, then UPDATE or INSERT
         // This handles cases where the UNIQUE constraint might be missing in the

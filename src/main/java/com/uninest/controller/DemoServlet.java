@@ -15,12 +15,8 @@ import java.util.Map;
  * No business logic - just routing to views.
  */
 @WebServlet(urlPatterns = {
-    "/student/community",
-    "/student/community/new-post",
     "/student/community/post-details",
     "/student/community/subject",
-    "/student/community/my-posts",
-    "/student/community/edit-post",
 
     "/student/progress-analysis",
     "/student/progress-analysis/gpa-calculator",
@@ -32,8 +28,9 @@ import java.util.Map;
     "/student/kuppi-sessions/kuppi-apply-conductor",
     "/student/kuppi-sessions/request",
     "/student/kuppi-sessions/my-sessions",
-    "/student/profile-settings",
-    "/student/quizzes",
+    // "/student/kuppi-sessions/my-sessions", // Removed duplicate
+    // "/student/profile-settings", // Handled by StudentSettingsServlet
+
 
     "/admin/profile-settings",
     "/moderator/profile-settings"
@@ -47,12 +44,8 @@ public class DemoServlet extends HttpServlet {
     
     static {
         // Community routes
-        ROUTE_MAP.put("/student/community", "/WEB-INF/views/student/community/index.jsp");
-        ROUTE_MAP.put("/student/community/new-post", "/WEB-INF/views/student/community/new-post.jsp");
         ROUTE_MAP.put("/student/community/post-details", "/WEB-INF/views/student/community/post-details.jsp");
         ROUTE_MAP.put("/student/community/subject", "/WEB-INF/views/student/community/subject.jsp");
-        ROUTE_MAP.put("/student/community/my-posts", "/WEB-INF/views/student/community/my-posts.jsp");
-        ROUTE_MAP.put("/student/community/edit-post", "/WEB-INF/views/student/community/edit-post.jsp");
         ROUTE_MAP.put("/student/progress-analysis", "/WEB-INF/views/student/progress-analysis/index.jsp");
         ROUTE_MAP.put("/student/progress-analysis/gpa-calculator", "/WEB-INF/views/student/progress-analysis/gpa-calculator.jsp");
         ROUTE_MAP.put("/student/kuppi-sessions", "/WEB-INF/views/student/kuppi-sessions/index.jsp");
@@ -62,10 +55,10 @@ public class DemoServlet extends HttpServlet {
         ROUTE_MAP.put("/student/kuppi-sessions/kuppi-apply-conductor", "/WEB-INF/views/student/kuppi-sessions/kuppi-apply-conductor.jsp");
         ROUTE_MAP.put("/student/kuppi-sessions/request", "/WEB-INF/views/student/kuppi-sessions/kuppi-request.jsp");
         ROUTE_MAP.put("/student/kuppi-sessions/my-sessions", "/WEB-INF/views/student/kuppi-sessions/my-sessions.jsp");
-        ROUTE_MAP.put("/student/profile-settings", "/WEB-INF/views/student/profile-settings.jsp");
+        // ROUTE_MAP.put("/student/profile-settings", "/WEB-INF/views/student/profile-settings.jsp"); // Moved to StudentSettingsServlet
         ROUTE_MAP.put("/admin/profile-settings", "/WEB-INF/views/admin/profile-settings.jsp");
         ROUTE_MAP.put("/moderator/profile-settings", "/WEB-INF/views/moderator/profile-settings.jsp");
-        ROUTE_MAP.put("/student/quizzes", "/WEB-INF/views/student/quizzes.jsp");
+
     }
     
 

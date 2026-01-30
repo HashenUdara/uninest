@@ -39,7 +39,7 @@ public class SubjectCoordinatorDAO {
      */
     public List<SubjectCoordinator> findBySubjectId(int subjectId) {
         String sql = "SELECT sc.coordinator_id, sc.user_id, sc.subject_id, sc.assigned_at, " +
-                "u.name AS user_name, u.email AS user_email, u.academic_year, " +
+                "CONCAT(u.first_name, ' ', u.last_name) AS user_name, u.email AS user_email, u.academic_year, " +
                 "uni.name AS university_name " +
                 "FROM subject_coordinators sc " +
                 "JOIN users u ON sc.user_id = u.id " +
@@ -66,7 +66,7 @@ public class SubjectCoordinatorDAO {
      */
     public List<SubjectCoordinator> findByCommunityId(int communityId) {
         String sql = "SELECT sc.coordinator_id, sc.user_id, sc.subject_id, sc.assigned_at, " +
-                "u.name AS user_name, u.email AS user_email, u.academic_year, " +
+                "CONCAT(u.first_name, ' ', u.last_name) AS user_name, u.email AS user_email, u.academic_year, " +
                 "uni.name AS university_name, " +
                 "s.name AS subject_name, s.code AS subject_code " +
                 "FROM subject_coordinators sc " +
@@ -163,7 +163,7 @@ public class SubjectCoordinatorDAO {
      */
     public Optional<SubjectCoordinator> findById(int coordinatorId) {
         String sql = "SELECT sc.coordinator_id, sc.user_id, sc.subject_id, sc.assigned_at, " +
-                "u.name AS user_name, u.email AS user_email, u.academic_year, " +
+                "CONCAT(u.first_name, ' ', u.last_name) AS user_name, u.email AS user_email, u.academic_year, " +
                 "uni.name AS university_name, " +
                 "s.name AS subject_name, s.code AS subject_code " +
                 "FROM subject_coordinators sc " +

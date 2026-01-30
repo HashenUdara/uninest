@@ -94,7 +94,7 @@
                                 <img alt="${post.authorName}"
                                   src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3E${fn:toUpperCase(initials)}%3C/text%3E%3C/svg%3E" />
                               </div>
-                              <div>
+                              <div style="flex: 1">
                                 <strong>${post.authorName}</strong>
                                 <div class="c-post__meta">
                                   <fmt:formatDate value="${post.createdAt}" pattern="MMM d, yyyy" />
@@ -102,6 +102,9 @@
                                     Pinned</span>
                                 </div>
                               </div>
+                              <c:if test="${not empty post.topic}">
+                                <span class="c-topic-badge">${post.topic}</span>
+                              </c:if>
                               <form action="${pageContext.request.contextPath}/moderator/community/post/pin"
                                 method="POST" style="margin-left: auto;">
                                 <input type="hidden" name="postId" value="${post.id}">
@@ -159,7 +162,7 @@
                                   <img alt="${post.authorName}"
                                     src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect width='100%25' height='100%25' rx='18' fill='%23E9D8FD'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter, Arial' font-size='14' font-weight='600' fill='%234e35e6' text-anchor='middle' dominant-baseline='middle'%3E${fn:toUpperCase(initials)}%3C/text%3E%3C/svg%3E" />
                                 </div>
-                                <div>
+                                <div style="flex: 1">
                                   <strong>${post.authorName}</strong>
                                   <div class="c-post__meta">
                                     <fmt:formatDate value="${post.createdAt}" pattern="MMM d, yyyy" />
@@ -169,6 +172,9 @@
                                     </c:if>
                                   </div>
                                 </div>
+                                <c:if test="${not empty post.topic}">
+                                  <span class="c-topic-badge">${post.topic}</span>
+                                </c:if>
 
                                 <c:if test="${!post.deleted}">
                                   <form action="${pageContext.request.contextPath}/moderator/community/post/pin"

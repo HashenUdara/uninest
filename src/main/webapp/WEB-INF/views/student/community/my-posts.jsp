@@ -12,6 +12,76 @@
                 grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
                 gap: var(--space-4);
             }
+            
+            /* Modal overlay and content styling for better visibility */
+            #delete-modal .c-modal__overlay {
+                position: fixed !important;
+                inset: 0 !important;
+                background: rgba(0, 0, 0, 0.85) !important; /* Very dark overlay */
+                backdrop-filter: blur(4px);
+                z-index: 9998 !important;
+            }
+            
+            #delete-modal .c-modal__content {
+                position: relative !important;
+                width: min(520px, 92vw) !important;
+                background: #ffffff !important; /* Force solid white background */
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 12px !important;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+                z-index: 9999 !important;
+                color: #000000 !important; /* Force black text */
+            }
+            
+            #delete-modal .c-modal__header {
+                padding: 1.25rem;
+                border-bottom: 1px solid #e2e8f0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #fff !important;
+                border-radius: 12px 12px 0 0;
+            }
+            
+            #delete-modal .c-modal__header h2 {
+                margin: 0;
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: #1a202c !important;
+            }
+            
+            #delete-modal .c-modal__body {
+                padding: 1.5rem;
+                color: #4a5568 !important;
+                line-height: 1.6;
+                background: #fff !important;
+                font-size: 1rem;
+            }
+            
+            #delete-modal .c-modal__footer {
+                padding: 1.25rem;
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.75rem;
+                border-top: 1px solid #e2e8f0;
+                background: #f7fafc !important;
+                border-radius: 0 0 12px 12px;
+            }
+
+
+            /* Ensure modal container sits on top - BUT ONLY WHEN NOT HIDDEN */
+            #delete-modal:not([hidden]) {
+                z-index: 9999 !important;
+                position: fixed !important;
+                inset: 0 !important;
+                display: grid !important;
+                place-items: center !important;
+            }
+            
+            /* Ensure it stays hidden when it has the hidden attribute */
+            #delete-modal[hidden] {
+                display: none !important;
+            }
         </style>
     <header class="c-page__header">
         <nav class="c-breadcrumbs" aria-label="Breadcrumb">
@@ -51,7 +121,7 @@
                   <a href="${pageContext.request.contextPath}/student/community" class="c-btn c-btn--ghost"
                     ><i data-lucide="arrow-left"></i> All Posts</a
                   >
-                  <a href="${pageContext.request.contextPath}/student/community/new-post" class="c-btn c-btn--secondary"
+                  <a href="${pageContext.request.contextPath}/student/community/posts/create" class="c-btn c-btn--secondary"
                   ><i data-lucide="plus"></i> New Post</a
                 >
                 </div>
@@ -158,7 +228,11 @@
                             </button>
                           </div>
                         </div>
-                        <h4 class="c-post__title">${post.title}</h4>
+                        <h4 class="c-post__title">
+                            <a href="${pageContext.request.contextPath}/student/community/post?id=${post.id}" style="color: inherit; text-decoration: none;">
+                                ${post.title}
+                            </a>
+                        </h4>
                         <p class="u-text-muted">
                           <c:out value="${post.content}"/>
                         </p>
@@ -178,12 +252,13 @@
                             <i data-lucide="thumbs-up"></i
                             ><span class="js-score">${post.likeCount}</span>
                           </button>
-                          <button
+                          <a
+                            href="${pageContext.request.contextPath}/student/community/post?id=${post.id}"
                             class="c-btn c-btn--ghost c-btn--sm"
                             aria-label="Comments"
                           >
                             <i data-lucide="message-square"></i>${post.commentCount}
-                          </button>
+                          </a>
                           <button
                             class="c-btn c-btn--ghost c-btn--sm js-downvote"
                             aria-label="Downvote"
@@ -355,7 +430,7 @@
         // Close modal
         if (modal) {
           modal.addEventListener("click", (e) => {
-            if (e.target.matches("[data-close]")) {
+            if (e.target.closest("[data-close]")) {
               modal.hidden = true;
               pendingDeleteId = null;
             }
@@ -367,21 +442,53 @@
             }
           });
 
+
           // Confirm delete
           const confirmBtn = modal.querySelector(".js-confirm-delete");
-          confirmBtn?.addEventListener("click", () => {
+          confirmBtn?.addEventListener("click", async () => {
             if (pendingDeleteId) {
-              const post = document.querySelector(
-                `.c-post[data-post-id="${pendingDeleteId}"]`
-              );
-              if (post) {
-                post.remove();
-                updatePostCount();
-                showToast("Post deleted successfully");
+              try {
+                // Disable button during request
+                confirmBtn.disabled = true;
+                confirmBtn.textContent = "Deleting...";
+
+                // Make AJAX request to backend
+                const response = await fetch(
+                  "${pageContext.request.contextPath}/student/community/posts/delete",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: "postId=" + pendingDeleteId,
+                  }
+                );
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                  showToast("Post deleted successfully");
+                  modal.hidden = true;
+                  
+                  // Automatically reload the page after a short delay
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 800);
+                } else {
+                  // Show error message from server
+                  showToast(data.message || "Failed to delete post");
+                  confirmBtn.disabled = false;
+                  confirmBtn.textContent = "Delete";
+                }
+              } catch (error) {
+                console.error("Error deleting post:", error);
+                showToast("An error occurred while deleting the post");
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = "Delete";
+              } finally {
+                pendingDeleteId = null;
               }
-              pendingDeleteId = null;
             }
-            modal.hidden = true;
           });
         }
 

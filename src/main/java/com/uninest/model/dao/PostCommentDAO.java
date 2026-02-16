@@ -129,6 +129,25 @@ public class PostCommentDAO {
     }
     
     /**
+     * Finds a comment by ID.
+     */
+    public PostComment findById(int id) {
+        String sql = "SELECT * FROM post_comments WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return map(rs);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error finding comment", e);
+        }
+        return null;
+    }
+
+    /**
      * Deletes a comment by its ID.
      */
     public boolean delete(int id) {
@@ -139,6 +158,21 @@ public class PostCommentDAO {
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting comment", e);
+        }
+    }
+
+    /**
+     * Updates the content of a comment.
+     */
+    public boolean update(int id, String content) {
+        String sql = "UPDATE post_comments SET content = ? WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, content);
+            ps.setInt(2, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating comment", e);
         }
     }
 }

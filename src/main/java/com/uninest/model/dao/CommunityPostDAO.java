@@ -75,6 +75,37 @@ public class CommunityPostDAO {
     }
 
     /**
+     * Finds a post by its ID with full author and stat details.
+     */
+    public Optional<CommunityPost> findByIdWithAuthor(int id) {
+        String sql = """
+            SELECT p.*, 
+                   u.name AS author_name,
+                   (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS like_count,
+                   (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
+            FROM community_posts p
+            JOIN users u ON p.user_id = u.id
+            WHERE p.id = ?
+            """;
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    CommunityPost post = map(rs);
+                    post.setAuthorName(rs.getString("author_name"));
+                    post.setLikeCount(rs.getInt("like_count"));
+                    post.setCommentCount(rs.getInt("comment_count"));
+                    return Optional.of(post);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching community post with details", e);
+        }
+        return Optional.empty();
+    }
+
+    /**
      * Finds all posts by a specific user (for My Posts page).
      */
     public List<CommunityPost> findByUserId(int userId) {

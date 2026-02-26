@@ -53,6 +53,22 @@ public class SubjectDAO {
         return list;
     }
 
+    public List<Subject> findByCommunityAndYear(int communityId, int academicYear) {
+        String sql = "SELECT * FROM subjects WHERE community_id = ? AND academic_year = ? ORDER BY name";
+        List<Subject> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, communityId);
+            ps.setInt(2, academicYear);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(map(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error listing subjects by community and year", e);
+        }
+        return list;
+    }
+
     public int create(Subject subject) {
         String sql = "INSERT INTO subjects(community_id, name, description, code, academic_year, semester, status) VALUES(?,?,?,?,?,?,?)";
         try (Connection con = DBConnection.getConnection();

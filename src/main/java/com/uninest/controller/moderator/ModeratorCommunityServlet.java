@@ -1,4 +1,4 @@
-package com.uninest.controller.student;
+package com.uninest.controller.moderator;
 
 import com.uninest.model.CommunityPost;
 import com.uninest.model.User;
@@ -13,11 +13,10 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Servlet for displaying the community feed.
- * Fetches posts from database and forwards to index.jsp.
+ * Servlet for displaying the community feed to Moderators.
  */
-@WebServlet(name = "community", urlPatterns = "/student/community")
-public class CommunityServlet extends HttpServlet {
+@WebServlet(name = "ModeratorCommunity", urlPatterns = "/moderator/community")
+public class ModeratorCommunityServlet extends HttpServlet {
 
     private final CommunityPostDAO postDAO = new CommunityPostDAO();
 
@@ -29,14 +28,30 @@ public class CommunityServlet extends HttpServlet {
             return;
         }
 
-        // Check if user has a community
-        if (user.getCommunityId() == null) {
-            resp.sendRedirect(req.getContextPath() + "/student/join-community");
+        // Ensure only moderators can access (Role check)
+        if (!"moderator".equalsIgnoreCase(user.getRole())) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
             return;
         }
 
-        // Fetch posts for the user's community
-        List<CommunityPost> posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId());
+        // Check if user has a community
+        if (user.getCommunityId() == null) {
+            resp.sendRedirect(req.getContextPath() + "/moderator/dashboard?error=no_community");
+            return;
+        }
+
+        String tab = req.getParameter("tab");
+        if (tab == null)
+            tab = "upvoted"; // Default
+
+        List<CommunityPost> posts;
+        if ("deleted".equalsIgnoreCase(tab)) {
+            posts = postDAO.findDeletedByCommunityId(user.getCommunityId());
+        } else {
+            // Fetch active posts (Same DAO logic as students)
+            // Note: upvoted/recent sorting could be added here in future
+            posts = postDAO.findByCommunityIdWithAuthor(user.getCommunityId());
+        }
 
         // Enrich with poll vote state
         com.uninest.model.dao.PollDAO pollDAO = new com.uninest.model.dao.PollDAO();
@@ -47,13 +62,8 @@ public class CommunityServlet extends HttpServlet {
         }
 
         req.setAttribute("posts", posts);
+        req.setAttribute("activeTab", tab);
 
-        // Check for success message from post creation
-        String postStatus = req.getParameter("post");
-        if ("success".equals(postStatus)) {
-            req.setAttribute("success", "Post created successfully!");
-        }
-
-        req.getRequestDispatcher("/WEB-INF/views/student/community/index.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/views/moderator/community/index.jsp").forward(req, resp);
     }
 }

@@ -1,4 +1,4 @@
-package com.uninest.controller.student;
+package com.uninest.controller.moderator;
 
 import com.uninest.model.CommunityPost;
 import com.uninest.model.PostComment;
@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-@WebServlet(name = "PostDetail", urlPatterns = "/student/community/post")
-public class PostDetailServlet extends HttpServlet {
+@WebServlet(name = "ModeratorPostDetail", urlPatterns = "/moderator/community/post")
+public class ModeratorPostDetailServlet extends HttpServlet {
     private CommunityPostDAO postDAO;
     private PostCommentDAO commentDAO;
 
@@ -32,14 +32,22 @@ public class PostDetailServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("authUser");
+        
+        // 1. Auth Check
         if (user == null) {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
+            return;
+        }
+        
+        // 2. Role Check (Moderator Only)
+        if (!"moderator".equalsIgnoreCase(user.getRole())) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
             return;
         }
 
         String idStr = req.getParameter("id");
         if (idStr == null || idStr.isEmpty()) {
-            resp.sendRedirect(req.getContextPath() + "/student/community");
+            resp.sendRedirect(req.getContextPath() + "/moderator/community");
             return;
         }
 
@@ -53,20 +61,16 @@ public class PostDetailServlet extends HttpServlet {
             }
 
             CommunityPost post = postOpt.get();
-
-            // Enrich with poll vote state
-            if (post.getPoll() != null) {
-                new com.uninest.model.dao.PollDAO().loadUserVoteState(post.getPoll(), user.getId());
-            }
-
+            // TODO: Optional - Check if post belongs to moderator's community if strict isolation is needed.
+            
             List<PostComment> comments = commentDAO.findByPostId(postId);
 
             req.setAttribute("post", post);
             req.setAttribute("comments", comments);
-            req.getRequestDispatcher("/WEB-INF/views/student/community/post-details.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/views/moderator/community/post-details.jsp").forward(req, resp);
 
         } catch (NumberFormatException e) {
-            resp.sendRedirect(req.getContextPath() + "/student/community");
+            resp.sendRedirect(req.getContextPath() + "/moderator/community");
         }
     }
 }

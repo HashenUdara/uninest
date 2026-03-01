@@ -21,19 +21,19 @@ import java.util.List;
  * Handles both displaying the form (GET) and processing submissions (POST).
  */
 @WebServlet(name = "createPost", urlPatterns = "/student/community/posts/create")
-@MultipartConfig(
-    fileSizeThreshold = 1024 * 1024 * 2,  // 2MB threshold
-    maxFileSize = 1024 * 1024 * 10,        // 10MB max
-    maxRequestSize = 1024 * 1024 * 15      // 15MB total
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB threshold
+        maxFileSize = 1024 * 1024 * 10, // 10MB max
+        maxRequestSize = 1024 * 1024 * 15 // 15MB total
 )
 public class CreatePostServlet extends HttpServlet {
-    
+
     private final CommunityPostDAO postDAO = new CommunityPostDAO();
-    
+    private final com.uninest.model.dao.PollDAO pollDAO = new com.uninest.model.dao.PollDAO();
+
     // Store uploads OUTSIDE webapp to survive redeployments
     private static final String UPLOAD_BASE_PATH = System.getProperty("user.home") + "/uninest-uploads";
     private static final String UPLOAD_DIRECTORY = "community-posts";
-    
+
     // Allowed image extensions
     private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "gif");
 
@@ -44,7 +44,7 @@ public class CreatePostServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
             return;
         }
-        
+
         // Check if user has a community
         if (user.getCommunityId() == null) {
             resp.sendRedirect(req.getContextPath() + "/student/join-community");
@@ -61,7 +61,7 @@ public class CreatePostServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
             return;
         }
-        
+
         // Check if user has a community
         if (user.getCommunityId() == null) {
             resp.sendRedirect(req.getContextPath() + "/student/join-community");
@@ -72,14 +72,14 @@ public class CreatePostServlet extends HttpServlet {
             // Get form parameters
             String title = req.getParameter("title");
             String content = req.getParameter("content");
-            
+
             // Validate required fields
             if (title == null || title.trim().isEmpty()) {
                 req.setAttribute("error", "Title is required");
                 doGet(req, resp);
                 return;
             }
-            
+
             if (content == null || content.trim().isEmpty()) {
                 req.setAttribute("error", "Content is required");
                 doGet(req, resp);
@@ -89,57 +89,85 @@ public class CreatePostServlet extends HttpServlet {
             // Handle optional image upload
             String imageUrl = null;
             Part filePart = req.getPart("image");
-            
+
             if (filePart != null && filePart.getSize() > 0) {
                 String fileName = getSubmittedFileName(filePart);
                 String extension = getFileExtension(fileName).toLowerCase();
-                
+
                 // Validate file extension
                 if (!ALLOWED_EXTENSIONS.contains(extension)) {
                     req.setAttribute("error", "Invalid image type. Allowed: JPG, PNG, GIF");
                     doGet(req, resp);
                     return;
                 }
-                
+
                 // Create upload directory if it doesn't exist
                 String uploadPath = UPLOAD_BASE_PATH + File.separator + UPLOAD_DIRECTORY;
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs();
                 }
-                
+
                 // Generate unique file name
                 String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
                 String filePath = uploadPath + File.separator + uniqueFileName;
-                
+
                 // Save the file
                 filePart.write(filePath);
-                
+
                 // Store relative path for database (served via /uploads/* FileServlet)
                 imageUrl = UPLOAD_DIRECTORY + "/" + uniqueFileName;
             }
-            
+
             // Create post object
             CommunityPost post = new CommunityPost();
             post.setUserId(user.getId());
             post.setCommunityId(user.getCommunityId());
-            post.setTitle(title.trim()); //.trim() removes leading/trailing spaces from the input string
+            post.setTitle(title.trim()); // .trim() removes leading/trailing spaces from the input string
             post.setContent(content.trim());
             post.setImageUrl(imageUrl);
-            
+
             // Save to database
             postDAO.create(post);
-            
+
+            // Handle Poll Creation
+            String pollQuestion = req.getParameter("pollQuestion");
+            String[] pollOptions = req.getParameterValues("pollOption");
+            String allowMultiple = req.getParameter("allowMultiple");
+
+            if (pollQuestion != null && !pollQuestion.trim().isEmpty() && pollOptions != null) {
+                // Filter empty options
+                List<com.uninest.model.PollOption> validOptions = new java.util.ArrayList<>();
+                for (String optText : pollOptions) {
+                    if (optText != null && !optText.trim().isEmpty()) {
+                        com.uninest.model.PollOption option = new com.uninest.model.PollOption();
+                        option.setOptionText(optText.trim());
+                        validOptions.add(option);
+                    }
+                }
+
+                // Apply constraints: Min 2 options
+                if (validOptions.size() >= 2) {
+                    com.uninest.model.Poll poll = new com.uninest.model.Poll();
+                    poll.setPostId(post.getId());
+                    poll.setQuestion(pollQuestion.trim());
+                    poll.setAllowMultipleChoices(allowMultiple != null);
+                    poll.setOptions(validOptions);
+
+                    pollDAO.createPoll(poll);
+                }
+            }
+
             // Redirect to community page with success message
             resp.sendRedirect(req.getContextPath() + "/student/community?post=success");
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("error", "Failed to create post: " + e.getMessage());
             doGet(req, resp);
         }
     }
-    
+
     /**
      * Extracts the filename from the Content-Disposition header.
      */
@@ -154,7 +182,7 @@ public class CreatePostServlet extends HttpServlet {
         }
         return "unknown";
     }
-    
+
     /**
      * Extracts the file extension from a filename.
      */

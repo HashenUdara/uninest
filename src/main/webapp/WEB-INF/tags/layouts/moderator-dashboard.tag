@@ -41,6 +41,12 @@
     </dash:nav-group>
     
     <dash:nav-item 
+      href="${pageContext.request.contextPath}/moderator/community" 
+      icon="message-square" 
+      label="Community Management" 
+      active="${activePage eq 'community'}" />
+    
+    <dash:nav-item 
       href="${pageContext.request.contextPath}/moderator/profile-settings"
       icon="settings" 
       label="Settings" 

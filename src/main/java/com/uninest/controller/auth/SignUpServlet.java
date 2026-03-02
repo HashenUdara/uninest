@@ -26,7 +26,8 @@ public class SignUpServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String fullName = req.getParameter("fullName");
+        String firstName = req.getParameter("firstName");
+        String lastName = req.getParameter("lastName");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         String confirmPassword = req.getParameter("confirmPassword");
@@ -35,7 +36,8 @@ public class SignUpServlet extends HttpServlet {
         String universityIdStr = req.getParameter("universityId");
 
         // Validation
-        if (fullName == null || fullName.trim().isEmpty() ||
+        if (firstName == null || firstName.trim().isEmpty() ||
+            lastName == null || lastName.trim().isEmpty() ||
             email == null || email.trim().isEmpty() ||
             password == null || password.isEmpty() ||
             confirmPassword == null || roleStr == null) {
@@ -80,7 +82,8 @@ public class SignUpServlet extends HttpServlet {
         // Create user
         User user = new User();
         user.setEmail(email.trim());
-        user.setName(fullName.trim());
+        user.setFirstName(firstName.trim());
+        user.setLastName(lastName.trim());
         user.setPasswordHash(passwordHash);
         user.setRole(role);
         // Both students and moderators capture academic year + university on signup
@@ -95,6 +98,16 @@ public class SignUpServlet extends HttpServlet {
                 user.setUniversityId(Integer.parseInt(universityIdStr));
             }
         } catch (NumberFormatException ignored) {}
+        
+        // Set university ID number and faculty
+        String universityIdNumber = req.getParameter("universityIdNumber");
+        String faculty = req.getParameter("faculty");
+        if (universityIdNumber != null && !universityIdNumber.trim().isEmpty()) {
+            user.setUniversityIdNumber(universityIdNumber.trim());
+        }
+        if (faculty != null && !faculty.trim().isEmpty()) {
+            user.setFaculty(faculty.trim());
+        }
         
         try {
             userDAO.create(user);

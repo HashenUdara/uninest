@@ -83,7 +83,7 @@ public class PostCommentDAO {
      */
     public List<PostComment> findByPostId(int postId) {
         String sql = """
-            SELECT c.*, u.name AS author_name
+            SELECT c.*, CONCAT(u.first_name, ' ', u.last_name) AS author_name
             FROM post_comments c
             JOIN users u ON c.user_id = u.id
             WHERE c.post_id = ?

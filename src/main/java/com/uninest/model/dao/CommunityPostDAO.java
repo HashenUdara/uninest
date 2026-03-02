@@ -26,6 +26,8 @@ public class CommunityPostDAO {
         post.setImageUrl(rs.getString("image_url"));
         post.setCreatedAt(rs.getTimestamp("created_at"));
         post.setUpdatedAt(rs.getTimestamp("updated_at"));
+        post.setDeleted(rs.getBoolean("is_deleted"));
+        post.setDeletedAt(rs.getTimestamp("deleted_at"));
         return post;
     }
 
@@ -61,7 +63,7 @@ public class CommunityPostDAO {
      * Finds a post by its ID.
      */
     public Optional<CommunityPost> findById(int id) {
-        String sql = "SELECT * FROM community_posts WHERE id = ?";
+        String sql = "SELECT * FROM community_posts WHERE id = ? AND is_deleted = FALSE";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -85,7 +87,7 @@ public class CommunityPostDAO {
                    (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
             FROM community_posts p
             JOIN users u ON p.user_id = u.id
-            WHERE p.id = ?
+            WHERE p.id = ? AND p.is_deleted = FALSE
             """;
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -109,7 +111,7 @@ public class CommunityPostDAO {
      * Finds all posts by a specific user (for My Posts page).
      */
     public List<CommunityPost> findByUserId(int userId) {
-        String sql = "SELECT * FROM community_posts WHERE user_id = ? ORDER BY created_at DESC";
+        String sql = "SELECT * FROM community_posts WHERE user_id = ? AND is_deleted = FALSE ORDER BY created_at DESC";
         List<CommunityPost> list = new ArrayList<>();
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -127,7 +129,7 @@ public class CommunityPostDAO {
      * Finds all posts for a community (for community feed).
      */
     public List<CommunityPost> findByCommunityId(int communityId) {
-        String sql = "SELECT * FROM community_posts WHERE community_id = ? ORDER BY created_at DESC";
+        String sql = "SELECT * FROM community_posts WHERE community_id = ? AND is_deleted = FALSE ORDER BY created_at DESC";
         List<CommunityPost> list = new ArrayList<>();
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -153,7 +155,7 @@ public class CommunityPostDAO {
                    (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) AS comment_count
             FROM community_posts p
             JOIN users u ON p.user_id = u.id
-            WHERE p.community_id = ?
+            WHERE p.community_id = ? AND p.is_deleted = FALSE
             ORDER BY p.created_at DESC
             """;
         List<CommunityPost> list = new ArrayList<>();
@@ -203,7 +205,7 @@ public class CommunityPostDAO {
      * @return true if deletion was successful, false otherwise
      */
     public boolean delete(int postId) {
-        String sql = "DELETE FROM community_posts WHERE id = ?";
+        String sql = "UPDATE community_posts SET is_deleted = TRUE, deleted_at = CURRENT_TIMESTAMP WHERE id = ?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, postId);
@@ -212,5 +214,37 @@ public class CommunityPostDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Error deleting community post", e);
         }
+    }
+
+    /**
+     * Finds deleted posts for a community with deletion reason.
+     */
+    public List<CommunityPost> findDeletedByCommunityId(int communityId) {
+        String sql = """
+            SELECT p.*, 
+                   u.name AS author_name,
+                   ma.reason AS deletion_reason
+            FROM community_posts p
+            JOIN users u ON p.user_id = u.id
+            LEFT JOIN moderator_actions ma ON ma.post_id = p.id AND ma.action_type = 'POST_DELETE'
+            WHERE p.community_id = ? AND p.is_deleted = TRUE
+            ORDER BY p.deleted_at DESC
+            """;
+        List<CommunityPost> list = new ArrayList<>();
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, communityId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CommunityPost post = map(rs);
+                    post.setAuthorName(rs.getString("author_name"));
+                    post.setDeletionReason(rs.getString("deletion_reason"));
+                    list.add(post);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching deleted posts", e);
+        }
+        return list;
     }
 }

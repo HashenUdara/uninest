@@ -54,7 +54,7 @@ tagdir="/WEB-INF/tags/dashboard" %>
         <nav class="c-tabs-line" aria-label="Filter">
           <a href="#" class="is-active">Most Upvoted</a>
           <a href="#">Most Recent</a>
-          <a href="#">Unanswered</a>
+
           <a
             href="${pageContext.request.contextPath}/student/community/my-posts"
             >My Posts</a
@@ -99,6 +99,21 @@ tagdir="/WEB-INF/tags/dashboard" %>
                 placeholder="Enter post title"
                 required
               />
+            </div>
+
+            <div class="c-field">
+              <label for="post-topic" class="c-label">Topic/Subject (Optional)</label>
+              <select 
+                id="post-topic" 
+                name="topic" 
+                class="c-input c-input--soft c-input--rect">
+                <option value="Common" selected>Common (General Discussion)</option>
+                <c:forEach var="subject" items="${subjects}">
+                  <option value="${subject.code} - ${subject.name}">
+                    ${subject.code} - ${subject.name}
+                  </option>
+                </c:forEach>
+              </select>
             </div>
 
             <div class="c-field">

@@ -108,12 +108,20 @@ function renderQuestions() {
                   Question <span class="u-text-danger">*</span>
                 </label>
                 <textarea
+                  name="q${index + 1}_text"
                   class="c-input c-input--soft c-input--rect"
                   rows="3"
                   placeholder="Write a clear and concise question that tests student understanding..."
                   onchange="updateQuestionText(${question.id}, this.value)"
                   required
                 >${question.text}</textarea>
+              </div>
+
+              <div class="field-row">
+                <div class="c-field">
+                  <label class="c-label">Points</label>
+                  <input type="number" name="q${index + 1}_points" class="c-input" value="1" min="1" max="10">
+                </div>
               </div>
 
               <div class="c-field">
@@ -133,6 +141,7 @@ function renderQuestions() {
                       )}</span>
                       <input
                         type="text"
+                        name="q${index + 1}_opt${optIdx + 1}_text"
                         placeholder="Enter option ${String.fromCharCode(
                           65 + optIdx
                         )}"
@@ -140,15 +149,18 @@ function renderQuestions() {
                         onchange="updateOptionText(${question.id}, ${
                         option.id
                       }, this.value)"
+                        required
                       />
                       <input
                         type="radio"
-                        name="correct-${question.id}"
+                        name="q${index + 1}_correct"
+                        value="opt${optIdx + 1}"
                         ${option.isCorrect ? "checked" : ""}
                         onchange="setCorrectAnswer(${question.id}, ${
                         option.id
                       })"
                         title="Mark as correct answer"
+                        required
                       />
                       ${
                         question.options.length > 2
@@ -230,6 +242,7 @@ function saveDraft() {
 }
 
 function publishQuiz() {
+  const form = document.getElementById("quiz-form");
   const title = document.getElementById("quiz-title").value;
   const subject = document.getElementById("quiz-subject").value;
 
@@ -260,27 +273,8 @@ function publishQuiz() {
     }
   }
 
-  const quizData = {
-    title: title,
-    description: document.getElementById("quiz-description").value,
-    subject: subject,
-    duration: document.getElementById("quiz-duration").value || 30,
-    questions: questions,
-    status: "published",
-    createdAt: new Date().toISOString(),
-  };
-
-  // Save to localStorage (in real app, would POST to API)
-  const quizzes = JSON.parse(localStorage.getItem("quizzes") || "[]");
-  quizzes.push(quizData);
-  localStorage.setItem("quizzes", JSON.stringify(quizzes));
-
-  showToast("Quiz published successfully!", "success");
-
-  // Redirect after 1 second
-  setTimeout(() => {
-    window.location.href = "dashboard.html";
-  }, 1500);
+  showToast("Publishing quiz...", "info");
+  form.submit();
 }
 
 function showToast(message, type = "success") {

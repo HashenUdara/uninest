@@ -414,6 +414,105 @@
   gap: var(--space-2);
   align-items: center;
 }
+/* Utilities */
+.u-hidden {
+    display: none !important;
+}
+
+.u-stack-4 > * + * {
+    margin-top: var(--space-4);
+}
+
+.u-stack-2 > * + * {
+    margin-top: var(--space-2);
+}
+
+.o-flex {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.o-flex--center {
+    align-items: center;
+}
+
+.u-color-brand {
+    color: var(--color-brand) !important;
+}
+
 .c-post--mine .c-post__head {
   grid-template-columns: 36px 1fr auto;
+}
+
+/* Pinned Posts Section */
+.c-pinned-section {
+    background: rgba(var(--color-brand-rgb, 84, 44, 245), 0.03);
+    border: 1px solid var(--color-brand);
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.c-pinned-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.c-pinned-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+    color: var(--color-brand);
+    margin: 0;
+}
+
+.c-pinned-toggle {
+    background: none;
+    border: none;
+    color: var(--color-brand);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition-base);
+}
+
+.c-pinned-section.is-collapsed .c-pinned-toggle {
+    transform: rotate(-90deg);
+}
+
+.c-pinned-content {
+    margin-top: var(--space-4);
+    display: grid;
+    gap: var(--space-4);
+}
+
+.c-pinned-section.is-collapsed .c-pinned-content {
+    display: none;
+}
+
+.c-pin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--color-brand);
+    color: white;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.js-pin-post {
+    transition: color var(--transition-base);
+}
+
+.js-pin-post.is-pinned {
+    color: var(--color-brand) !important;
 }
